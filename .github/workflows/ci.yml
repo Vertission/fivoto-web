@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: server-prod
+    runs-on: self-hosted
 
     strategy:
       matrix:
