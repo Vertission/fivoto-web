@@ -1,6 +1,7 @@
 import React from "react";
+import Link from "next/link";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
+import { Container } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
@@ -21,20 +22,15 @@ export default function Footer() {
         &#169; 2020 - {new Date().getFullYear()} Fivoto. All Rights Reserved
       </Typography>
       <div className={classes.bottomLinks}>
-        <Typography
-          color="secondary"
-          variant="caption"
-          className={classes.linkText}
-        >
-          Terms of Service
-        </Typography>
-        <Typography
-          color="secondary"
-          variant="caption"
-          className={classes.linkText}
-        >
-          Privacy Policy
-        </Typography>
+        <Link href="/terms&privacy">
+          <Typography
+            color="secondary"
+            variant="caption"
+            className={classes.linkText}
+          >
+            Terms & Privacy
+          </Typography>
+        </Link>
         <Typography
           color="secondary"
           variant="caption"
@@ -87,7 +83,7 @@ export default function Footer() {
     const Stores = ({ style }) => {
       return [
         {
-          store: "Play",
+          store: "Google Play",
           icon: <AndroidIcon fontSize="large" style={{ color: "#fff" }} />,
           link:
             "https://play.google.com/store/apps/details?id=com.vertission.fivoto",
@@ -106,7 +102,7 @@ export default function Footer() {
               DOWNLOAD FIVOTO ON
             </Typography>
             <Typography variant="h6" style={{ lineHeight: "normal" }}>
-              {store} Store
+              {store}
             </Typography>
           </div>
         </Paper>

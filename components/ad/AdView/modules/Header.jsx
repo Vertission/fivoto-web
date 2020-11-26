@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, IconButton } from "@material-ui/core";
 
@@ -12,7 +13,9 @@ export default function AdViewHeader() {
     <div className={classes.root}>
       <AppBar position="static" elevation={0}>
         <Toolbar>
-          <Logo size={40} className={classes.logo} />
+          <Link href="/">
+            <Logo size={40} className={classes.logo} />
+          </Link>
         </Toolbar>
       </AppBar>
     </div>
