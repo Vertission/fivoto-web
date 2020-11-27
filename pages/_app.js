@@ -1,7 +1,41 @@
-import '../styles/globals.css'
+import React from "react";
+import PropTypes from "prop-types";
+import { ThemeProvider } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { ApolloProvider } from "@apollo/client";
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+import theme from "../assets/theme";
+import { useApollo } from "../apollo";
+
+import { Head } from "../components/common";
+
+export default function MyApp(props) {
+  const { Component, pageProps } = props;
+  const apolloClient = useApollo(pageProps);
+
+  React.useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector("#jss-server-side");
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+  }, []);
+
+  return (
+    <React.Fragment>
+      <Head />
+      <ThemeProvider theme={theme}>
+        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+        <CssBaseline />
+        <ApolloProvider client={apolloClient}>
+          <Component {...pageProps} />
+        </ApolloProvider>
+      </ThemeProvider>
+    </React.Fragment>
+  );
 }
 
-export default MyApp
+MyApp.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  pageProps: PropTypes.object.isRequired,
+};
