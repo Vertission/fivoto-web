@@ -5,19 +5,12 @@ import FAVICON from "../../../public/favicon.ico";
 
 const config = {
   title: "FIVOTO | Buy Anything, Sell Anywhere",
-  description: "Fivoto Sri Lanka - lk.fivoto.com",
+  description: "Fivoto Sri Lanka",
   canonical: "https://lk.fivoto.com",
   openGraph: {
     type: "website",
     locale: "en_IE",
     site_name: "Fivoto",
-    images: [
-      {
-        url:
-          "https://fivoto-srilanka.s3.ap-south-1.amazonaws.com/assets/logo/1.png",
-        alt: "FIVOTO | Buy Anything, Sell Anywhere",
-      },
-    ],
   },
   twitter: {
     handle: "@fivoto",
