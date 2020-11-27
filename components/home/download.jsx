@@ -9,6 +9,7 @@ export default function HomeDownload() {
   return (
     <Grid container justify="space-between" className={classes.root}>
       <Grid
+        container
         item
         direction="column"
         justify="center"
@@ -50,8 +51,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   grid_item_1: {
-    flex: 1,
-    display: "flex",
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(10),
     },
