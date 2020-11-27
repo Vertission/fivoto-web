@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import _ from "lodash";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
   Paper,
   Typography,
@@ -11,13 +11,21 @@ import {
   DialogContent,
   DialogActions,
   DialogContentText,
+  useMediaQuery,
+  // Slide,
 } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
-export default function AdViewDescription({ description }) {
-  const [openDialog, setOpenDialog] = useState(false);
+// const Transition = React.forwardRef(function Transition(props, ref) {
+//   return <Slide direction="up" ref={ref} {...props} />;
+// }); // use this transition on XS device
 
+export default function AdViewDescription({ description }) {
+  const theme = useTheme();
   const classes = useStyles();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [openDialog, setOpenDialog] = useState(false);
 
   return (
     <React.Fragment>
@@ -37,7 +45,12 @@ export default function AdViewDescription({ description }) {
         </Button>
       </Paper>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      <Dialog
+        open={openDialog}
+        fullScreen={fullScreen}
+        keepMounted
+        onClose={() => setOpenDialog(false)}
+      >
         <DialogTitle>Description</DialogTitle>
         <DialogContent>
           <DialogContentText variant="body2" style={{ whiteSpace: "pre-line" }}>

@@ -1,10 +1,18 @@
+import React, { useEffect } from "react";
 import { AdView } from "../../components/ad";
 
 import { initializeApollo, addApolloState } from "../../apollo";
 import schema from "../../apollo/schema";
 
+import { AdBlockDetector } from "../../components/common";
+
 export default function AdPage({ id }) {
-  return <AdView id={id} />;
+  return (
+    <React.Fragment>
+      <AdBlockDetector />
+      <AdView id={id} />
+    </React.Fragment>
+  );
 }
 
 export async function getServerSideProps({ params }) {
