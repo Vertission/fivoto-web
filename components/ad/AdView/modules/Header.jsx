@@ -14,7 +14,7 @@ export default function AdViewHeader() {
       <AppBar position="static" elevation={0}>
         <Toolbar>
           <Link href="/">
-            <Logo size={40} className={classes.logo} />
+            <Logo className={classes.logo} />
           </Link>
         </Toolbar>
       </AppBar>
@@ -29,5 +29,9 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     cursor: "pointer",
     marginRight: "auto",
+    width: 40,
+    [theme.breakpoints.down("sm")]: {
+      width: 30,
+    },
   },
 }));

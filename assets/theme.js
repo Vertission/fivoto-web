@@ -1,4 +1,4 @@
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
 
 const theme = createMuiTheme({
   palette: {
@@ -14,7 +14,9 @@ const theme = createMuiTheme({
     fontFamily: ["Poppins", "sans-serif"].join(","),
   },
   spacing: (factor) => `${0.25 * factor}rem`,
-  overrides: {},
+  overrides: {
+    MuiTypography: {},
+  },
 });
 
-export default theme;
+export default responsiveFontSizes(theme);
