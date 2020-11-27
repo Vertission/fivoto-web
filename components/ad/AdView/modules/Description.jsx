@@ -19,9 +19,6 @@ export default function AdViewDescription({ description }) {
 
   const classes = useStyles();
 
-  description =
-    "Lorem Ipsum is simply dummy \n text of the printing \n and typesetting industry. \n Lorem Ipsum has been the industry's standard dummy text ever since the 1500s \n \n when an unknown printer took a galley of type and scrambled it \n to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing \n \n  \n Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Why do we use it?It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English./n Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text,  also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Why do we use it?It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English./n Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text,";
-
   return (
     <React.Fragment>
       <Paper square className={classes.root}>

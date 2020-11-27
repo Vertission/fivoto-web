@@ -7,17 +7,6 @@ import { Typography, Paper, Grid } from "@material-ui/core";
 export default function AdViewFields({ fields }) {
   const classes = useStyles();
 
-  fields = {
-    brand: "Toyota",
-    model: "Axio",
-    condition: "used",
-    engine: { value: "1500", key: "cc" },
-    year: 2008,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    milage: { value: 118000, key: "km" },
-  };
-
   const Fields = (fields) => {
     return Object.keys(fields)
       .filter((k) => typeof fields[k] !== "boolean")

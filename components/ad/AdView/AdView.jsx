@@ -1,30 +1,96 @@
 import React from "react";
+import { NextSeo } from "next-seo";
+import { useQuery } from "@apollo/client";
+import _ from "lodash";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Container, Grid, Paper, useMediaQuery } from "@material-ui/core";
+
+import schema from "../../../apollo/schema";
 
 import { Footer } from "../../common";
 import { Carousel, Detail, Fields, Description, User, Header } from "./modules";
 
-export default function AdAdView() {
+export default function AdAdView({ id }) {
   const classes = useStyles();
   const theme = useTheme();
   const matchDownXS = useMediaQuery(theme.breakpoints.down("md"));
 
+  const { data, loading, refetch, error } = useQuery(schema.query.AD, {
+    variables: { id },
+    notifyOnNetworkStatusChange: true,
+    onError(error) {
+      console.log("onError -> error", error);
+    },
+  });
+
+  const {
+    title,
+    description,
+    price,
+    photos,
+    location,
+    createdAt,
+    updatedAt,
+    expireAt,
+    fields,
+    user,
+    phone,
+  } = data.ad;
+
   return (
     <React.Fragment>
+      <NextSeo
+        title={title}
+        description={_.truncate(`<b>${price}</b> ${description}`, {
+          length: 165,
+        })}
+        openGraph={{
+          type: "article",
+          url: `lk.fivoto.com/ad/${id}`,
+          title,
+          description: _.truncate(`${price} | ${description}`, {
+            length: 165,
+          }),
+          images: [
+            {
+              url: photos[0],
+              alt: title,
+            },
+          ],
+          article: {
+            publishedTime: createdAt,
+            modifiedTime: updatedAt,
+            expirationTime: expireAt,
+          },
+        }}
+      />
       <Header />
       <Container className={classes.container}>
         <Grid container>
           <Grid item xs={12} lg={6}>
-            <Carousel />
+            <Carousel photos={photos} />
           </Grid>
           <Grid item xs={12} lg={6}>
-            <Detail />
-            <Fields />
-            {matchDownXS ? <Description /> : <User />}
+            <Detail
+              location={location}
+              createdAt={createdAt}
+              title={title}
+              price={price}
+              negotiable={fields?.negotiable}
+            />
+            <Fields fields={fields} />
+            {matchDownXS ? (
+              <Description description={description} />
+            ) : (
+              <User user={user} phone={phone} />
+            )}
           </Grid>
         </Grid>
-        {matchDownXS ? <User /> : <Description />}
+        {matchDownXS ? (
+          <User user={user} phone={phone} />
+        ) : (
+          <Description description={description} />
+        )}
       </Container>
       <Footer />
     </React.Fragment>

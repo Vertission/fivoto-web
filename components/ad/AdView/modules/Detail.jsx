@@ -10,25 +10,32 @@ export default function AdViewDetail({
 }) {
   const classes = useStyles();
 
-  location = { district: "Colombo", city: "Avissawella" };
-  createdAt = "2020-11-24T05:10:22.849+00:00";
-
   return (
     <Paper square className={classes.root}>
       <Grid container justify="space-between" alignItems="center">
-        <Typography className={classes.location_date}>
+        <Typography color="textSecondary" className={classes.location_date}>
           {location.district}, {location.city}
         </Typography>
-        <Typography className={classes.location_date}>
+        <Typography color="textSecondary" className={classes.location_date}>
           {dateFormat(createdAt)}
         </Typography>
       </Grid>
       <Divider />
       <Typography variant="h5" className={classes.title}>
-        Xiaomi Redmi Note 8 128GB
+        {title}
       </Typography>
       <Typography variant="h6" className={classes.price}>
-        LKR 30,000
+        {price}{" "}
+        {negotiable ? (
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            display="inline"
+            className={classes.negotiable}
+          >
+            negotiable
+          </Typography>
+        ) : null}
       </Typography>
     </Paper>
   );
@@ -61,7 +68,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
   },
   location_date: {
-    color: theme.palette.muted.main,
     fontWeight: "500",
   },
   title: {
@@ -71,5 +77,8 @@ const useStyles = makeStyles((theme) => ({
   },
   price: {
     fontWeight: "600",
+  },
+  negotiable: {
+    fontStyle: "italic",
   },
 }));

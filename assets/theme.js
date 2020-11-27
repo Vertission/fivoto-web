@@ -9,9 +9,6 @@ const theme = createMuiTheme({
     secondary: {
       main: "#f1f1f1",
     },
-    muted: {
-      main: "#ADB5BD",
-    },
   },
   typography: {
     fontFamily: ["Poppins", "sans-serif"].join(","),

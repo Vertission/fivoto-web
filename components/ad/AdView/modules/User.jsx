@@ -15,9 +15,6 @@ import PhoneIcon from "@material-ui/icons/Phone";
 export default function AdUser({ user, phone }) {
   const classes = useStyles();
 
-  user = { name: "Mohammed Usama" };
-  phone = ["0768377860", "0814245808"];
-
   return (
     <div className={classes.root}>
       <Accordion square TransitionProps={{ unmountOnExit: true }}>
@@ -54,7 +51,6 @@ export default function AdUser({ user, phone }) {
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(3),
-    // padding: theme.spacing(2),
   },
   phone: {
     fontFamily: "monospace",
