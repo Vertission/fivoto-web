@@ -8,6 +8,7 @@ import Box from "@material-ui/core/Box";
 import { Category } from "./tabs";
 
 function TabPanel(props) {
+  const classes = useStyles();
   const { children, value, index, ...other } = props;
 
   return (
@@ -19,7 +20,9 @@ function TabPanel(props) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      <Box p={3}>{children}</Box>
+      <Box p={3} className={classes.root}>
+        {children}
+      </Box>
     </Typography>
   );
 }

@@ -13,6 +13,7 @@ import {
   DialogContent,
   SwipeableDrawer,
   useMediaQuery,
+  CircularProgress,
   Button,
 } from "@material-ui/core";
 
@@ -61,6 +62,13 @@ export default function TabsCategory() {
       </Button>
     ));
   };
+
+  if (loading)
+    return (
+      <Container className={classes.root_loading}>
+        <CircularProgress open={true} />
+      </Container>
+    );
 
   return (
     <React.Fragment>
@@ -117,6 +125,13 @@ export default function TabsCategory() {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+  },
+  root_loading: {
+    flexGrow: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: theme.spacing(10),
   },
   grid: {
     flexWrap: "wrap",
