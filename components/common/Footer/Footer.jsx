@@ -1,7 +1,6 @@
 import React from "react";
-import Link from "next/link";
 import { makeStyles } from "@material-ui/core/styles";
-import { Container } from "@material-ui/core";
+import { Container, Link } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
@@ -22,13 +21,22 @@ export default function Footer() {
         &#169; 2020 - {new Date().getFullYear()} Fivoto. All Rights Reserved
       </Typography>
       <div className={classes.bottomLinks}>
-        <Link href="/terms&privacy">
+        <Link href="https://www.fivoto.com/terms">
           <Typography
             color="secondary"
             variant="caption"
             className={classes.linkText}
           >
-            Terms & Privacy
+            Terms & Conditions
+          </Typography>
+        </Link>
+        <Link href="https://www.fivoto.com/privacy">
+          <Typography
+            color="secondary"
+            variant="caption"
+            className={classes.linkText}
+          >
+            Privacy Policy
           </Typography>
         </Link>
         <Typography
@@ -165,7 +173,7 @@ export default function Footer() {
     <footer className={classes.root}>
       <Container>
         <div className={classes.middleContainer}>
-          <Apps /> <SocialMedia /> <About />
+          <Apps /> <SocialMedia />
         </div>
         <Divider classes={{ root: classes.divider }} />
         <Bottom />

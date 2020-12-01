@@ -20,4 +20,5 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn install
       - run: yarn build
+      - run: pm2 flush
       - run: pm2 reload client
