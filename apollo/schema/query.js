@@ -29,3 +29,9 @@ export const AD = gql`
     }
   }
 `;
+
+export const CATEGORY = gql`
+  query category {
+    category
+  }
+`;
