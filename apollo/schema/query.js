@@ -35,3 +35,9 @@ export const CATEGORY = gql`
     category
   }
 `;
+
+export const LOCATION = gql`
+  query location {
+    location
+  }
+`;

@@ -5,7 +5,7 @@ import { Header, Tab } from "../components/post";
 
 export default function HomePage() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(1);
 
   return (
     <React.Fragment>

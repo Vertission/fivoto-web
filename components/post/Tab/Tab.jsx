@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 
-import { Category } from "./tabs";
+import { Category, Location } from "./tabs";
 
 function TabPanel(props) {
   const classes = useStyles();
@@ -37,7 +37,7 @@ export default function PostTab({ value }) {
           <Category />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          location
+          <Location />
         </TabPanel>
         <TabPanel value={value} index={2}>
           create ad

@@ -31,19 +31,19 @@ export default function PostAd({ loading, activeStep, setActiveStep }) {
     window.location.reload();
   };
 
-  const keepOnPage = (e) => {
-    var message = "Changes you made may not be saved.";
-    e.returnValue = message;
-    return message;
-  };
+  // const keepOnPage = (e) => {
+  //   var message = "Changes you made may not be saved.";
+  //   e.returnValue = message;
+  //   return message;
+  // };
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", keepOnPage);
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", keepOnPage);
 
-    return () => {
-      window.removeEventListener("beforeunload", keepOnPage);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", keepOnPage);
+  //   };
+  // }, []);
 
   return (
     <>
@@ -137,7 +137,7 @@ import { StepConnector } from "@material-ui/core";
 import LabelIcon from "@material-ui/icons/Label";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import EditIcon from "@material-ui/icons/Edit";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CheckIcon from "@material-ui/icons/Check";
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -197,8 +197,8 @@ function StepIcon({ active, completed, icon }) {
     1: <LabelIcon />,
     2: <LocationOnIcon />,
     3: <EditIcon />,
-    4: <CheckCircleIcon />,
-    5: <CheckCircleIcon />,
+    4: <CheckIcon />,
+    5: <CheckIcon />,
   };
 
   return (
