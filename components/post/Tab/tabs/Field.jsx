@@ -20,15 +20,15 @@ import {
 
 import schema from "../../../../apollo/schema";
 
-import { Context } from "../../Context";
+import { Context, dispatch } from "../../Context";
 
 export default function TabsField() {
-  const { category } = useContext(Context);
+  const context = useContext(Context);
   const classes = useStyles();
 
   const { data, loading } = useQuery(schema.query.FIELD, {
     variables: {
-      name: category.item,
+      name: context.category.item,
     },
   });
 
@@ -45,7 +45,6 @@ export default function TabsField() {
 
   Object.keys(data.field).map((field) => {
     const Field = (field) => {
-      console.log(field);
       const fieldProps = data.field[field];
       switch (field) {
         case "title":
@@ -62,6 +61,7 @@ export default function TabsField() {
                 maxLength: 50,
               }}
               className={classes.inputField}
+              onChange={(e) => dispatch("SET_TITLE", e.target.value)}
             />
           );
         case "price":
@@ -87,11 +87,15 @@ export default function TabsField() {
                   ),
                 }}
                 className={classes.inputField}
+                onChange={(e) => dispatch("SET_PRICE", e.target.value)}
               />
               {fieldProps.negotiable && (
                 <FormControlLabel
                   control={<Checkbox name="negotiable" color="primary" />}
                   label="Negotiable"
+                  onChange={(_, value) =>
+                    dispatch("SET_FIELDS", { field: "negotiable", value })
+                  }
                 />
               )}
             </React.Fragment>
@@ -112,6 +116,7 @@ export default function TabsField() {
                 maxLength: 4500,
               }}
               className={classes.inputField}
+              onChange={(e) => dispatch("SET_DESCRIPTION", e.target.value)}
             />
           );
         case "subFields":
@@ -134,7 +139,15 @@ export default function TabsField() {
                     <InputLabel className={classes.inputLabel}>
                       {field.name}
                     </InputLabel>
-                    <Select label="condition">
+                    <Select
+                      label={field.name}
+                      onChange={(e) =>
+                        dispatch("SET_FIELDS", {
+                          field: field.name,
+                          value: e.target.value,
+                        })
+                      }
+                    >
                       {field.items.map((item) => (
                         <MenuItem value={item}>{item}</MenuItem>
                       ))}
@@ -151,9 +164,15 @@ export default function TabsField() {
                     variant="outlined"
                     fullWidth
                     inputProps={{
-                      maxLength: field.maxLength,
+                      maxLength: 25,
                     }}
                     className={classes.inputField}
+                    onChange={(e) =>
+                      dispatch("SET_FIELDS", {
+                        field: field.name,
+                        value: e.target.value,
+                      })
+                    }
                   />
                 );
               /**
@@ -173,13 +192,35 @@ export default function TabsField() {
                       }}
                       fullWidth
                       className={classes.inputField}
+                      onChange={(e) =>
+                        dispatch("SET_FIELDS", {
+                          field: field.name,
+                          value: {
+                            input: e.target.value,
+                            select:
+                              context.fields[field.name]?.select ||
+                              field.items[0],
+                          },
+                        })
+                      }
                     />
                     <FormControl
                       variant="outlined"
                       classes={{ root: classes.inputSelect_select }}
                       className={classes.inputField}
                     >
-                      <Select defaultValue={field.items[0]}>
+                      <Select
+                        defaultValue={field.items[0]}
+                        onChange={(e) =>
+                          dispatch("SET_FIELDS", {
+                            field: field.name,
+                            value: {
+                              select: e.target.value,
+                              input: context.fields[field.name]?.input,
+                            },
+                          })
+                        }
+                      >
                         {field.items.map((item) => (
                           <MenuItem value={item}>{item}</MenuItem>
                         ))}
@@ -191,12 +232,22 @@ export default function TabsField() {
                * map sub field inputSelect
                */
               case "radio":
+                //  default value
+                if (!context.fields[field.name]) {
+                  dispatch("SET_FIELDS", {
+                    field: field.name,
+                    value: field.options[0],
+                  });
+                }
                 return fields.push(
                   <FormControl className={classes.inputField}>
                     <FormLabel className={classes.inputLabel}>
                       {field.name}
                     </FormLabel>
-                    <RadioGroup defaultValue={field.options[0]}>
+                    <RadioGroup
+                      defaultValue={field.options[0]}
+                      onChange={console.log}
+                    >
                       {field.options.map((option) => (
                         <FormControlLabel
                           value={option}
