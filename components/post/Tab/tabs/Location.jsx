@@ -18,7 +18,9 @@ import {
 import { useQuery } from "@apollo/client";
 import schema from "../../../../apollo/schema";
 
-export default function TabsLocation() {
+import { dispatch } from "../../Context";
+
+export default function TabsLocation({ setActiveStep }) {
   const classes = useStyles();
   const theme = useTheme();
   const showDrawer = useMediaQuery(theme.breakpoints.down("sm"));
@@ -38,9 +40,13 @@ export default function TabsLocation() {
   };
 
   const _onSelect = (city) => {
-    console.log(city, selectedLocation.district);
+    dispatch("SET_LOCATION", {
+      district: selectedLocation.district,
+      city,
+    });
     setOpenDialog(false);
     setOpenDrawer(false);
+    setActiveStep(2);
   };
 
   const CitiesButtons = () => {

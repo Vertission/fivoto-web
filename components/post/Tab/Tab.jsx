@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 
-import { Category, Location } from "./tabs";
+import { Category, Location, Field } from "./tabs";
 
 function TabPanel(props) {
   const classes = useStyles();
@@ -27,20 +27,20 @@ function TabPanel(props) {
   );
 }
 
-export default function PostTab({ value }) {
+export default function PostTab({ value, setActiveStep }) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <SwipeableViews index={value} style={{ overflow: "hidden" }} disabled>
         <TabPanel value={value} index={0}>
-          <Category />
+          <Category setActiveStep={setActiveStep} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <Location />
+          <Location setActiveStep={setActiveStep} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          create ad
+          <Field setActiveStep={setActiveStep} />
         </TabPanel>
         <TabPanel value={value} index={3}>
           publish

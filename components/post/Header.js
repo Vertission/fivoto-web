@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -13,10 +13,18 @@ import Reset from "@material-ui/icons/SettingsBackupRestore";
 import Back from "@material-ui/icons/ArrowBackIos";
 import Next from "@material-ui/icons/ArrowForwardIos";
 
+import { Context } from "./Context";
+
 export default function PostAd({ loading, activeStep, setActiveStep }) {
+  const { category, location } = useContext(Context);
   const classes = useStyles();
 
-  const steps = ["Category", "Location", "Create", "Publish"];
+  const steps = [
+    category.item || "Category",
+    location.city || "Location",
+    "Create",
+    "Publish",
+  ];
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

@@ -19,7 +19,9 @@ import {
 
 import schema from "../../../../apollo/schema";
 
-export default function TabsCategory() {
+import { dispatch } from "../../Context";
+
+export default function TabsCategory({ setActiveStep }) {
   const classes = useStyles();
   const theme = useTheme();
   const showDrawer = useMediaQuery(theme.breakpoints.down("sm"));
@@ -39,9 +41,13 @@ export default function TabsCategory() {
   };
 
   const _onSelect = (item) => {
-    console.log(item, selectedCategory.field);
+    dispatch("SET_CATEGORY", {
+      field: selectedCategory.field,
+      item,
+    });
     setOpenDialog(false);
     setOpenDrawer(false);
+    setActiveStep(1);
   };
 
   const ItemButtons = () => {

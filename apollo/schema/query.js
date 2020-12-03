@@ -41,3 +41,9 @@ export const LOCATION = gql`
     location
   }
 `;
+
+export const FIELD = gql`
+  query field($name: String!) {
+    field(name: $name)
+  }
+`;

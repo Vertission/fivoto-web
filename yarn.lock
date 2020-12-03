@@ -2498,7 +2498,7 @@ lodash.sortby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha1-7dFMgk4sycHgsKG0K7UhBRakJDg=
 
-lodash@^4.17.11, lodash@^4.17.13:
+lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.20:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
@@ -3383,6 +3383,11 @@ react-material-ui-carousel@^2.1.1:
   dependencies:
     auto-bind "^2.1.1"
     react-swipeable "^5.5.1"
+
+react-recontext@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/react-recontext/-/react-recontext-4.0.5.tgz#5933fcb38fec12885098daa0d8bb26a0dc0eb7ea"
+  integrity sha512-MdWT1kfphE/Oq66JnKyMqTs5SJe9NI8KRKXUb//t0iPKMc8cBGBRbpfb43Ui4A2t/ih1WcO0HUFitByoKXZGhA==
 
 react-refresh@0.8.3:
   version "0.8.3"

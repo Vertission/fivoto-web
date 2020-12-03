@@ -15,6 +15,7 @@
     "adblock-detect-react": "^1.0.2",
     "deepmerge": "^4.2.2",
     "graphql": "^15.4.0",
+    "lodash": "^4.17.20",
     "next": "10.0.3",
     "next-images": "^1.6.2",
     "next-seo": "^4.17.0",
@@ -22,6 +23,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-material-ui-carousel": "^2.1.1",
+    "react-recontext": "^4.0.5",
     "react-swipeable-views": "^0.13.9"
   }
 }
