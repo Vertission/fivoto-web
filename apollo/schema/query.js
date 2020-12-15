@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const AD = gql`
   query ad($id: ID!) {
@@ -27,5 +27,11 @@ export const AD = gql`
         name
       }
     }
+  }
+`;
+
+export const CATEGORY = gql`
+  query category {
+    category
   }
 `;
