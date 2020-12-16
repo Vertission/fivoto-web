@@ -1,4 +1,6 @@
 import React from 'react';
+import { format } from 'timeago.js';
+
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Card,
@@ -8,40 +10,45 @@ import {
   Typography,
 } from '@material-ui/core';
 
-export default function () {
+import { Link } from '../../common';
+
+export default function Ads({ data }) {
   const classes = useStyles();
 
-  const images = [
-    'https://images.unsplash.com/photo-1578496479531-32e296d5c6e1',
-    'https://picsum.photos/seed/picsum/536/354',
-    'https://images.unsplash.com/photo-1582560474992-385ebb9b29a4',
-    'https://images.unsplash.com/photo-1576086265779-619d2f54d96b',
-    'https://images.unsplash.com/photo-1576086265779-619d2f54d96b',
-  ];
-
-  const childElements = images.map((element) => (
-    <Card className={classes.card}>
-      <CardActionArea className={classes.cardActionArea}>
-        <CardMedia component='div' className={classes.cardMedia}>
-          <img src={element} className={classes.img} />
-        </CardMedia>
-        <CardContent className={classes.cardContent}>
-          <Typography className={classes.cardTitle}>
-            Portable compact blender
-          </Typography>
-          <Typography>Rs: 38,600</Typography>
-          <div className={classes.contentBottom}>
-            <Typography variant='caption' display='block' gutterBottom>
-              kandy, akurana
+  const childElements = data.map(
+    ({ id, title, price, photos, location, createdAt }) => (
+      <Card key={id} className={classes.card}>
+        <CardActionArea className={classes.cardActionArea}>
+          <CardMedia component='div' className={classes.cardMedia}>
+            <img src={photos[0]} className={classes.img} />
+          </CardMedia>
+          <CardContent
+            className={classes.cardContent}
+            component={Link}
+            href={`ad/${id}`}
+            naked
+          >
+            <Typography>{title}</Typography>
+            <Typography
+              color='primary'
+              variant='subtitle2'
+              className={classes.cardPrice}
+            >
+              {price}
             </Typography>
-            <Typography variant='caption' display='block' gutterBottom>
-              38 mins ago
-            </Typography>
-          </div>
-        </CardContent>
-      </CardActionArea>
-    </Card>
-  ));
+            <div className={classes.contentBottom}>
+              <Typography variant='caption' display='block' gutterBottom>
+                {location.city}
+              </Typography>
+              <Typography variant='caption' display='block' gutterBottom>
+                {format(createdAt)}
+              </Typography>
+            </div>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+    )
+  );
 
   return <div className={classes.root}>{childElements}</div>;
 }
@@ -76,6 +83,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     [theme.breakpoints.down('xs')]: {
       display: 'flex',
+      justifyContent: 'space-around',
     },
   },
   cardMedia: {
@@ -94,14 +102,16 @@ const useStyles = makeStyles((theme) => ({
   img: {
     maxWidth: '100%',
     height: '100%',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
   },
   cardContent: {
     height: '40%',
+    padding: theme.spacing(0.5),
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    padding: theme.spacing(0.5),
-    [theme.breakpoints.up('xs')]: {
+    [theme.breakpoints.down('xs')]: {
       height: '100%',
     },
   },
@@ -110,9 +120,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
   },
-  cardTitle: {
-    [theme.breakpoints.up('xs')]: {
-      marginBottom: 'auto',
-    },
+  cardPrice: {
+    marginBottom: 'auto',
   },
 }));

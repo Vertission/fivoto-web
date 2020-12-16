@@ -35,3 +35,33 @@ export const CATEGORY = gql`
     category
   }
 `;
+
+export const SEARCH = gql`
+  query search(
+    $offset: Int
+    $limit: Int
+    $query: String
+    $category: categoryInput
+    $location: locationInput
+  ) {
+    search(
+      offset: $offset
+      limit: $limit
+      query: $query
+      category: $category
+      location: $location
+    ) {
+      ads {
+        id
+        title
+        price
+        photos
+        location {
+          city
+        }
+        createdAt
+      }
+      total
+    }
+  }
+`;
