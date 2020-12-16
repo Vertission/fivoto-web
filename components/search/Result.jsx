@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import _ from 'lodash';
+import { useRouter } from 'next/router';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery } from '@apollo/client';
@@ -12,6 +13,7 @@ import { Ads } from '../ui';
 export default function SearchResult({ searchQuery, setSearchQuery }) {
   const classes = useStyles();
 
+  const router = useRouter();
   const [fetchMoreLoading, setFetchMoreLoading] = useState(false);
 
   const { data, loading, fetchMore } = useQuery(schema.query.SEARCH, {
@@ -67,7 +69,9 @@ export default function SearchResult({ searchQuery, setSearchQuery }) {
         <Typography>No ads found</Typography>
         <Button
           onClick={() => {
-            window.location.reload();
+            router.push({ query: { query: null } }).then(() => {
+              window.location.reload();
+            });
           }}
           className={classes.show_latest_ads}
           color='primary'
