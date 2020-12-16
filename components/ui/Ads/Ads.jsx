@@ -1,7 +1,7 @@
 import React from 'react';
 import { format } from 'timeago.js';
 
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Card,
   CardMedia,
@@ -17,17 +17,17 @@ export default function Ads({ data }) {
 
   const childElements = data.map(
     ({ id, title, price, photos, location, createdAt }) => (
-      <Card key={id} className={classes.card}>
+      <Card
+        key={id}
+        className={classes.card}
+        component={Link}
+        href={`ad/${id}`}
+      >
         <CardActionArea className={classes.cardActionArea}>
           <CardMedia component='div' className={classes.cardMedia}>
             <img src={photos[0]} className={classes.img} />
           </CardMedia>
-          <CardContent
-            className={classes.cardContent}
-            component={Link}
-            href={`ad/${id}`}
-            naked
-          >
+          <CardContent className={classes.cardContent} naked>
             <Typography>{title}</Typography>
             <Typography
               color='primary'
@@ -95,16 +95,13 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
     background: '#fafafa',
     [theme.breakpoints.down('xs')]: {
-      width: '35%',
+      width: '40%',
       height: '100%',
     },
   },
   img: {
     maxWidth: '100%',
     height: '100%',
-    [theme.breakpoints.down('xs')]: {
-      width: '100%',
-    },
   },
   cardContent: {
     height: '40%',
@@ -112,6 +109,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     [theme.breakpoints.down('xs')]: {
+      width: '60%',
       height: '100%',
     },
   },

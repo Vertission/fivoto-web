@@ -1,13 +1,40 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import _ from 'lodash';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, InputBase, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
 
-export default function SearchHeader({ setInput, params }) {
+export default function SearchHeader({ setSearchQuery }) {
   const classes = useStyles();
 
-  const [search, setSearch] = useState('');
+  const router = useRouter();
+
+  const [search, setSearch] = useState(router.query?.query);
+
+  const _onUpdateQuery = (query) => {
+    router.push({ query: { query } });
+  };
+
+  const _handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      setSearchQuery(search);
+      _onUpdateQuery(search);
+    }
+  };
+
+  const _onHandleClear = () => {
+    setSearch('');
+    setSearchQuery(null);
+    _onUpdateQuery(null);
+  };
+
+  const _onClickQuery = () => {
+    setSearchQuery(search);
+    _onUpdateQuery(search);
+  };
 
   return (
     <div className={classes.grow}>
@@ -17,7 +44,7 @@ export default function SearchHeader({ setInput, params }) {
             <IconButton
               type='submit'
               className={classes.searchIcon}
-              onClick={() => setInput(search)}
+              onClick={_onClickQuery}
             >
               <SearchIcon color='inherit' />
             </IconButton>
@@ -29,7 +56,16 @@ export default function SearchHeader({ setInput, params }) {
               }}
               onChange={(e) => setSearch(e.target.value)}
               value={search}
+              onKeyPress={_handleKeyPress}
             />
+            <IconButton
+              type='submit'
+              style={{ visibility: _.isEmpty(search) ? 'hidden' : 'initial' }}
+              className={classes.searchIcon}
+              onClick={_onHandleClear}
+            >
+              <CloseIcon color='inherit' />
+            </IconButton>
           </div>
         </Toolbar>
       </AppBar>

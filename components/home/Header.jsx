@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, InputBase, IconButton } from '@material-ui/core';
@@ -6,21 +7,23 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import { Logo } from '../ui';
 
-export default function Header({
-  setInput,
-
-  params,
-}) {
+export default function HomeHeader({}) {
   const classes = useStyles();
+  const router = useRouter();
 
   const [search, setSearch] = useState('');
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      router.push(`/search?query=${search}`);
+    }
+  };
 
   return (
     <div className={classes.grow}>
       <AppBar position='static'>
         <Toolbar>
           <Logo className={classes.logo} />
-
           <div className={classes.search}>
             <IconButton
               type='submit'
@@ -37,6 +40,7 @@ export default function Header({
               }}
               onChange={(e) => setSearch(e.target.value)}
               value={search}
+              onKeyPress={handleKeyPress}
             />
           </div>
         </Toolbar>
