@@ -36,6 +36,12 @@ export const CATEGORY = gql`
   }
 `;
 
+export const LOCATION = gql`
+  query location {
+    location
+  }
+`;
+
 export const SEARCH = gql`
   query search($first: Int, $cursor: ID, $filter: searchFilterInput) {
     search_relay(first: $first, after: $cursor, filter: $filter)

@@ -15,24 +15,23 @@ import { Context as SearchContext } from './modules/context';
 export default function SearchResult() {
   const classes = useStyles();
 
-  const { query } = useContext(SearchContext);
+  const { query, location, category, first } = useContext(SearchContext);
 
   const router = useRouter();
   const [fetchMoreLoading, setFetchMoreLoading] = useState(false);
 
   const { data, loading, fetchMore } = useQuery(schema.query.SEARCH, {
     variables: {
-      first: 20,
-      cursor: '',
+      first,
       filter: {
         query,
         location: {
-          district: '',
-          city: '',
+          district: location.district,
+          city: location.city,
         },
         category: {
-          field: '',
-          item: '',
+          field: category.field,
+          item: category.item,
         },
       },
     },

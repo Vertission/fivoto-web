@@ -1,18 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
 
-import { fade, makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, InputBase, IconButton } from '@material-ui/core';
+import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
+import {
+  AppBar,
+  Toolbar,
+  InputBase,
+  IconButton,
+  SwipeableDrawer,
+  Typography,
+  Button,
+  useMediaQuery,
+} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import LabelIcon from '@material-ui/icons/Label';
 
-import { dispatch } from './modules/context';
+import { dispatch, Context } from './modules/context';
+
+import { LocationSelector, CategorySelector } from './modules/header/index';
 
 export default function SearchHeader() {
   const classes = useStyles();
+  const theme = useTheme();
+  const isSMDown = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [toggleLocation, setToggleLocation] = useState(false);
+  const [toggleCategory, setToggleCategory] = useState(false);
+
+  const { location, category } = useContext(Context);
 
   const router = useRouter();
+  console.log(
+    '🚀 ~ file: Header.jsx ~ line 36 ~ SearchHeader ~ router',
+    router
+  );
 
   const [search, setSearch] = useState(router.query?.query);
 
@@ -31,7 +55,34 @@ export default function SearchHeader() {
   return (
     <div className={classes.grow}>
       <AppBar position='static'>
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
+          {/* LOCATION SELECTOR */}
+          <Button
+            color='inherit'
+            variant='contained'
+            color='primary'
+            startIcon={<LocationOnIcon color='secondary' />}
+            className={classes.button}
+            onClick={() => setToggleLocation(true)}
+          >
+            <Typography noWrap variant='button'>
+              {location.city || location.district || 'location'}
+            </Typography>
+          </Button>
+          {/* CATEGORY SELECTOR */}
+          <Button
+            color='inherit'
+            variant='contained'
+            color='primary'
+            startIcon={<LabelIcon color='secondary' />}
+            className={classes.button}
+            onClick={() => setToggleCategory(true)}
+          >
+            <Typography noWrap variant='button'>
+              {category.item || category.field || 'category'}
+            </Typography>
+          </Button>
+
           <div className={classes.search}>
             <IconButton
               type='submit'
@@ -63,6 +114,23 @@ export default function SearchHeader() {
           </div>
         </Toolbar>
       </AppBar>
+
+      {/* LOCATION DRAWER */}
+      <SwipeableDrawer
+        anchor='left'
+        open={toggleLocation}
+        onClose={() => setToggleLocation(false)}
+      >
+        <LocationSelector toggleDrawer={setToggleLocation} />
+      </SwipeableDrawer>
+      {/* CATEGORY DRAWER */}
+      <SwipeableDrawer
+        anchor={isSMDown ? 'right' : 'left'}
+        open={toggleCategory}
+        onClose={() => setToggleCategory(false)}
+      >
+        <CategorySelector toggleDrawer={setToggleCategory} />
+      </SwipeableDrawer>
     </div>
   );
 }
@@ -86,9 +154,10 @@ const useStyles = makeStyles((theme) => ({
       width: 'auto',
     },
     [theme.breakpoints.down('sm')]: {
-      marginRight: theme.spacing(0.5),
-      marginLeft: theme.spacing(1),
+      margin: theme.spacing(1, 0.5, 2, 1),
       display: 'flex',
+      order: -1,
+      width: '100%',
     },
   },
   searchIcon: {
@@ -114,6 +183,19 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(1, 1, 1, 0.1),
+    },
+  },
+  button: {
+    boxShadow: 'none',
+    width: 150,
+    [theme.breakpoints.down('sm')]: {
+      width: '50%',
+    },
+  },
+  toolbar: {
+    [theme.breakpoints.down('sm')]: {
+      flexWrap: 'wrap',
+      margin: theme.spacing(2, 0, 3, 0),
     },
   },
 }));

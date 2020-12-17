@@ -2,7 +2,7 @@ import createContext from 'react-recontext';
 import _ from 'lodash';
 
 export const initState = {
-  query: '',
+  query: null,
   category: {
     field: null,
     item: null,
@@ -11,7 +11,7 @@ export const initState = {
     district: null,
     city: null,
   },
-  limit: 20,
+  first: 20,
 };
 
 export const { dispatch, Context, Provider } = createContext({
