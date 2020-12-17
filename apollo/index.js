@@ -1,25 +1,23 @@
-import { useMemo } from "react";
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-import { concatPagination } from "@apollo/client/utilities";
-import merge from "deepmerge";
+import { useMemo } from 'react';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { relayStylePagination } from '@apollo/client/utilities';
+import merge from 'deepmerge';
 
-export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
+export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
 let apolloClient;
 
 function createApolloClient() {
   return new ApolloClient({
-    ssrMode: typeof window === "undefined",
+    ssrMode: typeof window === 'undefined',
     link: new HttpLink({
-      uri: "http://localhost:4000", // Server URL (must be absolute)
-      credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
+      uri: 'http://localhost:4000', // Server URL (must be absolute)
+      credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
     }),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
-          fields: {
-            allPosts: concatPagination(),
-          },
+          // search_relay: relayStylePagination([]),
         },
       },
     }),
@@ -42,7 +40,7 @@ export function initializeApollo(initialState = null) {
     _apolloClient.cache.restore(data);
   }
   // For SSG and SSR always create a new Apollo Client
-  if (typeof window === "undefined") return _apolloClient;
+  if (typeof window === 'undefined') return _apolloClient;
   // Create the Apollo Client once in the client
   if (!apolloClient) apolloClient = _apolloClient;
 

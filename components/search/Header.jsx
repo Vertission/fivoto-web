@@ -7,33 +7,25 @@ import { AppBar, Toolbar, InputBase, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 
-export default function SearchHeader({ setSearchQuery }) {
+import { dispatch } from './modules/context';
+
+export default function SearchHeader() {
   const classes = useStyles();
 
   const router = useRouter();
 
   const [search, setSearch] = useState(router.query?.query);
 
-  const _onUpdateQuery = (query) => {
-    router.push({ query: { query } });
+  const _onUpdateQuery = (query, value) => {
+    router.push({
+      query: Object.assign({ ...router.query }, { [query]: value }),
+    });
   };
 
-  const _handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      setSearchQuery(search);
-      _onUpdateQuery(search);
-    }
-  };
-
-  const _onHandleClear = () => {
-    setSearch('');
-    setSearchQuery(null);
-    _onUpdateQuery(null);
-  };
-
-  const _onClickQuery = () => {
-    setSearchQuery(search);
-    _onUpdateQuery(search);
+  const _onHandleSearchQuery = (query) => {
+    setSearch(query);
+    dispatch('SET_QUERY', query);
+    _onUpdateQuery('query', query);
   };
 
   return (
@@ -44,7 +36,7 @@ export default function SearchHeader({ setSearchQuery }) {
             <IconButton
               type='submit'
               className={classes.searchIcon}
-              onClick={_onClickQuery}
+              onClick={() => _onHandleSearchQuery(search)}
             >
               <SearchIcon color='inherit' />
             </IconButton>
@@ -56,13 +48,15 @@ export default function SearchHeader({ setSearchQuery }) {
               }}
               onChange={(e) => setSearch(e.target.value)}
               value={search}
-              onKeyPress={_handleKeyPress}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') _onHandleSearchQuery(search);
+              }}
             />
             <IconButton
               type='submit'
               style={{ visibility: _.isEmpty(search) ? 'hidden' : 'initial' }}
               className={classes.searchIcon}
-              onClick={_onHandleClear}
+              onClick={() => _onHandleSearchQuery('')}
             >
               <CloseIcon color='inherit' />
             </IconButton>

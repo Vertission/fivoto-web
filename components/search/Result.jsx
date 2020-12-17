@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 
@@ -8,51 +8,35 @@ import { useQuery } from '@apollo/client';
 import { CircularProgress, Button, Typography } from '@material-ui/core';
 
 import schema from '../../apollo/schema';
-import { Ads } from '../ui';
+import { Ads } from '../common';
 
-export default function SearchResult({ searchQuery, setSearchQuery }) {
+import { Context as SearchContext } from './modules/context';
+
+export default function SearchResult() {
   const classes = useStyles();
+
+  const { query } = useContext(SearchContext);
 
   const router = useRouter();
   const [fetchMoreLoading, setFetchMoreLoading] = useState(false);
 
   const { data, loading, fetchMore } = useQuery(schema.query.SEARCH, {
     variables: {
-      offset: 0,
-      limit: 20,
-      query: searchQuery,
-      category: {},
-      location: {},
+      first: 20,
+      cursor: '',
+      filter: {
+        query,
+        location: {
+          district: '',
+          city: '',
+        },
+        category: {
+          field: '',
+          item: '',
+        },
+      },
     },
-    notifyOnNetworkStatusChange: true,
   });
-
-  const _onLoadMore = () => {
-    if (data.search.ads.length === data.search.total) return null;
-    else {
-      setFetchMoreLoading(true);
-      fetchMore({
-        query: schema.query.SEARCH,
-        variables: {
-          offset: data.search.ads.length,
-          limit: 20,
-          query: searchQuery,
-          category: {},
-          location: {},
-        },
-        updateQuery: (prevResult, { fetchMoreResult }) => {
-          fetchMoreResult.search.ads = [
-            ...prevResult.search.ads,
-            ...fetchMoreResult.search.ads,
-          ];
-
-          return fetchMoreResult;
-        },
-      }).then(({ loading }) => {
-        setFetchMoreLoading(loading);
-      });
-    }
-  };
 
   if (loading)
     return (
@@ -61,9 +45,41 @@ export default function SearchResult({ searchQuery, setSearchQuery }) {
       </div>
     );
 
-  const { ads, total } = data.search;
+  const {
+    endCursor,
+    hasNextPage,
+    hasPreviousPage,
+  } = data.search_relay.pageInfo;
 
-  if (_.isEmpty(ads))
+  const _onLoadMore = () => {
+    if (hasNextPage) {
+      setFetchMoreLoading(true);
+
+      fetchMore({
+        variables: {
+          cursor: endCursor,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          const newNodes = fetchMoreResult.search_relay.edges.node;
+          const pageInfo = fetchMoreResult.search_relay.pageInfo;
+
+          return {
+            search_relay: {
+              __typename: previousResult.search_relay.__typename,
+              edges: {
+                node: [...previousResult.search_relay.edges.node, ...newNodes],
+              },
+              pageInfo,
+            },
+          };
+        },
+      }).then(({ loading }) => {
+        setFetchMoreLoading(loading);
+      });
+    }
+  };
+
+  if (!hasNextPage && !hasPreviousPage)
     return (
       <div className={classes.wide}>
         <Typography>No ads found</Typography>
@@ -81,9 +97,11 @@ export default function SearchResult({ searchQuery, setSearchQuery }) {
       </div>
     );
 
+  const nodes = data.search_relay.edges.node;
+
   return (
     <div className={classes.root}>
-      <Ads data={ads} />
+      <Ads data={nodes} />
       <div className={classes.loadMore_container}>
         {fetchMoreLoading ? (
           <CircularProgress size={30} />
@@ -93,7 +111,7 @@ export default function SearchResult({ searchQuery, setSearchQuery }) {
             variant='contained'
             size='large'
             onClick={_onLoadMore}
-            style={{ display: ads.length === total ? 'none' : 'inherit' }}
+            style={{ display: hasNextPage ? 'inherit' : 'none' }}
           >
             load more
           </Button>

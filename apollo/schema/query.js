@@ -37,31 +37,7 @@ export const CATEGORY = gql`
 `;
 
 export const SEARCH = gql`
-  query search(
-    $offset: Int
-    $limit: Int
-    $query: String
-    $category: categoryInput
-    $location: locationInput
-  ) {
-    search(
-      offset: $offset
-      limit: $limit
-      query: $query
-      category: $category
-      location: $location
-    ) {
-      ads {
-        id
-        title
-        price
-        photos
-        location {
-          city
-        }
-        createdAt
-      }
-      total
-    }
+  query search($first: Int, $cursor: ID, $filter: searchFilterInput) {
+    search_relay(first: $first, after: $cursor, filter: $filter)
   }
 `;
