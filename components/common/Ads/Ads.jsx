@@ -18,6 +18,7 @@ export default function Ads({ data }) {
   const childElements = data.map(
     ({ id, title, price, photos, location, createdAt }) => (
       <Card
+        elevation={1}
         key={id}
         className={classes.card}
         component={Link}
@@ -28,7 +29,9 @@ export default function Ads({ data }) {
             <img src={photos[0]} className={classes.img} />
           </CardMedia>
           <CardContent className={classes.cardContent} naked>
-            <Typography>{title}</Typography>
+            <Typography variant='subtitle1' className={classes.title}>
+              {title}
+            </Typography>
             <Typography
               color='primary'
               variant='subtitle2'
@@ -38,7 +41,7 @@ export default function Ads({ data }) {
             </Typography>
             <div className={classes.contentBottom}>
               <Typography variant='caption' display='block' gutterBottom>
-                {location.city}
+                {location.district}, {location.city}
               </Typography>
               <Typography variant='caption' display='block' gutterBottom>
                 {format(createdAt)}
@@ -117,8 +120,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
+    color: theme.palette.secondary.dark,
   },
   cardPrice: {
     marginBottom: 'auto',
+    fontWeight: 'bold',
+    fontFamily: 'monospace',
+    letterSpacing: 0.5,
+  },
+  title: {
+    lineHeight: 1.2,
   },
 }));
