@@ -37,40 +37,26 @@ export default function SearchResult() {
     },
   });
 
-  if (loading)
-    return (
-      <div className={classes.wide}>
-        <CircularProgress />
-      </div>
-    );
-
-  const {
-    endCursor,
-    hasNextPage,
-    hasPreviousPage,
-  } = data.search_relay.pageInfo;
-
   const _onLoadMore = () => {
-    if (hasNextPage) {
+    if (data.search_relay.pageInfo.hasNextPage) {
       setFetchMoreLoading(true);
-
       fetchMore({
         variables: {
-          cursor: endCursor,
+          cursor: data.search_relay.pageInfo.endCursor,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
-          const newNodes = fetchMoreResult.search_relay.edges.node;
+          const newEdges = fetchMoreResult.search_relay.edges;
           const pageInfo = fetchMoreResult.search_relay.pageInfo;
 
-          return {
-            search_relay: {
-              __typename: previousResult.search_relay.__typename,
-              edges: {
-                node: [...previousResult.search_relay.edges.node, ...newNodes],
-              },
-              pageInfo,
-            },
-          };
+          return newEdges.length
+            ? {
+                search_relay: {
+                  __typename: previousResult.search_relay.__typename,
+                  edges: [...previousResult.search_relay.edges, ...newEdges],
+                  pageInfo,
+                },
+              }
+            : previousResult;
         },
       }).then(({ loading }) => {
         setFetchMoreLoading(loading);
@@ -78,7 +64,17 @@ export default function SearchResult() {
     }
   };
 
-  if (!hasNextPage && !hasPreviousPage)
+  if (loading)
+    return (
+      <div className={classes.wide}>
+        <CircularProgress />
+      </div>
+    );
+
+  const nodes = data.search_relay.edges.map((edge) => edge.node);
+  console.log('Boolean(nodes.length)', Boolean(nodes.length));
+
+  if (!Boolean(nodes.length))
     return (
       <div className={classes.wide}>
         <Typography>No ads found</Typography>
@@ -96,8 +92,6 @@ export default function SearchResult() {
       </div>
     );
 
-  const nodes = data.search_relay.edges.node;
-
   return (
     <div className={classes.root}>
       <Ads data={nodes} />
@@ -110,7 +104,11 @@ export default function SearchResult() {
             variant='contained'
             size='large'
             onClick={_onLoadMore}
-            style={{ display: hasNextPage ? 'inherit' : 'none' }}
+            style={{
+              display: data.search_relay.pageInfo.hasNextPage
+                ? 'inherit'
+                : 'none',
+            }}
           >
             load more
           </Button>

@@ -44,6 +44,25 @@ export const LOCATION = gql`
 
 export const SEARCH = gql`
   query search($first: Int, $cursor: ID, $filter: searchFilterInput) {
-    search_relay(first: $first, after: $cursor, filter: $filter)
+    search_relay(first: $first, after: $cursor, filter: $filter) {
+      edges {
+        cursor
+        node {
+          id
+          title
+          price
+          photos
+          createdAt
+          location {
+            district
+            city
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
   }
 `;
