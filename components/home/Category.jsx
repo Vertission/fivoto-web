@@ -2,10 +2,11 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Typography, CircularProgress } from '@material-ui/core';
+import { CardActionArea, Typography } from '@material-ui/core';
+
+import { Link } from '../common';
 
 import schema from '../../apollo/schema';
-import { initializeApollo } from '../../apollo';
 
 export default function HomeCategory() {
   const classes = useStyles();
@@ -16,46 +17,58 @@ export default function HomeCategory() {
     },
   });
 
-  console.log(data);
-
-  return (
-    <div className={[classes.root, classes.root_progress]}>
-      <CircularProgress />
-    </div>
-  );
   return (
     <div className={classes.root}>
-      <Paper className={classes.category}>
-        <img
-          className={classes.category_image}
-          src='https://fivoto-srilanka101812-prod.s3.ap-south-1.amazonaws.com/assets/category/device.png'
-        />
-        <Typography>Device</Typography>
-      </Paper>
+      {data?.category.map(({ category, image }) => (
+        <div className={classes.category}>
+          <CardActionArea
+            style={{ borderRadius: 100 }}
+            className={classes.category}
+            component={Link}
+            href={`/ads/sri-lanka/${category}`}
+          >
+            <img className={classes.category_image} src={image} />
+          </CardActionArea>
+          <Typography
+            variant='caption'
+            align='center'
+            className={classes.title}
+          >
+            {category}
+          </Typography>
+        </div>
+      ))}
     </div>
   );
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    display: 'flex',
+    justifyContent: 'space-between',
     flexGrow: 1,
     marginTop: theme.spacing(5),
     padding: theme.spacing(2),
-  },
-  root_progress: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexWrap: 'wrap',
+    [theme.breakpoints.down('md')]: {
+      flexWrap: 'initial',
+      overflow: 'scroll',
+    },
   },
   category: {
     padding: theme.spacing(2),
-    width: 100,
+    width: 120,
+    [theme.breakpoints.down('md')]: {
+      width: 100,
+    },
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   category_image: {
-    width: 80,
+    width: 50,
+  },
+  title: {
+    textTransform: 'capitalize',
   },
 }));
