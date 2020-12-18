@@ -33,10 +33,6 @@ export default function SearchHeader() {
   const { location, category } = useContext(Context);
 
   const router = useRouter();
-  console.log(
-    '🚀 ~ file: Header.jsx ~ line 36 ~ SearchHeader ~ router',
-    router
-  );
 
   const [search, setSearch] = useState(router.query?.query);
 
@@ -119,6 +115,7 @@ export default function SearchHeader() {
       <SwipeableDrawer
         anchor='left'
         open={toggleLocation}
+        onOpen={() => setToggleLocation(true)}
         onClose={() => setToggleLocation(false)}
       >
         <LocationSelector toggleDrawer={setToggleLocation} />
@@ -127,6 +124,7 @@ export default function SearchHeader() {
       <SwipeableDrawer
         anchor={isSMDown ? 'right' : 'left'}
         open={toggleCategory}
+        onOpen={() => setToggleCategory(true)}
         onClose={() => setToggleCategory(false)}
       >
         <CategorySelector toggleDrawer={setToggleCategory} />

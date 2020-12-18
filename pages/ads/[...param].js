@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
 
-import { Header, Result, Context } from '../../components/search';
+import { Header, Result, Context } from '../../components/ads';
 import { AdBlockDetector, Footer } from '../../components/common';
 
 export default function HomePage() {
