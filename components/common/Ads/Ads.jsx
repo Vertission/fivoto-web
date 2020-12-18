@@ -22,7 +22,7 @@ export default function Ads({ data }) {
         key={id}
         className={classes.card}
         component={Link}
-        href={`ad/${id}`}
+        href={`/ad/${id}`}
       >
         <CardActionArea className={classes.cardActionArea}>
           <CardMedia component='div' className={classes.cardMedia}>
