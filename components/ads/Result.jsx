@@ -72,7 +72,6 @@ export default function SearchResult() {
     );
 
   const nodes = data.search_relay.edges.map((edge) => edge.node);
-  console.log('Boolean(nodes.length)', Boolean(nodes.length));
 
   if (!Boolean(nodes.length))
     return (
