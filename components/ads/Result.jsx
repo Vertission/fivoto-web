@@ -24,7 +24,7 @@ export default function SearchResult() {
     variables: {
       first,
       filter: {
-        query,
+        query: router.query?.query,
         location: {
           district: location.district,
           city: location.city,

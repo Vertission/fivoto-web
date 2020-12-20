@@ -1,30 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { Component } from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
 
 import { Header, Result, Context } from '../../components/ads';
 import { AdBlockDetector, Footer } from '../../components/common';
 
-export default function HomePage() {
-  const classes = useStyles();
+export default class Ads extends Component {
+  constructor(props) {
+    super(props);
 
-  useEffect(() => {
-    console.log('run'), [];
-  });
+    this.state = {
+      query: props.query.query,
+    };
+  }
 
-  return (
-    <React.Fragment>
-      <Context.Provider>
-        <AdBlockDetector />
-        <Header />
-        <Container>
-          <Result />
-        </Container>
-        <Footer />
-      </Context.Provider>
-    </React.Fragment>
-  );
+  render() {
+    return (
+      <React.Fragment>
+        <Context.Provider>
+          <AdBlockDetector />
+          <Header state={this.state} setState={this.setState} />
+          <Container>
+            <Result />
+          </Container>
+          <Footer />
+        </Context.Provider>
+      </React.Fragment>
+    );
+  }
 }
 
-const useStyles = makeStyles((theme) => ({}));
+export async function getServerSideProps({ query }) {
+  return {
+    props: { query }, // will be passed to the page component as props
+  };
+}

@@ -44,7 +44,7 @@ export default function SearchHeader() {
 
   const _onHandleSearchQuery = (query) => {
     setSearch(query);
-    dispatch('SET_QUERY', query);
+    // dispatch('SET_QUERY', query);
     _onUpdateQuery('query', query);
   };
 
