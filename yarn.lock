@@ -3378,6 +3378,11 @@ react-material-ui-carousel@^2.1.1:
     auto-bind "^2.1.1"
     react-swipeable "^5.5.1"
 
+react-recontext@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/react-recontext/-/react-recontext-4.0.5.tgz#5933fcb38fec12885098daa0d8bb26a0dc0eb7ea"
+  integrity sha512-MdWT1kfphE/Oq66JnKyMqTs5SJe9NI8KRKXUb//t0iPKMc8cBGBRbpfb43Ui4A2t/ih1WcO0HUFitByoKXZGhA==
+
 react-refresh@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
