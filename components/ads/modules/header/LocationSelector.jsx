@@ -80,6 +80,7 @@ function SearchHeaderLocationSelector({ toggleDrawer, updateParam }) {
 
     // url param updating
     const param = router.query.param;
+    if (typeof param === 'string') param = [];
     param[0] = city || district || 'sri lanka';
     param[0] = param[0].split(' ').join('-').toLowerCase();
 

@@ -22,7 +22,7 @@ import { dispatch, Context } from './modules/context';
 
 import { LocationSelector, CategorySelector } from './modules/header/index';
 
-export default function SearchHeader() {
+export default function SearchHeader({ state }) {
   const classes = useStyles();
   const theme = useTheme();
   const isSMDown = useMediaQuery(theme.breakpoints.down('sm'));
@@ -34,7 +34,7 @@ export default function SearchHeader() {
 
   const router = useRouter();
 
-  const [search, setSearch] = useState(router.query?.query);
+  const [search, setSearch] = useState(state.query);
 
   const _onUpdateQuery = (query, value) => {
     router.push({
@@ -44,7 +44,6 @@ export default function SearchHeader() {
 
   const _onHandleSearchQuery = (query) => {
     setSearch(query);
-    // dispatch('SET_QUERY', query);
     _onUpdateQuery('query', query);
   };
 

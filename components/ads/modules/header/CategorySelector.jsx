@@ -81,7 +81,7 @@ function SearchHeaderCategorySelector({ toggleDrawer }) {
     // url param updating
     const param = router.query.param;
     param[1] = item || field || 'all categories';
-    param[1] = param[1].split(' ').join('-').replace('&-', '').toLowerCase();
+    param[1] = param[1].split(' ').join('-').toLowerCase();
 
     router.push({
       query: { param },
