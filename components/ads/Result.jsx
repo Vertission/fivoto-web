@@ -79,8 +79,9 @@ export default function SearchResult() {
         <Typography>No ads found</Typography>
         <Button
           onClick={() => {
-            router.push({ query: { query: null } }).then(() => {
-              window.location.reload();
+            router.push({
+              query: { query: null },
+              pathname: '/ads/sri-lanka/all-categories',
             });
           }}
           className={classes.show_latest_ads}
