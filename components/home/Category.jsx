@@ -25,7 +25,7 @@ export default function HomeCategory() {
             style={{ borderRadius: 100 }}
             className={classes.category}
             component={Link}
-            href={`/ads/sri-lanka/${category
+            href={`/search/sri-lanka/${category
               .split(' ')
               .join('-')
               .toLowerCase()}`}

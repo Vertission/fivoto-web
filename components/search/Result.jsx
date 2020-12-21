@@ -81,7 +81,7 @@ export default function SearchResult() {
           onClick={() => {
             router.push({
               query: { query: null },
-              pathname: '/ads/sri-lanka/all-categories',
+              pathname: '/search/sri-lanka/all-categories',
             });
           }}
           className={classes.show_latest_ads}
