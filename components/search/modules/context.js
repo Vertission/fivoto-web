@@ -32,7 +32,7 @@ export const { dispatch, Context, Provider } = createContext({
     }),
     SET_RESET: () => initState,
   },
-  isEnableLog: false,
+  isEnableLog: true,
 });
 
 export default {

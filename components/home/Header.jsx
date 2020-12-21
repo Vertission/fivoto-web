@@ -15,7 +15,7 @@ export default function HomeHeader({}) {
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      router.push(`/ads/sri-lanka/?query=${search}`);
+      router.push(`/search/sri-lanka/?query=${search}`);
     }
   };
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Container } from '@material-ui/core';
 
-import { Header, Result, Context } from '../../components/ads';
+import { Header, Result, Context } from '../../components/search';
 import { AdBlockDetector, Footer } from '../../components/common';
 
 import schema from '../../apollo/schema';
