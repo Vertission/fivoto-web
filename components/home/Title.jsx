@@ -12,10 +12,20 @@ export default function HomeDownload() {
       alignItems='center'
       className={classes.root}
     >
-      <Typography variant='h1' color='secondary' className={classes.title}>
+      <Typography
+        variant='h1'
+        color='secondary'
+        align='center'
+        className={classes.title}
+      >
         FIVOTO
       </Typography>
-      <Typography variant='h4' color='secondary' className={classes.title}>
+      <Typography
+        variant='h4'
+        color='secondary'
+        align='center'
+        className={classes.title}
+      >
         Buy Anything, Sell Anywhere
       </Typography>
     </Grid>
