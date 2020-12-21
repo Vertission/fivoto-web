@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 
@@ -8,45 +8,55 @@ import { useQuery } from '@apollo/client';
 import { CircularProgress, Button, Typography } from '@material-ui/core';
 
 import schema from '../../apollo/schema';
-import { Ads } from '../ui';
+import { Ads } from '../common';
 
-export default function SearchResult({ searchQuery, setSearchQuery }) {
+import { Context as SearchContext } from './modules/context';
+
+export default function SearchResult() {
   const classes = useStyles();
+
+  const { query, location, category, first } = useContext(SearchContext);
 
   const router = useRouter();
   const [fetchMoreLoading, setFetchMoreLoading] = useState(false);
 
   const { data, loading, fetchMore } = useQuery(schema.query.SEARCH, {
     variables: {
-      offset: 0,
-      limit: 20,
-      query: searchQuery,
-      category: {},
-      location: {},
+      first,
+      filter: {
+        query: router.query?.query,
+        location: {
+          district: location.district,
+          city: location.city,
+        },
+        category: {
+          field: category.field,
+          item: category.item,
+        },
+      },
     },
-    notifyOnNetworkStatusChange: true,
   });
 
   const _onLoadMore = () => {
-    if (data.search.ads.length === data.search.total) return null;
-    else {
+    if (data.search_relay.pageInfo.hasNextPage) {
       setFetchMoreLoading(true);
       fetchMore({
-        query: schema.query.SEARCH,
         variables: {
-          offset: data.search.ads.length,
-          limit: 20,
-          query: searchQuery,
-          category: {},
-          location: {},
+          cursor: data.search_relay.pageInfo.endCursor,
         },
-        updateQuery: (prevResult, { fetchMoreResult }) => {
-          fetchMoreResult.search.ads = [
-            ...prevResult.search.ads,
-            ...fetchMoreResult.search.ads,
-          ];
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          const newEdges = fetchMoreResult.search_relay.edges;
+          const pageInfo = fetchMoreResult.search_relay.pageInfo;
 
-          return fetchMoreResult;
+          return newEdges.length
+            ? {
+                search_relay: {
+                  __typename: previousResult.search_relay.__typename,
+                  edges: [...previousResult.search_relay.edges, ...newEdges],
+                  pageInfo,
+                },
+              }
+            : previousResult;
         },
       }).then(({ loading }) => {
         setFetchMoreLoading(loading);
@@ -61,16 +71,17 @@ export default function SearchResult({ searchQuery, setSearchQuery }) {
       </div>
     );
 
-  const { ads, total } = data.search;
+  const nodes = data.search_relay.edges.map((edge) => edge.node);
 
-  if (_.isEmpty(ads))
+  if (!Boolean(nodes.length))
     return (
       <div className={classes.wide}>
         <Typography>No ads found</Typography>
         <Button
           onClick={() => {
-            router.push({ query: { query: null } }).then(() => {
-              window.location.reload();
+            router.push({
+              query: { query: null },
+              pathname: '/ads/sri-lanka/all-categories',
             });
           }}
           className={classes.show_latest_ads}
@@ -83,7 +94,7 @@ export default function SearchResult({ searchQuery, setSearchQuery }) {
 
   return (
     <div className={classes.root}>
-      <Ads data={ads} />
+      <Ads data={nodes} />
       <div className={classes.loadMore_container}>
         {fetchMoreLoading ? (
           <CircularProgress size={30} />
@@ -93,7 +104,11 @@ export default function SearchResult({ searchQuery, setSearchQuery }) {
             variant='contained'
             size='large'
             onClick={_onLoadMore}
-            style={{ display: ads.length === total ? 'none' : 'inherit' }}
+            style={{
+              display: data.search_relay.pageInfo.hasNextPage
+                ? 'inherit'
+                : 'none',
+            }}
           >
             load more
           </Button>

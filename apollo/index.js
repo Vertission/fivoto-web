@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
-import { concatPagination } from '@apollo/client/utilities';
+import { relayStylePagination } from '@apollo/client/utilities';
 import merge from 'deepmerge';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
@@ -17,9 +17,7 @@ function createApolloClient() {
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
-          fields: {
-            allPosts: concatPagination(),
-          },
+          // search_relay: relayStylePagination([]),
         },
       },
     }),
