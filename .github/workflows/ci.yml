@@ -18,8 +18,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
       - run: pm2 stop all
+      - run: yarn install
       - run: yarn build
       - run: pm2 flush
       - run: pm2 start all
