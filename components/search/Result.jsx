@@ -10,7 +10,10 @@ import { CircularProgress, Button, Typography } from '@material-ui/core';
 import schema from '../../apollo/schema';
 import { Ads } from '../common';
 
-import { Context as SearchContext } from './modules/context';
+import {
+  Context as SearchContext,
+  dispatch as SearchDispatch,
+} from './modules/context';
 
 export default function SearchResult() {
   const classes = useStyles();
@@ -83,6 +86,8 @@ export default function SearchResult() {
               query: { query: null },
               pathname: '/search/sri-lanka/all-categories',
             });
+
+            SearchDispatch('SET_RESET');
           }}
           className={classes.show_latest_ads}
           color='primary'
