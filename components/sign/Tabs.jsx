@@ -37,23 +37,24 @@ export default function SignTabs() {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = useState(2);
+  const [email, setEmail] = useState(null);
 
   return (
     <div className={classes.root}>
       <TabPanel value={value} index={0} dir={theme.direction}>
-        <ResetPassword setTab={setValue} />
+        <ResetPassword setTab={setValue} email={email} />
       </TabPanel>
       <TabPanel value={value} index={1} dir={theme.direction}>
-        <ForgotPassword setTab={setValue} />
+        <ForgotPassword setTab={setValue} email={email} setEmail={setEmail} />
       </TabPanel>
       <TabPanel value={value} index={2} dir={theme.direction}>
-        <Login setTab={setValue} />
+        <Login setTab={setValue} email={email} setEmail={setEmail} />
       </TabPanel>
       <TabPanel value={value} index={3} dir={theme.direction}>
-        <Register setTab={setValue} />
+        <Register setTab={setValue} setEmail={setEmail} />
       </TabPanel>
       <TabPanel value={value} index={4} dir={theme.direction}>
-        <EmailConfirmation setTab={setValue} />
+        <EmailConfirmation setTab={setValue} email={email} />
       </TabPanel>
     </div>
   );

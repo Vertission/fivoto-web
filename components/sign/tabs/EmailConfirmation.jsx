@@ -2,68 +2,98 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
-import { TextField, Button, Typography } from '@material-ui/core';
+import {
+  TextField,
+  Button,
+  Typography,
+  LinearProgress,
+} from '@material-ui/core';
 
-import EmailIcon from '@material-ui/icons/Email';
+import {
+  useConfirmSign,
+  useSendConfirmationCode,
+} from '../../../service/amplify/auth';
+import { rules } from '../../../utils/index';
 
-const SignTabsLogin = ({ setTab }) => {
+const SignTabsLogin = ({ setTab, email }) => {
   const classes = useStyles();
 
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, errors } = useForm({
+    mode: 'onBlur',
+  });
 
-  const onSubmit = (data) => {
-    setTab(2);
+  const [confirmSign, { loading }] = useConfirmSign(setTab);
+
+  const [
+    sendConfirmationCode,
+    { loading: sendConfirmationCodeLoading },
+  ] = useSendConfirmationCode(email);
+
+  const onSubmit = ({ code }) => {
+    confirmSign(email, code);
   };
 
   return (
-    <div className={classes.root}>
-      <form className={classes.container}>
-        <Typography variant='h6'>Email Confirmation</Typography>
-        <Typography variant='body2' className={classes.description}>
-          Please enter the confirmation code we send to your email address
-          mohammedusama@gmail.com
-        </Typography>
-        <div className={classes.textField_email}>
-          <Controller
-            name='code'
-            control={control}
-            defaultValue=''
-            render={({ onChange, value }) => (
-              <TextField
-                size='small'
-                variant='outlined'
-                name='code'
-                fullWidth
-                label='Verification Code'
-                type='code'
-                onChange={onChange}
-                value={value}
-              />
-            )}
-          />
-        </div>
+    <React.Fragment>
+      {loading ||
+        (sendConfirmationCodeLoading && (
+          <LinearProgress classes={{ root: classes.linearProgressRoot }} />
+        ))}
+      <div className={classes.root}>
+        <form className={classes.container}>
+          <Typography variant='h6'>Email Confirmation</Typography>
+          <Typography variant='body2' className={classes.description}>
+            Please enter the confirmation code we send to your email address{' '}
+            {email}
+          </Typography>
+          <div className={classes.textField_email}>
+            <Controller
+              name='code'
+              control={control}
+              rules={rules.confirmationCode}
+              defaultValue=''
+              render={({ onChange, value }) => (
+                <TextField
+                  size='small'
+                  variant='outlined'
+                  name='code'
+                  fullWidth
+                  label='Verification Code'
+                  type='code'
+                  type='number'
+                  error={errors?.code?.message}
+                  helperText={errors?.code?.message}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+            />
+          </div>
 
-        <div className={classes.button_group}>
-          <Button
-            variant='contained'
-            color='primary'
-            className={classes.button}
-            onClick={onSubmit}
-          >
-            confirm
-          </Button>
-          <Button
-            variant='outlined'
-            color='primary'
-            className={classes.button}
-            classes={{ label: classes.button_label }}
-            onClick={() => setTab(1)}
-          >
-            resend code
-          </Button>
-        </div>
-      </form>
-    </div>
+          <div className={classes.button_group}>
+            <Button
+              variant='contained'
+              color='primary'
+              className={classes.button}
+              disabled={loading}
+              onClick={handleSubmit(onSubmit)}
+            >
+              confirm
+            </Button>
+            <Button
+              variant='outlined'
+              color='primary'
+              className={classes.button}
+              disabled={sendConfirmationCodeLoading}
+              classes={{ label: classes.button_label }}
+              onClick={() => sendConfirmationCode(email)}
+            >
+              resend code
+            </Button>
+          </div>
+        </form>
+      </div>
+    </React.Fragment>
   );
 };
 
@@ -74,6 +104,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     width: '100%',
     height: '100vh',
+  },
+  linearProgressRoot: {
+    position: 'absolute',
+    width: '50%',
   },
   container: {
     width: '65%',

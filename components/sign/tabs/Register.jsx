@@ -5,137 +5,165 @@ import { useForm, Controller } from 'react-hook-form';
 import {
   TextField,
   InputAdornment,
-  Button,
   Typography,
+  Button,
+  LinearProgress,
 } from '@material-ui/core';
+// import LoadingButton from '@material-ui/lab/LoadingButton';
 
 import EmailIcon from '@material-ui/icons/Email';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { PasswordField } from '../../ui';
+import { rules } from '../../../utils/index';
 
-const SignTabsRegister = ({ setTab }) => {
+import { useSignUp } from '../../../service/amplify/auth';
+
+const SignTabsRegister = ({ setTab, setEmail }) => {
   const classes = useStyles();
 
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, errors } = useForm({
+    mode: 'onBlur',
+  });
 
-  const onSubmit = (data) => {
-    setTab(4);
+  const [signUp, { loading }] = useSignUp(setTab);
+
+  const onSubmit = ({ name, email, password }) => {
+    signUp(email, password, name);
+    setEmail(email);
   };
 
   return (
-    <div className={classes.root}>
-      <form className={classes.container}>
-        <Typography variant='h6'>Register An Account</Typography>
-        <div className={classes.textField_name}>
-          <Controller
-            name='name'
-            control={control}
-            defaultValue=''
-            render={({ onChange, value }) => (
-              <TextField
-                size='small'
-                variant='outlined'
-                name='name'
-                fullWidth
-                label='Name'
-                type='name'
-                onChange={onChange}
-                value={value}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <AccountCircleIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          />
-        </div>
-        <div className={classes.textField_email}>
-          <Controller
-            name='email'
-            control={control}
-            defaultValue=''
-            render={({ onChange, value }) => (
-              <TextField
-                size='small'
-                variant='outlined'
-                name='email'
-                fullWidth
-                label='Email Address'
-                type='email'
-                onChange={onChange}
-                value={value}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <EmailIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          />
-        </div>
-        <div className={classes.textField_password}>
-          <Controller
-            name='firstName'
-            control={control}
-            defaultValue=''
-            render={({ onChange, value }) => (
-              <PasswordField onChange={onChange} value={value} />
-            )}
-          />
-        </div>
+    <React.Fragment>
+      {loading && (
+        <LinearProgress classes={{ root: classes.linearProgressRoot }} />
+      )}
+      <div className={classes.root}>
+        <form className={classes.container}>
+          <Typography variant='h6'>Register An Account</Typography>
+          <div className={classes.textField_name}>
+            <Controller
+              name='name'
+              control={control}
+              rules={rules.name}
+              defaultValue=''
+              render={({ onChange, value }) => (
+                <TextField
+                  size='small'
+                  variant='outlined'
+                  name='name'
+                  fullWidth
+                  label='Name'
+                  type='name'
+                  error={errors?.name?.message}
+                  helperText={errors?.name?.message}
+                  onChange={onChange}
+                  value={value}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <AccountCircleIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+            />
+          </div>
+          <div className={classes.textField_email}>
+            <Controller
+              name='email'
+              control={control}
+              defaultValue=''
+              rules={rules.email}
+              render={({ onChange, value }) => (
+                <TextField
+                  size='small'
+                  variant='outlined'
+                  name='email'
+                  fullWidth
+                  label='Email Address'
+                  type='email'
+                  error={errors?.email?.message}
+                  helperText={errors?.email?.message}
+                  onChange={onChange}
+                  value={value}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <EmailIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+            />
+          </div>
+          <div className={classes.textField_password}>
+            <Controller
+              name='password'
+              control={control}
+              defaultValue=''
+              rules={rules.newPassword}
+              render={({ onChange, value }) => (
+                <PasswordField
+                  error={errors?.password?.message}
+                  helperText={errors?.password?.message}
+                  onChange={onChange}
+                  value={value}
+                />
+              )}
+            />
+          </div>
 
-        <Typography variant='caption' className={classes.agree}>
-          By signing you agree to{' '}
-          <Typography
-            color='primary'
-            variant='body2'
-            display='inline'
-            className={classes.text_button}
-          >
-            Terms & Conditions
-          </Typography>{' '}
-          &{' '}
-          <Typography
-            color='primary'
-            variant='body2'
-            display='inline'
-            className={classes.text_button}
-          >
-            Privacy Policy
+          <Typography variant='caption' className={classes.agree}>
+            By signing you agree to{' '}
+            <Typography
+              color='primary'
+              variant='body2'
+              display='inline'
+              className={classes.text_button}
+            >
+              Terms & Conditions
+            </Typography>{' '}
+            &{' '}
+            <Typography
+              color='primary'
+              variant='body2'
+              display='inline'
+              className={classes.text_button}
+            >
+              Privacy Policy
+            </Typography>
           </Typography>
-        </Typography>
 
-        <Button
-          fullWidth
-          size='large'
-          variant='contained'
-          color='primary'
-          className={classes.button}
-          onClick={onSubmit}
-        >
-          register
-        </Button>
-
-        <Typography variant='body2' className={classes.login}>
-          Already have an account?{' '}
-          <Typography
+          <Button
+            fullWidth
+            size='large'
+            variant='contained'
             color='primary'
-            variant='body2'
-            display='inline'
-            className={classes.text_button}
-            onClick={() => setTab(2)}
+            className={classes.button}
+            disabled={loading}
+            onClick={handleSubmit(onSubmit)}
           >
-            Login
+            register
+          </Button>
+
+          <Typography variant='body2' className={classes.login}>
+            Already have an account?{' '}
+            <Typography
+              color='primary'
+              variant='body2'
+              display='inline'
+              className={classes.text_button}
+              onClick={() => setTab(2)}
+            >
+              Login
+            </Typography>
           </Typography>
-        </Typography>
-      </form>
-    </div>
+        </form>
+      </div>
+    </React.Fragment>
   );
 };
 
@@ -146,6 +174,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     width: '100%',
     height: '100vh',
+  },
+  linearProgressRoot: {
+    position: 'absolute',
+    width: '50%',
   },
   container: {
     width: '65%',
