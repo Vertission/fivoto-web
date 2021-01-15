@@ -10,16 +10,22 @@ import {
 import { Autocomplete } from '@material-ui/lab';
 import SearchIcon from '@material-ui/icons/Search';
 
-const SearchTextField = withStyles({
+const SearchTextField = withStyles((theme) => ({
   root: {
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
+        [theme.breakpoints.down('sm')]: {
+          borderRadius: theme.shape.borderRadius,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          borderBottomWidth: 0,
+        },
       },
     },
   },
-})(TextField);
+}))(TextField);
 
 const CategoryTextField = withStyles({
   root: {
@@ -68,7 +74,11 @@ export default function HomeDownload() {
       className={classes.root}
     >
       {/* SEARCH INPUT  */}
-      <SearchTextField label='Search' variant='outlined' />
+      <SearchTextField
+        label='Search'
+        variant='outlined'
+        className={classes.search}
+      />
       {/* CATEGORY INPUT  */}
       <Autocomplete
         options={_.flatten(categoryOptions).sort(
@@ -94,7 +104,11 @@ export default function HomeDownload() {
         )}
       />
       {/* SEARCH BUTTON  */}
-      <Button color='primary' variant='contained' className={classes.search}>
+      <Button
+        color='primary'
+        variant='contained'
+        className={classes.search_button}
+      >
         <SearchIcon fontSize='large' />
       </Button>
     </Grid>
@@ -108,19 +122,41 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(5, 0, 5, 0),
     padding: theme.spacing(5),
   },
-
+  search: {
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
+  },
   category: {
     width: 300,
+    [theme.breakpoints.down('md')]: {
+      width: 220,
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: '50%',
+    },
   },
   location: {
     width: 300,
+    [theme.breakpoints.down('md')]: {
+      width: 220,
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: '50%',
+    },
   },
-  search: {
+  search_button: {
     borderRadius: theme.shape.borderRadius,
     height: 56,
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
     boxShadow: 'none',
+    [theme.breakpoints.down('sm')]: {
+      borderRadius: theme.shape.borderRadius,
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+      width: '100%',
+    },
   },
 }));
 
