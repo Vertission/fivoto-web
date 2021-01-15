@@ -53,11 +53,11 @@ export default function SearchHeader({ state }) {
         <Toolbar className={classes.toolbar}>
           {/* LOCATION SELECTOR */}
           <Button
-            color='inherit'
             variant='contained'
             color='primary'
             startIcon={<LocationOnIcon color='secondary' />}
             className={classes.button}
+            classes={{ label: classes.button_label }}
             onClick={() => setToggleLocation(true)}
           >
             <Typography noWrap variant='button'>
@@ -66,11 +66,11 @@ export default function SearchHeader({ state }) {
           </Button>
           {/* CATEGORY SELECTOR */}
           <Button
-            color='inherit'
             variant='contained'
             color='primary'
             startIcon={<LabelIcon color='secondary' />}
             className={classes.button}
+            classes={{ label: classes.button_label }}
             onClick={() => setToggleCategory(true)}
           >
             <Typography noWrap variant='button'>
@@ -194,5 +194,8 @@ const useStyles = makeStyles((theme) => ({
       flexWrap: 'wrap',
       margin: theme.spacing(2, 0, 3, 0),
     },
+  },
+  button_label: {
+    color: theme.palette.secondary.main,
   },
 }));

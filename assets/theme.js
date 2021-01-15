@@ -17,11 +17,11 @@ const theme = createMuiTheme({
   spacing: (factor) => `${0.25 * factor}rem`,
   overrides: {
     MuiTypography: {},
-    MuiButton: {
-      label: {
-        color: '#f1f1f1',
-      },
-    },
+    // MuiButton: {
+    //   label: {
+    //     color: '#f1f1f1',
+    //   },
+    // },
   },
   props: {
     MuiSvgIcon: {

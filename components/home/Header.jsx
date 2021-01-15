@@ -21,6 +21,7 @@ export default function HomeHeader({}) {
               variant='contained'
               color='primary'
               className={classes.sign_button}
+              classes={{ label: classes.button_label }}
             >
               sign
             </Button>
@@ -47,5 +48,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       width: 30,
     },
+  },
+  button_label: {
+    color: theme.palette.secondary.main,
   },
 }));
