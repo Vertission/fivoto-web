@@ -12,7 +12,6 @@ import { Head } from '../components/common';
 import { Dialog } from '../components/ui';
 
 import amplifyConfig from '../service/amplify';
-console.log('🚀 ~ file: _app.js ~ line 15 ~ amplifyConfig', amplifyConfig);
 
 export default function MyApp(props) {
   const { Component, pageProps } = props;
