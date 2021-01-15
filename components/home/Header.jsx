@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     cursor: 'pointer',
-    width: 40,
+    width: 35,
     [theme.breakpoints.down('sm')]: {
       width: 30,
     },
