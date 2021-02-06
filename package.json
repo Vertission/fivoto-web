@@ -28,6 +28,7 @@
     "react-hook-form": "^6.14.0",
     "react-material-ui-carousel": "^2.1.1",
     "react-recontext": "^4.0.5",
+    "react-swipeable-views": "^0.13.9",
     "timeago.js": "^4.0.2",
     "use-material-ui-dialog": "^1.1.3"
   }

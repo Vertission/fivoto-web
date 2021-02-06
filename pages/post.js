@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
-import { Header, Tab, Context } from "../components/post";
+import { Header, Tab, Context } from '../components/post';
 
 export default function HomePage() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(2);
 
   return (
     <Context.Provider>
