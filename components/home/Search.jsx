@@ -1,18 +1,14 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import _ from 'lodash';
-import schema from '../../apollo/schema';
 import { useQuery } from '@apollo/client';
 
-import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
-import {
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-} from '@material-ui/core';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { Grid, TextField, Button } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import SearchIcon from '@material-ui/icons/Search';
+
+import schema from '../../apollo/schema';
 
 const SearchTextField = withStyles((theme) => ({
   root: {
@@ -51,16 +47,27 @@ const LocationTextField = withStyles({
   },
 })(TextField);
 
-// TODO: add category, location gql query
-export default function HomeDownload() {
+export default function HomeSearch() {
   const classes = useStyles();
 
-  const [query, setQuery] = useState(null);
+  const router = useRouter();
+
+  const [searchQuery, setSearchQuery] = useState(null);
   const [category, setCategory] = useState(null);
   const [location, setLocation] = useState(null);
 
   const handleSubmit = () => {
-    console.log({ query, category, location });
+    let location_query = location?.city || 'sri lanka';
+    location_query = location_query.split(' ').join('-').toLowerCase();
+
+    let category_query = category?.item || 'all categories';
+    category_query = category_query.split(' ').join('-').toLowerCase();
+
+    const search_query = searchQuery ? `?query=${searchQuery}` : null;
+
+    const build_query = ['/search', `/${location_query}`, `/${category_query}`, search_query].join('');
+
+    router.push(build_query);
   };
 
   const { data: categoryData } = useQuery(schema.query.CATEGORY);
@@ -81,56 +88,39 @@ export default function HomeDownload() {
   });
 
   return (
-    <Grid
-      container
-      direction='row'
-      justify='center'
-      alignItems='center'
-      className={classes.root}
-    >
+    <Grid container direction='row' justify='center' alignItems='center' className={classes.root}>
       {/* SEARCH INPUT  */}
       <SearchTextField
         label='Search'
         variant='outlined'
         className={classes.search}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
       />
       {/* CATEGORY INPUT  */}
       <Autocomplete
-        options={_.flatten(categoryOptions).sort(
-          (a, b) => -b.category.localeCompare(a.category)
-        )}
+        options={_.flatten(categoryOptions).sort((a, b) => -b.category.localeCompare(a.category))}
         getOptionLabel={(option) => option.item}
         groupBy={(option) => option.category}
         className={classes.category}
+        classes={{ popupIndicator: classes.autocomplete_icon, clearIndicatorDirty: classes.autocomplete_icon }}
         // inputValue={category}
-        onChange={(e, v) => setCategory(v)}
-        renderInput={(params) => (
-          <CategoryTextField {...params} label='Category' variant='outlined' />
-        )}
+        onChange={(_, v) => setCategory(v)}
+        renderInput={(params) => <CategoryTextField {...params} label='Category' variant='outlined' />}
       />
       {/* LOCATION INPUT  */}
       <Autocomplete
-        options={_.flatten(locationOptions).sort(
-          (a, b) => -b.district.localeCompare(a.district)
-        )}
+        options={_.flatten(locationOptions).sort((a, b) => -b.district.localeCompare(a.district))}
         getOptionLabel={(option) => option.city}
         groupBy={(option) => option.district}
         className={classes.location}
         // inputValue={location}
-        onChange={(e, v) => setLocation(v)}
-        renderInput={(params) => (
-          <LocationTextField {...params} label='Location' variant='outlined' />
-        )}
+        classes={{ popupIndicator: classes.autocomplete_icon, clearIndicatorDirty: classes.autocomplete_icon }}
+        onChange={(_, v) => setLocation(v)}
+        renderInput={(params) => <LocationTextField {...params} label='Location' variant='outlined' />}
       />
       {/* SEARCH BUTTON  */}
-      <Button
-        color='primary'
-        variant='contained'
-        className={classes.search_button}
-        onClick={handleSubmit}
-      >
+      <Button color='primary' variant='contained' className={classes.search_button} onClick={handleSubmit}>
         <SearchIcon fontSize='large' />
       </Button>
     </Grid>
@@ -165,6 +155,13 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('sm')]: {
       width: '50%',
+    },
+  },
+  autocomplete_icon: {
+    '& span': {
+      '& svg': {
+        color: theme.palette.primary.light,
+      },
     },
   },
   search_button: {
