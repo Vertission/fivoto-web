@@ -22,6 +22,8 @@ import schema from '../../../../apollo/schema';
 
 import { Context, dispatch } from '../../Context';
 
+import DropZone from '../_modules/dropZone';
+
 export default function TabsField() {
   const context = useContext(Context);
   const classes = useStyles();
@@ -45,14 +47,14 @@ export default function TabsField() {
     field: {
       title: {},
       price: { currency: 'LKR', negotiable: true },
-      description: {},
-      photos: { max: 7 }, // TODO: add image
-      subFields: [
-        { variant: 'select', name: 'select', items: ['select', 'me', 'here'] },
-        { variant: 'input', name: 'Brand' },
-        { variant: 'inputSelect', name: 'inputSelect', type: 'number', items: ['inputSelect', 'inputSelect'] },
-        { variant: 'radio', options: ['new', 'used', 'brand new'] },
-      ],
+      // description: {},
+      photo: { max: 7 }, // TODO: add image
+      // subFields: [
+      //   { variant: 'select', name: 'select', items: ['select', 'me', 'here'] },
+      //   { variant: 'input', name: 'Brand' },
+      //   { variant: 'inputSelect', name: 'inputSelect', type: 'number', items: ['inputSelect', 'inputSelect'] },
+      //   { variant: 'radio', options: ['new', 'used', 'brand new'] },
+      // ],
     },
   };
 
@@ -265,6 +267,11 @@ export default function TabsField() {
                 return null;
             }
           });
+        /**
+         * display image drop zone
+         */
+        case 'photo':
+          return fields.push(<DropZone maxFiles={fieldProps.max} />);
         default:
           return null;
       }
