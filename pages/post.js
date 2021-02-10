@@ -5,7 +5,7 @@ import { Header, Tab, Context } from '../components/post';
 
 export default function HomePage() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
 
   return (
     <Context.Provider>

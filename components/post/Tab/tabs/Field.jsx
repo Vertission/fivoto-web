@@ -28,34 +28,19 @@ export default function TabsField() {
   const context = useContext(Context);
   const classes = useStyles();
 
-  // const { data, loading } = useQuery(schema.query.FIELD, {
-  //   variables: {
-  //     name: context.category.item,
-  //   },
-  // });
+  const { data: dataField, loading, error } = useQuery(schema.query.FIELD);
 
-  // if (loading)
-  //   return (
-  //     <Container className={classes.root_loading}>
-  //       <CircularProgress open={true} />
-  //     </Container>
-  //   );
+  if (loading)
+    return (
+      <Container className={classes.root_loading}>
+        <CircularProgress open={true} />
+      </Container>
+    );
 
-  // if (!data) return null;
+  if (error) throw new Error(error); // FIXME: add error handler
 
   const data = {
-    field: {
-      title: {},
-      price: { currency: 'LKR', negotiable: true },
-      // description: {},
-      photo: { max: 7 }, // TODO: add image
-      // subFields: [
-      //   { variant: 'select', name: 'select', items: ['select', 'me', 'here'] },
-      //   { variant: 'input', name: 'Brand' },
-      //   { variant: 'inputSelect', name: 'inputSelect', type: 'number', items: ['inputSelect', 'inputSelect'] },
-      //   { variant: 'radio', options: ['new', 'used', 'brand new'] },
-      // ],
-    },
+    field: dataField.fields[context.category.item?.split(' ').join('_')] || {},
   };
 
   const fields = [];
@@ -169,6 +154,21 @@ export default function TabsField() {
                * map sub field input
                */
               case 'input':
+                const InputProps = {};
+                if (field.options) {
+                  if (field.options.adornment) {
+                    if (field.options.adornment.position === 'end') {
+                      InputProps.endAdornment = (
+                        <InputAdornment position='start'>{field.options.adornment.value}</InputAdornment>
+                      );
+                    } else if (field.options.adornment.position === 'start') {
+                      InputProps.startAdornment = (
+                        <InputAdornment position='start'>{field.options.adornment.value}</InputAdornment>
+                      );
+                    }
+                  }
+                }
+
                 return fields.push(
                   <TextField
                     label={field.name}
@@ -177,6 +177,7 @@ export default function TabsField() {
                     inputProps={{
                       maxLength: 25,
                     }}
+                    InputProps={InputProps}
                     className={classes.inputField}
                     onChange={(e) =>
                       dispatch('SET_FIELDS', {

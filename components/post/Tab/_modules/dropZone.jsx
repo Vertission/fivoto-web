@@ -11,7 +11,6 @@ import DragHandleIcon from '@material-ui/icons/DragHandle';
 import { Context, dispatch } from '../../Context';
 
 export default function DropZone({ maxFiles }) {
-  console.log('🚀 ~ file: dropZone.jsx ~ line 14 ~ DropZone ~ maxFiles', maxFiles);
   const theme = useTheme();
   const classes = useStyles();
 

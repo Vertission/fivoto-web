@@ -1,4 +1,4 @@
-import { AD, CATEGORY, SEARCH, LOCATION } from './query';
+import { AD, CATEGORY, SEARCH, LOCATION, FIELD } from './query';
 
 export default {
   query: {
@@ -6,5 +6,6 @@ export default {
     CATEGORY,
     SEARCH,
     LOCATION,
+    FIELD,
   },
 };
