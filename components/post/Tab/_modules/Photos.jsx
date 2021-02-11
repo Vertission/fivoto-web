@@ -10,7 +10,7 @@ import DragHandleIcon from '@material-ui/icons/DragHandle';
 
 import { Context, dispatch } from '../../Context';
 
-export default function DropZone({ maxFiles }) {
+export default function Photos({ maxFiles }) {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -110,6 +110,7 @@ export default function DropZone({ maxFiles }) {
           color: #666;
           transition: all 0.7s;
           border-radius: 5px;
+          margin-top: 10px;
         }
 
         .dz:hover {

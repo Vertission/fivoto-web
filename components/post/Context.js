@@ -1,4 +1,4 @@
-import createContext from "react-recontext";
+import createContext from 'react-recontext';
 
 const initState = {
   id: null, // edit ad
@@ -20,7 +20,7 @@ const initState = {
 };
 
 export const { dispatch, Context, Provider } = createContext({
-  displayName: "PostContext",
+  displayName: 'PostContext',
   initState,
   actions: {
     SET_CATEGORY: (state, category) => ({

@@ -1,11 +1,11 @@
-import React from "react";
-import SwipeableViews from "react-swipeable-views";
+import React from 'react';
+import SwipeableViews from 'react-swipeable-views';
 
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
-import { Category, Location, Field } from "./tabs";
+import { Category, Location, Field, Publish } from './tabs';
 
 function TabPanel(props) {
   const classes = useStyles();
@@ -13,8 +13,8 @@ function TabPanel(props) {
 
   return (
     <Typography
-      component="div"
-      role="tabpanel"
+      component='div'
+      role='tabpanel'
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
@@ -32,7 +32,7 @@ export default function PostTab({ value, setActiveStep }) {
 
   return (
     <div className={classes.root}>
-      <SwipeableViews index={value} style={{ overflow: "hidden" }} disabled>
+      <SwipeableViews index={value} style={{ overflow: 'hidden' }} disabled>
         <TabPanel value={value} index={0}>
           <Category setActiveStep={setActiveStep} />
         </TabPanel>
@@ -43,7 +43,7 @@ export default function PostTab({ value, setActiveStep }) {
           <Field setActiveStep={setActiveStep} />
         </TabPanel>
         <TabPanel value={value} index={3}>
-          publish
+          <Publish setActiveStep={setActiveStep} />
         </TabPanel>
       </SwipeableViews>
     </div>
@@ -52,7 +52,7 @@ export default function PostTab({ value, setActiveStep }) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
 }));

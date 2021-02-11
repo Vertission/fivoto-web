@@ -22,7 +22,7 @@ import schema from '../../../../apollo/schema';
 
 import { Context, dispatch } from '../../Context';
 
-import DropZone from '../_modules/dropZone';
+import { Photos, Phone } from '../_modules';
 
 export default function TabsField() {
   const context = useContext(Context);
@@ -82,7 +82,7 @@ export default function TabsField() {
                   maxLength: 50,
                 }}
                 InputProps={{
-                  endAdornment: <InputAdornment position='start'>{fieldProps.currency}</InputAdornment>,
+                  endAdornment: <InputAdornment position='end'>{fieldProps.currency}</InputAdornment>,
                 }}
                 className={classes.inputField}
                 onChange={(e) => dispatch('SET_PRICE', e.target.value)}
@@ -159,7 +159,7 @@ export default function TabsField() {
                   if (field.options.adornment) {
                     if (field.options.adornment.position === 'end') {
                       InputProps.endAdornment = (
-                        <InputAdornment position='start'>{field.options.adornment.value}</InputAdornment>
+                        <InputAdornment position='end'>{field.options.adornment.value}</InputAdornment>
                       );
                     } else if (field.options.adornment.position === 'start') {
                       InputProps.startAdornment = (
@@ -172,6 +172,7 @@ export default function TabsField() {
                 return fields.push(
                   <TextField
                     label={field.name}
+                    type={field.type}
                     variant='outlined'
                     fullWidth
                     inputProps={{
@@ -272,7 +273,7 @@ export default function TabsField() {
          * display image drop zone
          */
         case 'photo':
-          return fields.push(<DropZone maxFiles={fieldProps.max} />);
+          return fields.push(<Photos maxFiles={fieldProps.max} />);
         default:
           return null;
       }
@@ -283,7 +284,10 @@ export default function TabsField() {
 
   return (
     <Container className={classes.root}>
-      <form className={classes.form}>{fields}</form>
+      <form className={classes.form}>
+        {/* {fields} */}
+        <Phone />
+      </form>
     </Container>
   );
 }
