@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import _ from 'lodash';
 
@@ -31,39 +31,39 @@ export default function useCreateMutation() {
       const publishingDate = new Date().toISOString();
 
       setStatus('start publishing ad');
-      // const {
-      //   data: { id },
-      // } = await mutateCreateAd({
-      //   variables: {
-      //     data: {
-      //       type: 'SELL',
-      //       category: data.category,
-      //       location: data.location,
-      //       title: data.title.trim(),
-      //       price: _.toNumber(data.price),
-      //       description: data.description.trim(),
-      //       phone: data.phone,
-      //       fields: _.mapValues(data.fields, (value) => {
-      //         if (typeof value === 'string') return value.trim();
-      //         else return value;
-      //       }),
-      //       createdAt: publishingDate,
-      //     },
-      //   },
-      // });
+      const {
+        data: { createAd },
+      } = await mutateCreateAd({
+        variables: {
+          data: {
+            type: 'SELL',
+            category: data.category,
+            location: data.location,
+            title: data.title.trim(),
+            price: _.toNumber(data.price),
+            description: data.description.trim(),
+            phone: data.phone,
+            fields: _.mapValues(data.fields, (value) => {
+              if (typeof value === 'string') return value.trim();
+              else return value;
+            }),
+            createdAt: publishingDate,
+          },
+        },
+      });
 
-      const uploadedPhotosKeys = await uploadAdPhotos(data.photos, 'id', setStatus);
+      const uploadedPhotosKeys = await uploadAdPhotos(data.photos, createAd, setStatus);
 
       setStatus('publishing ad');
-      // await mutateUpdateAd({
-      //   variables: {
-      //     data: {
-      //       id: createAd,
-      //       photos: uploadedPhotosKeys,
-      //       updatedAt: publishingDate,
-      //     },
-      //   },
-      // });
+      await mutateUpdateAd({
+        variables: {
+          data: {
+            id: createAd,
+            photos: uploadedPhotosKeys,
+            updatedAt: publishingDate,
+          },
+        },
+      });
 
       // await analytics().logEvent('post_ad', {
       //   category: data.category,
@@ -73,7 +73,7 @@ export default function useCreateMutation() {
       setLoading(false);
       setStatus(null);
 
-      // dispatch('RESET_CONTEXT');
+      dispatch('RESET_CONTEXT');
 
       if (createAdMutationResponse.error || updateAdMutationResponse.error) {
       } else console.log('post published successfully');

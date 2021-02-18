@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_AD = gql`
-  mutation createAd($data: createAdInput!) {
+  mutation($data: createAdInput!) {
     createAd(data: $data)
   }
 `;
 
 export const UPDATE_AD = gql`
-  mutation updateAd($data: updateAdInput!) {
+  mutation($data: updateAdInput!) {
     updateAd(data: $data)
   }
 `;
