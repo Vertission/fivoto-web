@@ -66,7 +66,7 @@ export const { dispatch, Context, Provider } = createContext({
     RESET_CONTEXT: () => initState,
     SET_CONTEXT: (_, ad) => ad,
   },
-  isEnableLog: true,
+  isEnableLog: false,
 });
 
 export default {

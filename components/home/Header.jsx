@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Button } from '@material-ui/core';
 
 import { Link } from '../common';
-import { Logo } from '../ui';
+import { Logo, PostButton } from '../ui';
 
 export default function HomeHeader({}) {
   const classes = useStyles();
@@ -26,6 +26,10 @@ export default function HomeHeader({}) {
               sign
             </Button>
           </Link>
+
+          <Link href='/post'>
+            <PostButton />
+          </Link>
         </Toolbar>
       </AppBar>
     </div>
@@ -40,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     boxShadow: 'none',
     letterSpacing: 1.5,
+    marginRight: theme.spacing(3),
   },
   logo: {
     cursor: 'pointer',

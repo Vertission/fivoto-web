@@ -37,7 +37,7 @@ export default function TabsField() {
       </Container>
     );
 
-  if (error) throw new Error(error); // FIXME: add error handler
+  if (error) console.log(error);
 
   const data = {
     field: dataField.fields[context.category.item?.split(' ').join('_')] || {},
@@ -270,12 +270,15 @@ export default function TabsField() {
             }
           });
         /**
+         * display phone
+         */
+        case 'phone':
+          return fields.push(<Phone maxLength={fieldProps.maxLength} maxPhone={fieldProps.maxPhone} />);
+        /**
          * display image drop zone
          */
         case 'photo':
           return fields.push(<Photos maxFiles={fieldProps.max} />);
-        default:
-          return null;
       }
     };
 
@@ -284,9 +287,13 @@ export default function TabsField() {
 
   return (
     <Container className={classes.root}>
-      <form className={classes.form}>
-        {/* {fields} */}
-        <Phone />
+      <form
+        className={classes.form}
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        {fields}
       </form>
     </Container>
   );

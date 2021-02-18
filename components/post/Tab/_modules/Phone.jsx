@@ -1,7 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
-import arrayMove from 'array-move';
+import React, { useContext, useState } from 'react';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { IconButton, Divider, TextField, Typography } from '@material-ui/core';
@@ -10,16 +7,15 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import { Context, dispatch } from '../../Context';
 
-export default function DropZone({ maxFiles }) {
-  const theme = useTheme();
+export default function Phone({ maxLength, maxPhone }) {
   const classes = useStyles();
 
-  const [state, setState] = useState(null);
+  const [state, setState] = useState('');
 
   const { phone } = useContext(Context);
 
   const _onAddPhone = () => {
-    dispatch('SET_PHONE', [...phone, state]);
+    dispatch('SET_PHONE', [...phone, state].splice(0, maxPhone));
   };
 
   const _onRemovePhone = (selectedPhone) => {
@@ -35,24 +31,30 @@ export default function DropZone({ maxFiles }) {
         fullWidth
         className={classes.inputField}
         type='number'
-        inputProps={{ maxLength: 10 }}
+        inputProps={{ maxLength: maxLength }}
         InputProps={{
           endAdornment: (
-            <IconButton disabled={state?.length < 10 || phone.includes(state)} onClick={_onAddPhone}>
-              <AddIcon color={state?.length < 10 ? 'disabled' : 'primary'} />
+            <IconButton
+              disabled={
+                state.length < maxLength || state.length > maxLength || phone.includes(state) || phone.length > maxPhone
+              }
+              onClick={_onAddPhone}
+            >
+              <AddIcon
+                color={
+                  state.length < maxLength ||
+                  state.length > maxLength ||
+                  phone.includes(state) ||
+                  phone.length > maxPhone
+                    ? 'disabled'
+                    : 'primary'
+                }
+              />
             </IconButton>
           ),
         }}
         value={state}
         onChange={(e) => setState(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            if (!(state?.length < 10) || !phone.includes(state)) {
-              _onAddPhone();
-            }
-            e.preventDefault();
-          }
-        }}
       />
 
       <div className={classes.phones}>
@@ -72,7 +74,7 @@ export default function DropZone({ maxFiles }) {
 const useStyles = makeStyles((theme) => ({
   inputField: {
     width: '100%',
-    margin: theme.spacing(2, 0),
+    margin: theme.spacing(4, 0),
     textTransform: 'capitalize',
   },
   phones: {
