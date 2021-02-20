@@ -15,6 +15,7 @@ export default function Phone({ maxLength, maxPhone }) {
   const { phone } = useContext(Context);
 
   const _onAddPhone = () => {
+    setState('');
     dispatch('SET_PHONE', [...phone, state].splice(0, maxPhone));
   };
 

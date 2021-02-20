@@ -27,7 +27,7 @@ function TabPanel(props) {
   );
 }
 
-export default function PostTab({ value, setActiveStep }) {
+export default function PostTab({ value, setActiveStep, loading, setLoading }) {
   const classes = useStyles();
 
   return (
@@ -43,7 +43,7 @@ export default function PostTab({ value, setActiveStep }) {
           <Field setActiveStep={setActiveStep} />
         </TabPanel>
         <TabPanel value={value} index={3}>
-          <Publish setActiveStep={setActiveStep} />
+          <Publish setActiveStep={setActiveStep} loading={loading} setLoading={setLoading} />
         </TabPanel>
       </SwipeableViews>
     </div>

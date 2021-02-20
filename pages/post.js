@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 
 import { Header, Tab, Context } from '../components/post';
 
 export default function HomePage() {
-  const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(2);
+  const [loading, setLoading] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
 
   return (
     <Context.Provider>
       <React.Fragment>
-        <Header activeStep={activeStep} setActiveStep={setActiveStep} />
-        <Tab value={activeStep} setActiveStep={setActiveStep} />
+        <Header activeStep={activeStep} setActiveStep={setActiveStep} loading={loading} />
+        <Tab value={activeStep} setActiveStep={setActiveStep} loading={loading} setLoading={setLoading} />
       </React.Fragment>
     </Context.Provider>
   );
 }
-
-const useStyles = makeStyles((theme) => ({}));

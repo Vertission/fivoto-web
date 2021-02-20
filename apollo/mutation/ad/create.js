@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 import _ from 'lodash';
 
@@ -8,8 +9,9 @@ import schema from '../../schema';
 
 import { dispatch } from '../../../components/post/Context';
 
-export default function useCreateMutation() {
-  const [loading, setLoading] = useState(false);
+export default function useCreateMutation(setLoading) {
+  const router = useRouter();
+
   const [status, setStatus] = useState(null);
 
   const [mutateCreateAd, createAdMutationResponse] = useMutation(schema.mutation.CREATE_AD, {
@@ -65,11 +67,6 @@ export default function useCreateMutation() {
         },
       });
 
-      // await analytics().logEvent('post_ad', {
-      //   category: data.category,
-      //   location: data.location,
-      // }); // ANALYTIC
-
       setLoading(false);
       setStatus(null);
 
@@ -78,14 +75,12 @@ export default function useCreateMutation() {
       if (createAdMutationResponse.error || updateAdMutationResponse.error) {
       } else console.log('post published successfully');
 
-      // navigate to ads
-
-      return null;
+      return router.push('/');
     } catch (error) {
       setLoading(false);
       console.log(error);
     }
   }
 
-  return [create, { loading, status }];
+  return [create, { status }];
 }
