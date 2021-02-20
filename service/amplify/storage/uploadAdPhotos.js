@@ -1,42 +1,67 @@
 import { Storage } from 'aws-amplify';
-import * as Sentry from '@sentry/react-native';
-import * as ImageManipulator from 'expo-image-manipulator';
+import Resizer from 'react-image-file-resizer';
 
 export default async function uploadPhotos(photos, adId, setStatus) {
   const compressSizer = (size) => {
     const MB = size / Math.pow(1024, 2);
-    if (Math.round(MB) === 0) return 1;
-    if (Math.round(MB) === 1) return 0.9;
-    if (Math.round(MB) === 2) return 0.8;
-    if (Math.round(MB) === 3) return 0.7;
-    if (Math.round(MB) === 4) return 0.6;
-    if (Math.round(MB) >= 5) return 0.5;
-    if (Math.round(MB) >= 10) return 0.4;
-    if (Math.round(MB) >= 15) return 0.3;
-    if (Math.round(MB) >= 20) return 0.2;
-    if (Math.round(MB) >= 25) return 0.1;
+    if (Math.round(MB) === 0) return 100;
+    if (Math.round(MB) === 1) return 90;
+    if (Math.round(MB) === 2) return 80;
+    if (Math.round(MB) === 3) return 70;
+    if (Math.round(MB) === 4) return 60;
+    if (Math.round(MB) >= 5) return 50;
+    if (Math.round(MB) >= 10) return 40;
+    if (Math.round(MB) >= 15) return 30;
+    if (Math.round(MB) >= 20) return 20;
+    if (Math.round(MB) >= 25) return 10;
   };
 
-  const imageManipulator = async (image, { width, height }) => {
-    const response = await fetch(image);
-    const blob = await response.blob();
+  // const imageDimension = (file) => {
+  //   return new Promise((resolve) => {
+  //     const reader = new FileReader();
 
-    const compress = compressSizer(blob.size);
+  //     reader.readAsDataURL(file);
+  //     reader.onload = function (e) {
+  //       const image = new Image();
 
-    let resize;
-    if (height === width) resize = { height: 480, width: 480 };
-    else if (height > width) resize = { height: 480 };
-    else resize = { width: 720 };
+  //       image.src = e.target.result;
 
-    const compressedPhoto = await ImageManipulator.manipulateAsync(
-      image,
-      [{ resize }],
-      {
-        compress,
-        format: ImageManipulator.SaveFormat.JPEG,
-      },
-    );
-    return compressedPhoto.uri;
+  //       image.onload = function () {
+  //         resolve({ height: this.height, width: this.width });
+  //       };
+  //     };
+  //   });
+  // };
+
+  const resizeFile = (file, quality) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        720,
+        480,
+        'JPEG',
+        quality,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        'base64'
+      );
+    });
+
+  const imageManipulator = async (file) => {
+    const compress = compressSizer(file.size);
+
+    // const { height, width } = await imageDimension(file);
+
+    // let resize;
+    // if (height === width) resize = { height: 480, width: 480 };
+    // else if (height > width) resize = { height: 480 };
+    // else resize = { width: 720 };
+
+    const image = await resizeFile(file, compress);
+
+    return image;
   };
 
   const upload = async (photo) => {
@@ -45,13 +70,9 @@ export default async function uploadPhotos(photos, adId, setStatus) {
     const response = await fetch(photo);
     const blob = await response.blob();
 
-    const res = await Storage.put(
-      `ads/${adId}/${photoId(new Date().getTime())}.jpeg`,
-      blob,
-      {
-        contentType: 'image/jpeg',
-      },
-    );
+    const res = await Storage.put(`ads/${adId}/${photoId(new Date().getTime())}.jpeg`, blob, {
+      contentType: 'image/jpeg',
+    });
 
     if (res.key) return res.key;
   };
@@ -59,30 +80,21 @@ export default async function uploadPhotos(photos, adId, setStatus) {
   let keys = [];
   for (let index = 0; index < photos.length; index++) {
     try {
-      const photoUri = Object.keys(photos[index])[0];
-      const photoHeightWidth = Object.values(photos[index])[0];
+      const photo = photos[index];
 
       setStatus(`uploading ad photo ${index + 1} / ${photos.length}`);
 
-      if (photoHeightWidth.source === 'CLOUD') {
+      if (photo.source === 'CLOUD') {
         keys.push(photoUri);
       } else {
-        const compressedPhoto = await imageManipulator(
-          photoUri,
-          photoHeightWidth,
-        );
+        const compressedPhoto = await imageManipulator(photo.file);
         if (compressedPhoto) {
           const key = await upload(compressedPhoto);
           if (typeof key === 'string') keys.push(key);
         }
       }
     } catch (error) {
-      Sentry.withScope(function (scope) {
-        scope.setTag('func', 'uploadPhotos');
-        scope.setLevel(Sentry.Severity.Error);
-        scope.setContext('data', { photos, adId });
-        Sentry.captureException(error);
-      });
+      console.log(error);
     }
   }
 

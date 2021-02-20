@@ -14,6 +14,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "adblock-detect-react": "^1.0.2",
+    "array-move": "^3.0.1",
     "aws-amplify": "^3.3.13",
     "deepmerge": "^4.2.2",
     "graphql": "^15.4.0",
@@ -25,9 +26,13 @@
     "prop-types": "^15.7.2",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-dropzone": "^11.3.0",
     "react-hook-form": "^6.14.0",
+    "react-image-file-resizer": "^0.4.2",
     "react-material-ui-carousel": "^2.1.1",
     "react-recontext": "^4.0.5",
+    "react-sortable-hoc": "^1.11.0",
+    "react-swipeable-views": "^0.13.9",
     "timeago.js": "^4.0.2",
     "use-material-ui-dialog": "^1.1.3"
   }

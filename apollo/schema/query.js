@@ -31,14 +31,20 @@ export const AD = gql`
 `;
 
 export const CATEGORY = gql`
-  query category {
+  query {
     category
   }
 `;
 
 export const LOCATION = gql`
-  query location {
+  query {
     location
+  }
+`;
+
+export const FIELD = gql`
+  query {
+    fields
   }
 `;
 
