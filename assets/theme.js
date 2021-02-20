@@ -5,6 +5,7 @@ const theme = createMuiTheme({
     // type: "dark",
     primary: {
       main: '#5bd592',
+      contrastText: '#fff',
     },
     secondary: {
       main: '#ffffff',
@@ -15,14 +16,7 @@ const theme = createMuiTheme({
     fontFamily: ['Poppins', 'sans-serif'].join(','),
   },
   spacing: (factor) => `${0.25 * factor}rem`,
-  overrides: {
-    MuiTypography: {},
-    // MuiButton: {
-    //   label: {
-    //     color: '#f1f1f1',
-    //   },
-    // },
-  },
+  overrides: {},
   props: {
     MuiSvgIcon: {
       htmlColor: '#ffffff',
