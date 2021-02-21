@@ -12,7 +12,7 @@ export default function PageSign() {
   return (
     <div className={classes.root}>
       <IconButton className={classes.home_button} component={Link} href={`/`}>
-        <HomeIcon fontSize='large' />
+        <HomeIcon fontSize='large' color='primary' />
       </IconButton>
       <Grid container>
         <Grid item xs={12} sm={6} className={classes.grid_1}>
@@ -20,11 +20,7 @@ export default function PageSign() {
         </Grid>
         <Hidden smDown>
           <Grid item sm={6} className={classes.grid_2}>
-            <Typography
-              className={classes.fivoto}
-              variant='h1'
-              color='secondary'
-            >
+            <Typography className={classes.fivoto} variant='h1' color='secondary'>
               FIVOTO
             </Typography>
           </Grid>

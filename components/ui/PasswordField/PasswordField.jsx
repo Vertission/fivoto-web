@@ -1,25 +1,13 @@
 import React, { useState } from 'react';
-import {
-  IconButton,
-  OutlinedInput,
-  InputLabel,
-  InputAdornment,
-  FormControl,
-  FormHelperText,
-} from '@material-ui/core';
+import { IconButton, OutlinedInput, InputLabel, InputAdornment, FormControl, FormHelperText } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-export default function PasswordField({
-  label = 'Password',
-  error,
-  helperText,
-  ...props
-}) {
+export default function PasswordField({ label = 'Password', error, helperText, ...props }) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <FormControl variant='outlined' style={{ width: '100%' }} size='small'>
-      <InputLabel>{label}</InputLabel>
+      <InputLabel error={error}>{label}</InputLabel>
       <OutlinedInput
         type={showPassword ? 'text' : 'password'}
         error={error}
@@ -32,7 +20,7 @@ export default function PasswordField({
               onMouseDown={(e) => e.preventDefault()}
               edge='end'
             >
-              {showPassword ? <Visibility /> : <VisibilityOff />}
+              {showPassword ? <Visibility color='primary' /> : <VisibilityOff color='primary' />}
             </IconButton>
           </InputAdornment>
         }

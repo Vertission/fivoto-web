@@ -12,6 +12,10 @@ export default {
       value: 3,
       message: 'your name is too short',
     },
+    maxLength: {
+      value: 16,
+      message: 'your name is too long',
+    },
   },
   verificationCode: {
     required: 'verification code required',

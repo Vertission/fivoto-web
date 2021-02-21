@@ -10,15 +10,12 @@ import { useRouter } from 'next/router';
 import { Dialog, Modal } from '../../../components/ui';
 
 export function useSignOut() {
-  const navigation = useNavigation();
-
   async function signOut() {
     try {
       await Auth.signOut();
       SignOut();
       Sentry.configureScope((scope) => scope.setUser(null));
       await analytics().setUserId(null); // ANALYTIC
-      navigation.setParams();
     } catch (error) {
       Sentry.withScope(function (scope) {
         scope.setTag('func', 'useSignOut:hook');
@@ -32,7 +29,6 @@ export function useSignOut() {
 }
 
 export function useChangePassword() {
-  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
   async function changePassword(oldPassword, newPassword) {
@@ -42,8 +38,10 @@ export function useChangePassword() {
       await Auth.changePassword(currentUser, oldPassword, newPassword);
       setLoading(false);
 
-      Snackbar.show('Password changed successfully');
-      navigation.navigate('User');
+      enqueueSnackbar('Password changed successfully', {
+        variant: 'success',
+      });
+      // navigation.navigate('User');
     } catch (error) {
       setLoading(false);
       if (error.code === 'NotAuthorizedException') {
@@ -64,7 +62,7 @@ export function useChangePassword() {
           oldLength: oldPassword?.length,
           newLength: newPassword?.length,
         };
-        handleError(error, 'changing your password', data, navigation);
+        handleError(error, 'changing your password', data);
       }
     }
   }
@@ -73,7 +71,6 @@ export function useChangePassword() {
 }
 
 export function useChangeEmail() {
-  const navigation = useNavigation();
   const [updateUser] = useUpdateUser();
 
   const [loading, setLoading] = useState(false);
@@ -88,7 +85,7 @@ export function useChangeEmail() {
         email,
       });
       setLoading(false);
-      navigation.navigate('EmailConfirmation', { email });
+      // navigation.navigate('EmailConfirmation', { email });
     } catch (error) {
       setLoading(false);
       if (error.code === 'AliasExistsException') {
@@ -108,7 +105,7 @@ export function useChangeEmail() {
         });
 
         const data = { email };
-        handleError(error, 'change your email address', data, navigation);
+        handleError(error, 'change your email address', data);
       }
     }
   }
@@ -117,7 +114,6 @@ export function useChangeEmail() {
 }
 
 export function useResendEmailChangeConfirmationCode() {
-  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
   async function resendEmailChangeConfirmationCode() {
@@ -136,7 +132,7 @@ export function useResendEmailChangeConfirmationCode() {
         Sentry.captureException(error);
       });
 
-      handleError(error, 'resending confirmation code', {}, navigation);
+      handleError(error, 'resending confirmation code', {});
     }
   }
 
@@ -144,7 +140,6 @@ export function useResendEmailChangeConfirmationCode() {
 }
 
 export function useConfirmEmailChange() {
-  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
   async function confirmEmailChange(code) {
@@ -154,7 +149,7 @@ export function useConfirmEmailChange() {
       setLoading(false);
 
       Snackbar.show('Email successfully verified');
-      navigation.navigate('User', { code });
+      // navigation.navigate('User', { code });
     } catch (error) {
       setLoading(false);
 
@@ -168,8 +163,7 @@ export function useConfirmEmailChange() {
       } else if (error.code === 'ExpiredCodeException') {
         return Modal.show({
           title: 'Code expired',
-          description:
-            'Sorry! Your confirmation code has expired, Please resend code to get a new confirmation code.',
+          description: 'Sorry! Your confirmation code has expired, Please resend code to get a new confirmation code.',
           closeTitle: 'ok',
         });
       } else {
@@ -181,7 +175,7 @@ export function useConfirmEmailChange() {
         });
 
         const data = { code };
-        handleError(error, 'verifying confirmation code', data, navigation);
+        handleError(error, 'verifying confirmation code', data);
       }
     }
   }
@@ -200,16 +194,12 @@ export function useResetPassword(setTab) {
       await Auth.forgotPasswordSubmit(email, code, newPassword);
       setLoading(false);
 
-      setTab(2);
-      enqueueSnackbar('Password reset successful', {
+      enqueueSnackbar('Password reset successfully', {
         variant: 'success',
       });
+      setTab(2);
     } catch (error) {
       setLoading(false);
-      console.log(
-        '🚀 ~ file: index.js ~ line 210 ~ resetPassword ~ error',
-        error
-      );
       if (error.code === 'CodeMismatchException') {
         return openDialog({
           children: (
@@ -222,24 +212,8 @@ export function useResetPassword(setTab) {
           ),
         });
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useResetPassword:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: null,
-        //     email,
-        //   });
-        //   scope.setContext('data', { email, code, newPassword });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { email, code, length: newPassword?.length };
-        handleError(
-          { openDialog, closeDialog },
-          error,
-          'resetting your password',
-          data
-        );
+        handleError({ openDialog, closeDialog }, error, 'resetting your password', data);
       }
     }
   }
@@ -261,7 +235,7 @@ export function useForgotPassword(setTab) {
       setLoading(false);
 
       setTab(0);
-      enqueueSnackbar('Verification code send to email', {
+      enqueueSnackbar(`Verification code send to ${email}`, {
         variant: 'success',
       });
     } catch (error) {
@@ -300,24 +274,8 @@ export function useForgotPassword(setTab) {
           ),
         });
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useForgotPassword:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: null,
-        //     email,
-        //   });
-        //   scope.setContext('data', { email });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { email };
-        handleError(
-          { openDialog, closeDialog },
-          error,
-          'sending reset password verification code',
-          data
-        );
+        handleError({ openDialog, closeDialog }, error, 'sending reset password verification code', data);
       }
     }
   }
@@ -344,24 +302,8 @@ export function useSendConfirmationCode() {
     } catch (error) {
       setLoading(false);
 
-      // Sentry.withScope(function (scope) {
-      //   scope.setTag('func', 'useSendConfirmationCode:hook');
-      //   scope.setLevel(Sentry.Severity.Critical);
-      //   scope.setUser({
-      //     id: null,
-      //     email,
-      //   });
-      //   scope.setContext('data', { email });
-      //   Sentry.captureException(error);
-      // });
-
       const data = { email };
-      handleError(
-        { openDialog, closeDialog },
-        error,
-        'sending confirmation code',
-        data
-      );
+      handleError({ openDialog, closeDialog }, error, 'sending confirmation code', data);
     }
   }
 
@@ -381,10 +323,8 @@ export function useConfirmSign(setTab) {
     try {
       const isConfirm = await Auth.confirmSignUp(username, code);
       if (isConfirm === 'SUCCESS') {
+        enqueueSnackbar('Email successfully confirmed', { variant: 'success' });
         setTab(2);
-        enqueueSnackbar('Email successfully confirmed', {
-          variant: 'success',
-        });
       }
 
       setLoading(false);
@@ -414,23 +354,8 @@ export function useConfirmSign(setTab) {
           ),
         });
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useConfirmSign:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: username,
-        //   });
-        //   scope.setContext('data', { username, code });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { username, code };
-        handleError(
-          { openDialog, closeDialog },
-          error,
-          'verifying confirmation code',
-          data
-        );
+        handleError({ openDialog, closeDialog }, error, 'verifying confirmation code', data);
       }
     }
   }
@@ -441,6 +366,7 @@ export function useConfirmSign(setTab) {
 export function useSignIn(setTab) {
   const [sendConfirmationCode] = useSendConfirmationCode();
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
 
@@ -450,16 +376,16 @@ export function useSignIn(setTab) {
     setLoading(true);
     try {
       const { username, attributes } = await Auth.signIn(email, password);
-      // SyncStorage.set('@sign', true);
-      // SyncStorage.set('@user', username);
+      window.localStorage.setItem('@sign', true);
+      window.localStorage.setItem('@user', username);
 
       // Sentry.setUser({ id: username, email: attributes.email });
       // await analytics().logLogin({ method: 'email' }); // ANALYTIC
       // await analytics().setUserId(username); // ANALYTIC
 
       setLoading(false);
+      enqueueSnackbar('Login successfully', { variant: 'success' });
       router.push('/');
-      navigation.navigate('Register');
     } catch (error) {
       setLoading(false);
 
@@ -498,22 +424,12 @@ export function useSignIn(setTab) {
         await sendConfirmationCode(email);
         setTab(4);
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useSignIn:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: null,
-        //     email,
-        //   });
-        //   scope.setContext('data', { email, password });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { email, length: password?.length };
         handleError({ openDialog, closeDialog }, error, 'logging you in', data);
       }
     }
   }
+
   return [signIn, { loading }];
 }
 
@@ -522,6 +438,7 @@ export function useSignIn(setTab) {
  */
 export function useSignUp(setTab) {
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const [openDialog, closeDialog] = Dialog.useDialog();
 
   async function signUp(email, password, name) {
@@ -536,6 +453,7 @@ export function useSignUp(setTab) {
       // await analytics().logSignUp({ method: 'email' }); // ANALYTIC
       setTab(4);
       setLoading(false);
+      enqueueSnackbar('Account registered successfully', { variant: 'success' });
     } catch (error) {
       setLoading(false);
       if (error.code === 'UsernameExistsException') {
@@ -550,24 +468,8 @@ export function useSignUp(setTab) {
           ),
         });
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useSignUp:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: null,
-        //     email,
-        //   });
-        //   scope.setContext('data', { email, password });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { email, length: password?.length };
-        handleError(
-          { openDialog, closeDialog },
-          error,
-          'registering an account',
-          data
-        );
+        handleError({ openDialog, closeDialog }, error, 'registering an account', data);
       }
     }
   }
@@ -579,15 +481,9 @@ export function useSignUp(setTab) {
  * @param {any} error error object
  * @param {string} action error about
  * @param {object} data user data
- * @param {function} navigation navigation function
  */
-function handleError(
-  { openDialog, closeDialog },
-  error,
-  action,
-  data,
-  navigation
-) {
+function handleError({ openDialog, closeDialog }, error, action, data) {
+  console.log({ error });
   switch (error.code) {
     case 'TooManyRequestsException':
       return openDialog({
@@ -621,14 +517,7 @@ function handleError(
             actions={[
               {
                 title: 'Report issue',
-                onPress: () =>
-                  navigation.navigate('Home', {
-                    screen: 'ReportIssue',
-                    params: {
-                      error: JSON.stringify(error),
-                      data: JSON.stringify(data),
-                    },
-                  }),
+                onPress: () => {},
               },
             ]}
             handleClose={closeDialog}
@@ -649,14 +538,9 @@ function handleError(
             actions={[
               {
                 title: 'Report issue',
-                onPress: () =>
-                  navigation.navigate('Home', {
-                    screen: 'ReportIssue',
-                    params: {
-                      error: JSON.stringify(error),
-                      data: JSON.stringify(data),
-                    },
-                  }),
+                onPress: () => {
+                  console.log(error);
+                },
               },
             ]}
             handleClose={closeDialog}

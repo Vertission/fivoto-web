@@ -2,13 +2,7 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  TextField,
-  InputAdornment,
-  Button,
-  Typography,
-  LinearProgress,
-} from '@material-ui/core';
+import { TextField, InputAdornment, Button, Typography, LinearProgress } from '@material-ui/core';
 
 import EmailIcon from '@material-ui/icons/Email';
 
@@ -33,15 +27,13 @@ const SignTabsLogin = ({ setTab, email }) => {
 
   return (
     <React.Fragment>
-      {loading && (
-        <LinearProgress classes={{ root: classes.linearProgressRoot }} />
-      )}
+      {loading && <LinearProgress classes={{ root: classes.linearProgressRoot }} />}
       <div className={classes.root}>
         <form className={classes.container}>
           <Typography variant='h6'>Reset Password</Typography>
           <Typography variant='body2' className={classes.description}>
-            Password reset verification code send to mohammedusama@gamil.com,
-            Please enter the verification code and a new strong password.
+            Password reset verification code send to mohammedusama@gamil.com, Please enter the verification code and a
+            new strong password.
           </Typography>
           <div className={classes.textField_email}>
             <Controller
@@ -57,7 +49,7 @@ const SignTabsLogin = ({ setTab, email }) => {
                   fullWidth
                   label='Verification Code'
                   type='code'
-                  error={errors?.code?.message}
+                  error={errors?.code}
                   helperText={errors?.code?.message}
                   onChange={onChange}
                   value={value}
@@ -80,7 +72,7 @@ const SignTabsLogin = ({ setTab, email }) => {
               rules={rules.newPassword}
               render={({ onChange, value }) => (
                 <PasswordField
-                  error={errors?.password?.message}
+                  error={errors?.password}
                   helperText={errors?.password?.message}
                   onChange={onChange}
                   value={value}
