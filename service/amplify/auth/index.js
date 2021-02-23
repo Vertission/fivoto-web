@@ -376,8 +376,6 @@ export function useSignIn(setTab) {
     setLoading(true);
     try {
       const { username, attributes } = await Auth.signIn(email, password);
-      window.localStorage.setItem('@sign', true);
-      window.localStorage.setItem('@user', username);
 
       // Sentry.setUser({ id: username, email: attributes.email });
       // await analytics().logLogin({ method: 'email' }); // ANALYTIC

@@ -1,7 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Button } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Avatar,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+} from '@material-ui/core';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AppsIcon from '@material-ui/icons/Apps';
+import SettingsIcon from '@material-ui/icons/Settings';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { Link } from '../common';
 import { Logo, PostButton } from '../ui';
@@ -9,27 +23,67 @@ import { Logo, PostButton } from '../ui';
 export default function HomeHeader({}) {
   const classes = useStyles();
 
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+
+  const handleClickMenu = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const isLogin = true;
+
   return (
     <div className={classes.grow}>
       <AppBar position='static'>
         <Toolbar>
           <Logo className={classes.logo} />
 
-          <Link href='/sign'>
-            <Button
-              size='large'
-              variant='contained'
-              color='primary'
-              className={classes.sign_button}
-              classes={{ label: classes.button_label }}
-            >
-              sign
-            </Button>
-          </Link>
-
           <Link href='/post'>
             <PostButton />
           </Link>
+
+          {isLogin ? (
+            <div>
+              <IconButton className={classes.user} size='small' onClick={handleClickMenu}>
+                <Avatar src='https://material-ui.com/static/images/avatar/1.jpg' />
+              </IconButton>
+              <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={handleCloseMenu}>
+                <MenuItem component={Link} href='/me/profile'>
+                  <ListItemIcon>
+                    <AccountCircleIcon color='primary' fontSize='small' />
+                  </ListItemIcon>
+                  <ListItemText primary='Profile' />
+                </MenuItem>
+                <MenuItem component={Link} href='/me/ads'>
+                  <ListItemIcon>
+                    <AppsIcon color='primary' fontSize='small' />
+                  </ListItemIcon>
+                  <ListItemText primary='My Ads' />
+                </MenuItem>
+                <MenuItem>
+                  <ListItemIcon>
+                    <ExitToAppIcon color='error' fontSize='small' />
+                  </ListItemIcon>
+                  <ListItemText primary='Logout' />
+                </MenuItem>
+              </Menu>
+            </div>
+          ) : (
+            <Link href='/sign'>
+              <Button
+                size='large'
+                variant='contained'
+                color='primary'
+                className={classes.sign_button}
+                classes={{ label: classes.button_label }}
+              >
+                sign
+              </Button>
+            </Link>
+          )}
         </Toolbar>
       </AppBar>
     </div>
@@ -44,7 +98,13 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     boxShadow: 'none',
     letterSpacing: 1.5,
-    marginRight: theme.spacing(3),
+    marginLeft: theme.spacing(3),
+  },
+  user: {
+    marginLeft: theme.spacing(3),
+  },
+  user_menu: {
+    top: theme.mixins.toolbar.height,
   },
   logo: {
     cursor: 'pointer',
