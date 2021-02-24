@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { List } from '../components/me';
+import Me from '../../components/me';
 
 export default function MeProfilePage() {
   return (
     <React.Fragment>
-      <List />
+      <Me />
     </React.Fragment>
   );
 }

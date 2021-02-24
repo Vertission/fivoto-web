@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   AppBar,
   Toolbar,
@@ -11,17 +11,25 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  // Tooltip,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AppsIcon from '@material-ui/icons/Apps';
-import SettingsIcon from '@material-ui/icons/Settings';
+// import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+// import BookmarkIcon from '@material-ui/icons/Bookmark';
+// import ForumRoundedIcon from '@material-ui/icons/ForumRounded';
+// import ChatBubbleRoundedIcon from '@material-ui/icons/ChatBubbleRounded';
+// import GroupIcon from '@material-ui/icons/Group';
 
 import { Link } from '../common';
 import { Logo, PostButton } from '../ui';
 
 export default function HomeHeader({}) {
   const classes = useStyles();
+  const theme = useTheme();
+
+  console.log('theme.mixins.toolbar.height', theme.mixins.toolbar.minHeight);
 
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
@@ -46,31 +54,48 @@ export default function HomeHeader({}) {
           </Link>
 
           {isLogin ? (
-            <div>
-              <IconButton className={classes.user} size='small' onClick={handleClickMenu}>
-                <Avatar src='https://material-ui.com/static/images/avatar/1.jpg' />
-              </IconButton>
-              <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={handleCloseMenu}>
-                <MenuItem component={Link} href='/me/profile'>
-                  <ListItemIcon>
-                    <AccountCircleIcon color='primary' fontSize='small' />
-                  </ListItemIcon>
-                  <ListItemText primary='Profile' />
-                </MenuItem>
-                <MenuItem component={Link} href='/me/ads'>
-                  <ListItemIcon>
-                    <AppsIcon color='primary' fontSize='small' />
-                  </ListItemIcon>
-                  <ListItemText primary='My Ads' />
-                </MenuItem>
-                <MenuItem>
-                  <ListItemIcon>
-                    <ExitToAppIcon color='error' fontSize='small' />
-                  </ListItemIcon>
-                  <ListItemText primary='Logout' />
-                </MenuItem>
-              </Menu>
-            </div>
+            <React.Fragment>
+              {/* <Tooltip title='groups'>
+                <IconButton>
+                  <GroupIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title='channels'>
+                <IconButton>
+                  <ForumRoundedIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title='chats'>
+                <IconButton>
+                  <ChatBubbleRoundedIcon />
+                </IconButton>
+              </Tooltip> */}
+              <div>
+                <IconButton size='small' onClick={handleClickMenu}>
+                  <Avatar src='https://material-ui.com/static/images/avatar/1.jpg' />
+                </IconButton>
+                <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={handleCloseMenu}>
+                  <MenuItem component={Link} href='/me'>
+                    <ListItemIcon>
+                      <AccountCircleIcon color='primary' fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Profile' />
+                  </MenuItem>
+                  <MenuItem component={Link} href='/me/ads'>
+                    <ListItemIcon>
+                      <AppsIcon color='primary' fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='My Ads' />
+                  </MenuItem>
+                  <MenuItem>
+                    <ListItemIcon>
+                      <ExitToAppIcon color='error' fontSize='small' />
+                    </ListItemIcon>
+                    <ListItemText primary='Logout' />
+                  </MenuItem>
+                </Menu>
+              </div>
+            </React.Fragment>
           ) : (
             <Link href='/sign'>
               <Button
@@ -100,12 +125,7 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 1.5,
     marginLeft: theme.spacing(3),
   },
-  user: {
-    marginLeft: theme.spacing(3),
-  },
-  user_menu: {
-    top: theme.mixins.toolbar.height,
-  },
+
   logo: {
     cursor: 'pointer',
     marginRight: 'auto',
