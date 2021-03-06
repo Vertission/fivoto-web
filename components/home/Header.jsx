@@ -29,8 +29,6 @@ export default function HomeHeader({}) {
   const classes = useStyles();
   const theme = useTheme();
 
-  console.log('theme.mixins.toolbar.height', theme.mixins.toolbar.minHeight);
-
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
   const handleClickMenu = (event) => {
