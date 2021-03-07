@@ -12,6 +12,7 @@ import {
   ListItemIcon,
   ListItemText,
   CircularProgress,
+  Avatar as MuiAvatar,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AppsIcon from '@material-ui/icons/Apps';
@@ -39,7 +40,7 @@ export default function HomeHeader({ authenticated }) {
           setSign(true);
         })
         .catch(() => {
-          setUser(false);
+          setSign(false);
         });
     }
 
@@ -90,7 +91,12 @@ function Authenticated() {
     setMenuAnchorEl(null);
   };
 
-  if (loading) return <CircularProgress color='secondary' />;
+  if (loading)
+    return (
+      <IconButton size='small'>
+        <MuiAvatar />
+      </IconButton>
+    );
   else
     return (
       <React.Fragment>
