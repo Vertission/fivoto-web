@@ -9,12 +9,27 @@ import { Link } from '../../common';
 export default function MeProfileHeader({ menu }) {
   const classes = useStyles();
 
+  const _getHederTitle = (key) => {
+    switch (key) {
+      case '#edit-profile':
+        return 'Edit Profile';
+      case '#email-change':
+        return 'Change Email';
+      case '#password-change':
+        return 'Change Password';
+      case '#settings':
+        return 'Settings';
+      default:
+        return 'Page Not Found';
+    }
+  };
+
   return (
     <div className={classes.grow}>
       <AppBar position='static'>
         <Toolbar>
           <Typography variant='h6' className={classes.title}>
-            {menu.split('_').join(' ')}
+            {_getHederTitle(menu)}
           </Typography>
 
           <IconButton component={Link} href={`/`}>

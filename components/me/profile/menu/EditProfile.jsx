@@ -1,11 +1,21 @@
 import React from 'react';
+import { useForm, Controller } from 'react-hook-form';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Avatar, Button, IconButton } from '@material-ui/core';
 
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 
+import { rules } from '../../../../utils';
+
 export default function MeProfileEditProfile() {
   const classes = useStyles();
+
+  const { control, handleSubmit, errors } = useForm({
+    mode: 'onBlur',
+  });
+
+  const onSubmit = ({ name }) => {};
 
   return (
     <div className={classes.root}>
@@ -20,10 +30,35 @@ export default function MeProfileEditProfile() {
           </IconButton>
         </div>
         {/* NAME  */}
-        <TextField label='Name' variant='outlined' fullWidth />
+        <Controller
+          name='name'
+          control={control}
+          defaultValue=''
+          rules={rules.name}
+          render={({ onChange, value }) => (
+            <TextField
+              label='Name'
+              variant='outlined'
+              fullWidth
+              variant='outlined'
+              name='name'
+              type='text'
+              error={errors?.name}
+              helperText={errors?.name?.message}
+              onChange={onChange}
+              value={value}
+            />
+          )}
+        />
 
-        <Button variant='contained' color='primary' size='large' className={classes.save}>
-          Save
+        <Button
+          variant='contained'
+          color='primary'
+          size='large'
+          className={classes.save}
+          onClick={handleSubmit(onSubmit)}
+        >
+          save profile
         </Button>
       </form>
     </div>

@@ -41,4 +41,7 @@ export default {
   oldPassword: {
     required: 'please enter your old password',
   },
+  currentPassword: {
+    required: 'please enter your current password',
+  },
 };

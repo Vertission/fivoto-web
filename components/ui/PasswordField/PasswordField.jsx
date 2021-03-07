@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { IconButton, OutlinedInput, InputLabel, InputAdornment, FormControl, FormHelperText } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-export default function PasswordField({ label = 'Password', error, helperText, ...props }) {
+export default function PasswordField({ label = 'Password', error, helperText, className, size, ...props }) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <FormControl variant='outlined' style={{ width: '100%' }} size='small'>
+    <FormControl variant='outlined' style={{ width: '100%' }} size={size} className={className}>
       <InputLabel error={error}>{label}</InputLabel>
       <OutlinedInput
         type={showPassword ? 'text' : 'password'}

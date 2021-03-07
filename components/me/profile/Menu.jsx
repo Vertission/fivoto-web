@@ -10,38 +10,39 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import { Link } from '../../common';
 
 export default function MeProfileMenu({ menu, setMenu }) {
+  console.log('🚀 ~ file: Menu.jsx ~ line 13 ~ MeProfileMenu ~ menu', menu, menu === '#edit-profile');
   const classes = useStyles();
 
   return (
     <List component='nav' className={classes.root} disablePadding>
       {/* Profile  */}
-      <ListItem className={classes.listItem} href='/me'>
+      <ListItem className={classes.listItem} component={Link} href='/me/profile#edit-profile'>
         <ListItemIcon>
           <Tooltip title='Profile' placement='right'>
-            <IconButton onClick={() => setMenu('edit_profile')}>
-              <AccountCircleIcon color={menu === 'edit_profile' ? 'primary' : 'disabled'} fontSize='large' />
+            <IconButton onClick={() => setMenu('#edit-profile')}>
+              <AccountCircleIcon color={menu === '#edit-profile' ? 'primary' : 'disabled'} fontSize='large' />
             </IconButton>
           </Tooltip>
         </ListItemIcon>
         <ListItemText />
       </ListItem>
       {/* Password  */}
-      <ListItem className={classes.listItem} component={Link} href='/me/profile'>
+      <ListItem className={classes.listItem} component={Link} href='/me/profile#password-change'>
         <ListItemIcon>
           <Tooltip title='Password' placement='right'>
-            <IconButton onClick={() => setMenu('password_change')}>
-              <VpnKeyIcon color={menu === 'password_change' ? 'primary' : 'disabled'} fontSize='large' />
+            <IconButton onClick={() => setMenu('#password-change')}>
+              <VpnKeyIcon color={menu === '#password-change' ? 'primary' : 'disabled'} fontSize='large' />
             </IconButton>
           </Tooltip>
         </ListItemIcon>
         <ListItemText />
       </ListItem>
       {/* Email */}
-      <ListItem className={classes.listItem}>
+      <ListItem className={classes.listItem} component={Link} href='/me/profile#email-change'>
         <ListItemIcon>
           <Tooltip title='Email' placement='right'>
-            <IconButton onClick={() => setMenu('email_change')}>
-              <EmailIcon color={menu === 'email_change' ? 'primary' : 'disabled'} fontSize='large' />
+            <IconButton onClick={() => setMenu('#email-change')}>
+              <EmailIcon color={menu === '#email-change' ? 'primary' : 'disabled'} fontSize='large' />
             </IconButton>
           </Tooltip>
         </ListItemIcon>
@@ -50,9 +51,9 @@ export default function MeProfileMenu({ menu, setMenu }) {
       {/* SETTINGS */}
       <ListItem className={classes.listItem}>
         <ListItemIcon>
-          <Tooltip title='Settings' placement='right'>
-            <IconButton onClick={() => setMenu('settings')}>
-              <SettingsIcon color={menu === 'settings' ? 'primary' : 'disabled'} fontSize='large' />
+          <Tooltip title='Settings' placement='right' component={Link} href='/me/profile#settings'>
+            <IconButton onClick={() => setMenu('#settings')}>
+              <SettingsIcon color={menu === '#settings' ? 'primary' : 'disabled'} fontSize='large' />
             </IconButton>
           </Tooltip>
         </ListItemIcon>

@@ -34,6 +34,7 @@
     "react-sortable-hoc": "^1.11.0",
     "react-swipeable-views": "^0.13.9",
     "timeago.js": "^4.0.2",
+    "url-parse": "^1.5.1",
     "use-material-ui-dialog": "^1.1.3"
   }
 }

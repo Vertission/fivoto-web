@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Typography, LinearProgress } from '@material-ui/core';
 
 import { useConfirmSign, useSendConfirmationCode } from '../../../service/amplify/auth';
+
 import { rules } from '../../../utils/index';
 
 const SignTabsLogin = ({ setTab, email }) => {

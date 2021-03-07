@@ -1,25 +1,32 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import parse from 'url-parse';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
 
 import { Menu, Header } from '../../components/me/profile';
-import { EditProfile, PasswordChange } from '../../components/me/profile/menu';
+import { EditProfile, PasswordChange, NotFound } from '../../components/me/profile/menu';
 
 export default function PageMeProfile() {
   const classes = useStyles();
-  const [menu, setMenu] = useState('edit_profile');
+
+  const hash = global.window && window.location.hash;
+
+  const [menu, setMenu] = useState(hash);
 
   const RenderSwitchMenu = (key) => {
     switch (key) {
-      case 'edit_profile':
+      case '#edit-profile':
         return <EditProfile />;
-      case 'password_change':
+      case '#password-change':
         return <PasswordChange />;
-      case 'email_change':
+      case '#email-change':
         return <EditProfile />;
-      case 'settings':
+      case '#settings':
         return <EditProfile />;
+      default:
+        return <NotFound />;
     }
   };
 

@@ -3,6 +3,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, InputAdornment, Button, Typography, LinearProgress } from '@material-ui/core';
+
 import EmailIcon from '@material-ui/icons/Email';
 
 import { rules } from '../../../utils/index';
