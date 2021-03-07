@@ -1,23 +1,75 @@
 import { useMemo } from 'react';
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
 import { concatPagination } from '@apollo/client/utilities';
 import merge from 'deepmerge';
+import { setContext } from '@apollo/client/link/context';
+import { Auth } from 'aws-amplify';
 import isEqual from 'lodash/isEqual';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
 let apolloClient;
 
+const errorLink = new onError(({ graphQLErrors, networkError }) => {
+  if (ENVIRONMENT === 'development') {
+    if (graphQLErrors) {
+      graphQLErrors.map(({ message, locations, path, code }) => {
+        console.error(
+          `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}, code: ${code}`
+        );
+
+        if (message === 'NotAuthorizedException') {
+          console.error('User not authorized');
+        }
+      });
+    }
+
+    if (networkError) {
+      console.error(networkError);
+    }
+  }
+
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message }) => {
+      if (message === 'NotAuthorizedException') {
+        // signOut();
+      }
+    });
+  }
+
+  if (networkError) {
+  }
+});
+
+const httpLink = new HttpLink({
+  uri: process.env.NODE_ENV === 'development' ? 'http://localhost:4000/' : 'https://lk.endpoint.fivoto.com',
+  credentials: 'same-origin',
+});
+
+const authLink = setContext(async (_, { headers }) => {
+  try {
+    const {
+      accessToken: { jwtToken },
+    } = await Auth.currentSession();
+    console.log('jwtToken', jwtToken);
+
+    return {
+      headers: {
+        ...headers,
+        authorization: jwtToken,
+      },
+    };
+  } catch (error) {
+    if (error === 'No current user') return null;
+    Sentry.captureException(error);
+  }
+});
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: new HttpLink({
-      uri:
-        process.env.NODE_ENV === 'development'
-          ? 'http://localhost:4000/'
-          : 'https://lk.endpoint.fivoto.com', // Server URL (must be absolute)
-      credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
-    }),
+    link: ApolloLink.from([errorLink, authLink, httpLink]),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
@@ -44,9 +96,7 @@ export function initializeApollo(initialState = null) {
       // combine arrays using object equality (like in sets)
       arrayMerge: (destinationArray, sourceArray) => [
         ...sourceArray,
-        ...destinationArray.filter((d) =>
-          sourceArray.every((s) => !isEqual(d, s))
-        ),
+        ...destinationArray.filter((d) => sourceArray.every((s) => !isEqual(d, s))),
       ],
     });
 
