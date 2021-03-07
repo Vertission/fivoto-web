@@ -68,6 +68,7 @@ const SignTabsLogin = ({ setTab, email, setEmail }) => {
               rules={rules.oldPassword}
               render={({ onChange, value }) => (
                 <PasswordField
+                  size='small'
                   error={errors.password}
                   helperText={errors.password?.message}
                   onChange={onChange}

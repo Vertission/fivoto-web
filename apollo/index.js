@@ -12,7 +12,7 @@ export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 let apolloClient;
 
 const errorLink = new onError(({ graphQLErrors, networkError }) => {
-  if (ENVIRONMENT === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     if (graphQLErrors) {
       graphQLErrors.map(({ message, locations, path, code }) => {
         console.error(
@@ -52,7 +52,6 @@ const authLink = setContext(async (_, { headers }) => {
     const {
       accessToken: { jwtToken },
     } = await Auth.currentSession();
-    console.log('jwtToken', jwtToken);
 
     return {
       headers: {

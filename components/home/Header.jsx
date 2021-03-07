@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Auth } from 'aws-amplify';
 
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   AppBar,
   Toolbar,
   Button,
-  Avatar,
   IconButton,
   Menu,
   MenuItem,
   ListItemIcon,
   ListItemText,
-  // Tooltip,
+  CircularProgress,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AppsIcon from '@material-ui/icons/Apps';
@@ -23,24 +23,28 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 // import GroupIcon from '@material-ui/icons/Group';
 
 import { Link } from '../common';
-import { Logo, PostButton } from '../ui';
+import { Logo, PostButton, Avatar } from '../ui';
 
-export default function HomeHeader({}) {
+import { useQueryMe } from '../../apollo/query';
+
+export default function HomeHeader({ authenticated }) {
   const classes = useStyles();
-  const theme = useTheme();
 
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [sign, setSign] = useState(null);
 
-  const handleClickMenu = (event) => {
-    setMenuAnchorEl(event.currentTarget);
-  };
+  useEffect(() => {
+    async function authenticate() {
+      Auth.currentAuthenticatedUser()
+        .then(() => {
+          setSign(true);
+        })
+        .catch(() => {
+          setUser(false);
+        });
+    }
 
-  const handleCloseMenu = () => {
-    setMenuAnchorEl(null);
-  };
-
-  const isLogin = global.window && localStorage.getItem('@sign');
-  console.log('🚀 ~ file: Header.jsx ~ line 43 ~ HomeHeader ~ isLogin', isLogin);
+    authenticate();
+  }, []);
 
   return (
     <div className={classes.grow}>
@@ -52,49 +56,8 @@ export default function HomeHeader({}) {
             <PostButton />
           </Link>
 
-          {isLogin ? (
-            <React.Fragment>
-              {/* <Tooltip title='groups'>
-                <IconButton>
-                  <GroupIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title='channels'>
-                <IconButton>
-                  <ForumRoundedIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title='chats'>
-                <IconButton>
-                  <ChatBubbleRoundedIcon />
-                </IconButton>
-              </Tooltip> */}
-              <div>
-                <IconButton size='small' onClick={handleClickMenu}>
-                  <Avatar src='https://material-ui.com/static/images/avatar/1.jpg' />
-                </IconButton>
-                <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={handleCloseMenu}>
-                  <MenuItem component={Link} href='/me/profile#edit-profile'>
-                    <ListItemIcon>
-                      <AccountCircleIcon color='primary' fontSize='small' />
-                    </ListItemIcon>
-                    <ListItemText primary='Profile' />
-                  </MenuItem>
-                  <MenuItem component={Link} href='/me/ads'>
-                    <ListItemIcon>
-                      <AppsIcon color='primary' fontSize='small' />
-                    </ListItemIcon>
-                    <ListItemText primary='My Ads' />
-                  </MenuItem>
-                  <MenuItem>
-                    <ListItemIcon>
-                      <ExitToAppIcon color='error' fontSize='small' />
-                    </ListItemIcon>
-                    <ListItemText primary='Logout' />
-                  </MenuItem>
-                </Menu>
-              </div>
-            </React.Fragment>
+          {sign ? (
+            <Authenticated />
           ) : (
             <Link href='/sign'>
               <Button
@@ -112,6 +75,67 @@ export default function HomeHeader({}) {
       </AppBar>
     </div>
   );
+}
+
+function Authenticated() {
+  const [user, { loading }] = useQueryMe();
+
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+
+  const handleClickMenu = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setMenuAnchorEl(null);
+  };
+
+  if (loading) return <CircularProgress color='secondary' />;
+  else
+    return (
+      <React.Fragment>
+        {/* <Tooltip title='groups'>
+      <IconButton>
+        <GroupIcon />
+      </IconButton>
+    </Tooltip>
+    <Tooltip title='channels'>
+      <IconButton>
+        <ForumRoundedIcon />
+      </IconButton>
+    </Tooltip>
+    <Tooltip title='chats'>
+      <IconButton>
+        <ChatBubbleRoundedIcon />
+      </IconButton>
+    </Tooltip> */}
+        <div>
+          <IconButton size='small' onClick={handleClickMenu}>
+            <Avatar url={user.profile} name={user.name} />
+          </IconButton>
+          <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={handleCloseMenu}>
+            <MenuItem component={Link} href='/me/profile#edit-profile'>
+              <ListItemIcon>
+                <AccountCircleIcon color='primary' fontSize='small' />
+              </ListItemIcon>
+              <ListItemText primary='Profile' />
+            </MenuItem>
+            <MenuItem component={Link} href='/me/ads'>
+              <ListItemIcon>
+                <AppsIcon color='primary' fontSize='small' />
+              </ListItemIcon>
+              <ListItemText primary='My Ads' />
+            </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <ExitToAppIcon color='error' fontSize='small' />
+              </ListItemIcon>
+              <ListItemText primary='Logout' />
+            </MenuItem>
+          </Menu>
+        </div>
+      </React.Fragment>
+    );
 }
 
 const useStyles = makeStyles((theme) => ({

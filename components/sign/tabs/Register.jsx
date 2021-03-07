@@ -99,6 +99,7 @@ const SignTabsRegister = ({ setTab, setEmail }) => {
               rules={rules.newPassword}
               render={({ onChange, value }) => (
                 <PasswordField
+                  size='small'
                   error={errors?.password}
                   helperText={errors?.password?.message}
                   onChange={onChange}
