@@ -39,7 +39,8 @@ export default function HomeHeader({}) {
     setMenuAnchorEl(null);
   };
 
-  const isLogin = true;
+  const isLogin = global.window && localStorage.getItem('@sign');
+  console.log('🚀 ~ file: Header.jsx ~ line 43 ~ HomeHeader ~ isLogin', isLogin);
 
   return (
     <div className={classes.grow}>
@@ -73,7 +74,7 @@ export default function HomeHeader({}) {
                   <Avatar src='https://material-ui.com/static/images/avatar/1.jpg' />
                 </IconButton>
                 <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={handleCloseMenu}>
-                  <MenuItem component={Link} href='/me'>
+                  <MenuItem component={Link} href='/me/profile#edit-profile'>
                     <ListItemIcon>
                       <AccountCircleIcon color='primary' fontSize='small' />
                     </ListItemIcon>
@@ -121,9 +122,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     boxShadow: 'none',
     letterSpacing: 1.5,
-    marginLeft: theme.spacing(3),
   },
-
   logo: {
     cursor: 'pointer',
     marginRight: 'auto',

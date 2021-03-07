@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,23 +11,46 @@ import { rules } from '../../../../utils';
 export default function MeProfileEditProfile() {
   const classes = useStyles();
 
-  const { control, handleSubmit, errors } = useForm({
+  const [profile, setProfile] = useState('');
+  const { control, handleSubmit, errors, register, getValues, setValue } = useForm({
     mode: 'onBlur',
+    defaultValues: {
+      profile: null,
+      name: null,
+    },
   });
 
-  const onSubmit = ({ name }) => {};
+  const _handleProfileUpload = (event) => {
+    const previewUrl = URL.createObjectURL(event.target.files[0]);
+    setProfile(previewUrl);
+  };
+
+  const onSubmit = ({ name, profile }) => {
+    console.log('submit', { name, profile });
+  };
 
   return (
     <div className={classes.root}>
       <form className={classes.form}>
         {/* PROFILE PICTURE  */}
         <div className={classes.avatar_container}>
-          <Avatar alt='Remy Sharp' src='' className={classes.avatar_image}>
+          <input
+            type='file'
+            accept='image/*'
+            name='profile'
+            id='contained-button-file'
+            hidden
+            ref={register}
+            onChange={_handleProfileUpload}
+          />
+          <Avatar alt='Remy Sharp' src={profile} className={classes.avatar_image}>
             UA
           </Avatar>
-          <IconButton className={classes.avatar_camera}>
-            <CameraAltIcon color='primary' />
-          </IconButton>
+          <label htmlFor='contained-button-file' className={classes.avatar_camera}>
+            <IconButton variant='contained' color='primary' component='span'>
+              <CameraAltIcon color='primary' />
+            </IconButton>
+          </label>
         </div>
         {/* NAME  */}
         <Controller

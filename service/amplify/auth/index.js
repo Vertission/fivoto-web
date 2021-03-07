@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 // import SignOut from '../../../utils/signOut';
 
 import { Dialog, Modal } from '../../../components/ui';
+import { truncate } from 'lodash';
 
 export function useSignOut() {
   async function signOut() {
@@ -380,6 +381,8 @@ export function useSignIn(setTab) {
       // Sentry.setUser({ id: username, email: attributes.email });
       // await analytics().logLogin({ method: 'email' }); // ANALYTIC
       // await analytics().setUserId(username); // ANALYTIC
+
+      localStorage.setItem('@sign', true);
 
       setLoading(false);
       enqueueSnackbar('Login successfully', { variant: 'success' });
