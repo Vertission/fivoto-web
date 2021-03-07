@@ -1,4 +1,6 @@
 import React from 'react';
+import { withSSRContext } from 'aws-amplify';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Hidden, Typography, IconButton } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
@@ -54,3 +56,14 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 900,
   },
 }));
+
+export async function getServerSideProps({ req, res }) {
+  const { Auth } = withSSRContext({ req });
+  try {
+    await Auth.currentAuthenticatedUser();
+    res.writeHead(302, { Location: '/' });
+    res.end();
+  } catch (error) {}
+
+  return { props: {} };
+}

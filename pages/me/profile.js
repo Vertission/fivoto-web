@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withSSRContext } from 'aws-amplify';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
@@ -48,3 +49,15 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
 }));
+
+export async function getServerSideProps({ req, res }) {
+  const { Auth } = withSSRContext({ req });
+  try {
+    await Auth.currentAuthenticatedUser();
+  } catch (error) {
+    res.writeHead(302, { Location: '/sign' });
+    res.end();
+  }
+
+  return { props: {} };
+}
