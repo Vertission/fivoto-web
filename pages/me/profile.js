@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import parse from 'url-parse';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
 
 import { Menu, Header } from '../../components/me/profile';
-import { EditProfile, PasswordChange, NotFound } from '../../components/me/profile/menu';
+import { EditProfile, PasswordChange, EmailChange, Settings, NotFound } from '../../components/me/profile/menu';
 
 export default function PageMeProfile() {
   const classes = useStyles();
@@ -22,9 +20,9 @@ export default function PageMeProfile() {
       case '#password-change':
         return <PasswordChange />;
       case '#email-change':
-        return <EditProfile />;
+        return <EmailChange />;
       case '#settings':
-        return <EditProfile />;
+        return <Settings />;
       default:
         return <NotFound />;
     }
