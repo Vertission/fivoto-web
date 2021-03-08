@@ -2,22 +2,24 @@ import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Avatar, Button, IconButton } from '@material-ui/core';
+import { TextField, Avatar, Button, IconButton, CircularProgress } from '@material-ui/core';
 
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 
 import { rules } from '../../../../utils';
 
+import { useQueryMe } from '../../../../apollo/query';
+import { useUpdateUser } from '../../../../apollo/mutation';
+
 export default function MeProfileEditProfile() {
   const classes = useStyles();
 
-  const [profile, setProfile] = useState('');
-  const { control, handleSubmit, errors, register, getValues, setValue } = useForm({
+  const [user, { loading: userLoading }] = useQueryMe();
+  const [updateUser, { loading: updateUserLoading }] = useUpdateUser();
+  const [profile, setProfile] = useState(user.profile);
+
+  const { control, handleSubmit, errors, register } = useForm({
     mode: 'onBlur',
-    defaultValues: {
-      profile: null,
-      name: null,
-    },
   });
 
   const _handleProfileUpload = (event) => {
@@ -26,8 +28,15 @@ export default function MeProfileEditProfile() {
   };
 
   const onSubmit = ({ name, profile }) => {
-    console.log('submit', { name, profile });
+    updateUser({ name, profile: profile[0] }, user.id);
   };
+
+  if (userLoading)
+    return (
+      <div className={classes.root_circular}>
+        <CircularProgress />
+      </div>
+    );
 
   return (
     <div className={classes.root}>
@@ -56,7 +65,7 @@ export default function MeProfileEditProfile() {
         <Controller
           name='name'
           control={control}
-          defaultValue=''
+          defaultValue={user.name}
           rules={rules.name}
           render={({ onChange, value }) => (
             <TextField
@@ -79,6 +88,7 @@ export default function MeProfileEditProfile() {
           color='primary'
           size='large'
           className={classes.save}
+          disabled={updateUserLoading}
           onClick={handleSubmit(onSubmit)}
         >
           save profile
@@ -93,6 +103,12 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     display: 'flex',
     justifyContent: 'center',
+  },
+  root_circular: {
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   form: {
     width: 500,

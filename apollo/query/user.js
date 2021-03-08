@@ -6,6 +6,7 @@ const QUERY_ME = gql`
       id
       name
       email
+      profile
       createdAt
       updatedAt
     }

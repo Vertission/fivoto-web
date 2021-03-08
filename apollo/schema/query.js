@@ -72,3 +72,16 @@ export const SEARCH = gql`
     }
   }
 `;
+
+export const QUERY_ME = gql`
+  query me {
+    me {
+      id
+      name
+      email
+      profile
+      createdAt
+      updatedAt
+    }
+  }
+`;

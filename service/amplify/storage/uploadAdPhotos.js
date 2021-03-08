@@ -51,14 +51,6 @@ export default async function uploadPhotos(photos, adId, setStatus) {
 
   const imageManipulator = async (file) => {
     const compress = compressSizer(file.size);
-
-    // const { height, width } = await imageDimension(file);
-
-    // let resize;
-    // if (height === width) resize = { height: 480, width: 480 };
-    // else if (height > width) resize = { height: 480 };
-    // else resize = { width: 720 };
-
     const image = await resizeFile(file, compress);
 
     return image;
