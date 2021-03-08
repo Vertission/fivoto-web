@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import { useForm, Controller } from 'react-hook-form';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,9 +12,15 @@ import { useChangeEmail } from '../../../../service/amplify/auth';
 
 export default function MeProfilePasswordChange() {
   const classes = useStyles();
+  const router = useRouter();
 
   const [user] = useQueryMe();
-  const [changeEmail, { loading }] = useChangeEmail();
+
+  const useChangeEmailCB = () => {
+    router.push('/me/verify-email');
+  };
+
+  const [changeEmail, { loading }] = useChangeEmail(useChangeEmailCB);
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });

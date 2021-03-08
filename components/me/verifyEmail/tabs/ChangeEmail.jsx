@@ -15,7 +15,12 @@ export default function MeVerifyEmailEmailChange({ setTab, email, setEmail }) {
     mode: 'onBlur',
   });
 
-  const [changeEmail, { loading }] = useChangeEmail(setTab, setEmail);
+  const useChangeEmailCB = () => {
+    setTab(0);
+    setEmail(email);
+  };
+
+  const [changeEmail, { loading }] = useChangeEmail(useChangeEmailCB);
 
   const onSubmit = ({ email }) => {
     changeEmail(email);

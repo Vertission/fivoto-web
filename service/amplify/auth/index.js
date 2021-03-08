@@ -71,7 +71,7 @@ export function useChangePassword() {
   return [changePassword, { loading }];
 }
 
-export function useChangeEmail(setTab, setEmail) {
+export function useChangeEmail(cb) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
   const { enqueueSnackbar } = useSnackbar();
@@ -90,8 +90,7 @@ export function useChangeEmail(setTab, setEmail) {
         },
       });
 
-      if (setTab) setTab(0);
-      if (setEmail) setEmail(email);
+      if (cb) cb();
 
       setLoading(false);
     } catch (error) {

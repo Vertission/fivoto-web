@@ -19,7 +19,7 @@ function TabPanel(props) {
 export default function MeVerifyEmail({ email }) {
   const classes = useStyles();
 
-  const [tab, setTab] = useState(1);
+  const [tab, setTab] = useState(0);
   const [emailAddress, setEmailAddress] = useState(email);
 
   const _onHandleVerifyEmailAddressClick = () => {
