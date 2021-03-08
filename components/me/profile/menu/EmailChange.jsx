@@ -4,19 +4,23 @@ import { useForm, Controller } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button, Typography } from '@material-ui/core';
 
-import { PasswordField, Dialog, Modal } from '../../../ui';
-
 import { rules } from '../../../../utils';
+
+import { useQueryMe } from '../../../../apollo/query';
+import { useChangeEmail } from '../../../../service/amplify/auth';
 
 export default function MeProfilePasswordChange() {
   const classes = useStyles();
-  const [openDialog, closeDialog] = Dialog.useDialog();
 
+  const [user] = useQueryMe();
+  const [changeEmail, { loading }] = useChangeEmail();
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });
 
-  const onSubmit = ({ email }) => {};
+  const onSubmit = ({ email }) => {
+    changeEmail(email);
+  };
 
   return (
     <div className={classes.root}>
@@ -26,7 +30,7 @@ export default function MeProfilePasswordChange() {
           name='email'
           control={control}
           rules={rules.email}
-          defaultValue=''
+          defaultValue={user.email}
           render={({ onChange, value }) => (
             <TextField
               label='Email Address'
@@ -52,6 +56,7 @@ export default function MeProfilePasswordChange() {
           color='primary'
           size='large'
           className={classes.submit}
+          disabled={loading}
           onClick={handleSubmit(onSubmit)}
         >
           CHANGE EMAIL

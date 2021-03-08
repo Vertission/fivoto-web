@@ -75,9 +75,9 @@ export function useChangePassword() {
 }
 
 export function useChangeEmail() {
-  const [updateUser] = useUpdateUser();
-
   const [loading, setLoading] = useState(false);
+  const [openDialog, closeDialog] = Dialog.useDialog();
+  const { enqueueSnackbar } = useSnackbar();
 
   async function changeEmail(email) {
     setLoading(true);
@@ -85,28 +85,29 @@ export function useChangeEmail() {
       const currentUser = await Auth.currentAuthenticatedUser();
       await Auth.updateUserAttributes(currentUser, { email });
 
-      updateUser({
-        email,
+      enqueueSnackbar('Email changed successfully', {
+        variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'center',
+        },
       });
       setLoading(false);
-      // navigation.navigate('EmailConfirmation', { email });
     } catch (error) {
       setLoading(false);
       if (error.code === 'AliasExistsException') {
-        return Modal.show({
-          title: 'Email already exist',
-          description: `An account with email address ${email} already exists.`,
-          closeTitle: 'ok',
+        return openDialog({
+          children: (
+            <Modal
+              title='Email already exist'
+              description={`An account with email address ${email} already exists.`}
+              closeTitle='ok'
+              handleClose={closeDialog}
+            />
+          ),
         });
       } else {
         setLoading(false);
-
-        Sentry.withScope(function (scope) {
-          scope.setTag('func', 'useChangeEmail:hook');
-          scope.setLevel(Sentry.Severity.Error);
-          scope.setContext('data', { email });
-          Sentry.captureException(error);
-        });
 
         const data = { email };
         handleError(error, 'change your email address', data);
