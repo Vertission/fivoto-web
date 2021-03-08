@@ -31,6 +31,8 @@ export function useSignOut() {
 
 export function useChangePassword() {
   const [loading, setLoading] = useState(false);
+  const [openDialog, closeDialog] = Dialog.useDialog();
+  const { enqueueSnackbar } = useSnackbar();
 
   async function changePassword(oldPassword, newPassword) {
     setLoading(true);
@@ -41,29 +43,30 @@ export function useChangePassword() {
 
       enqueueSnackbar('Password changed successfully', {
         variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'center',
+        },
       });
-      // navigation.navigate('User');
     } catch (error) {
       setLoading(false);
       if (error.code === 'NotAuthorizedException') {
-        return Modal.show({
-          title: 'Incorrect Password',
-          description: 'Your current password is incorrect, Please try again.',
-          closeTitle: 'try again',
+        return openDialog({
+          children: (
+            <Modal
+              title='Incorrect Password'
+              description='Your current password is incorrect, Please try again.'
+              closeTitle='try again'
+              handleClose={closeDialog}
+            />
+          ),
         });
       } else {
-        Sentry.withScope(function (scope) {
-          scope.setTag('func', 'useChangePassword:hook');
-          scope.setLevel(Sentry.Severity.Error);
-          scope.setContext('data', { oldPassword, newPassword });
-          Sentry.captureException(error);
-        });
-
         const data = {
           oldLength: oldPassword?.length,
           newLength: newPassword?.length,
         };
-        handleError(error, 'changing your password', data);
+        handleError({ openDialog, closeDialog }, error, 'changing your password', data);
       }
     }
   }
@@ -484,7 +487,7 @@ export function useSignUp(setTab) {
  * @param {object} data user data
  */
 function handleError({ openDialog, closeDialog }, error, action, data) {
-  console.log({ error });
+  console.log('🚀 ~ file: index.js ~ line 490 ~ handleError ~ error', error);
   switch (error.code) {
     case 'TooManyRequestsException':
       return openDialog({

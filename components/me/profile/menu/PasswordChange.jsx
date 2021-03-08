@@ -8,15 +8,22 @@ import { PasswordField, Dialog, Modal } from '../../../ui';
 
 import { rules } from '../../../../utils';
 
+import { useChangePassword } from '../../../../service/amplify/auth';
+
 export default function MeProfilePasswordChange() {
   const classes = useStyles();
   const [openDialog, closeDialog] = Dialog.useDialog();
 
-  const { control, handleSubmit, errors } = useForm({
+  const { control, handleSubmit, errors, reset } = useForm({
     mode: 'onBlur',
   });
 
-  const onSubmit = ({ password, new_password }) => {};
+  const [changePassword, { loading }] = useChangePassword();
+
+  const onSubmit = ({ password, new_password }) => {
+    changePassword(password, new_password);
+    reset();
+  };
 
   const _handleForgotPassword = () => {
     return openDialog({
@@ -88,6 +95,7 @@ export default function MeProfilePasswordChange() {
           color='primary'
           size='large'
           className={classes.save}
+          disabled={loading}
           onClick={handleSubmit(onSubmit)}
         >
           CHANGE PASSWORD
@@ -108,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
     display: 'flex',
     flexDirection: 'column',
-     [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       width: '100%',
     },
   },

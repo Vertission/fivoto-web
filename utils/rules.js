@@ -43,5 +43,9 @@ export default {
   },
   currentPassword: {
     required: 'please enter your current password',
+    minLength: {
+      value: 6,
+      message: 'invalid password',
+    },
   },
 };
