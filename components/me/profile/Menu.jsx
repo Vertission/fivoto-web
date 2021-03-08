@@ -10,7 +10,6 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import { Link } from '../../common';
 
 export default function MeProfileMenu({ menu, setMenu }) {
-  console.log('🚀 ~ file: Menu.jsx ~ line 13 ~ MeProfileMenu ~ menu', menu, menu === '#edit-profile');
   const classes = useStyles();
 
   return (
@@ -66,8 +65,15 @@ export default function MeProfileMenu({ menu, setMenu }) {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 100,
+    [theme.breakpoints.down('sm')]: {
+      width: 'initial',
+    },
   },
   listItem: {
     alignItem: 'center',
+    [theme.breakpoints.down('sm')]: {
+      paddingRight: 0,
+      paddingLeft: 0,
+    },
   },
 }));

@@ -72,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
     display: 'flex',
     flexDirection: 'column',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
   },
   textField: {
     marginTop: theme.spacing(5),
