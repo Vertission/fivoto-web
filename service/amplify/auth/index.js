@@ -1,14 +1,11 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { Auth } from 'aws-amplify';
 import { useSnackbar } from 'notistack';
-import { useRouter } from 'next/router';
-
-// import { useUpdateUser } from '../../apollo/mutation/user';
 
 // import SignOut from '../../../utils/signOut';
 
 import { Dialog, Modal } from '../../../components/ui';
-import { truncate } from 'lodash';
 
 export function useSignOut() {
   async function signOut() {
@@ -74,7 +71,7 @@ export function useChangePassword() {
   return [changePassword, { loading }];
 }
 
-export function useChangeEmail() {
+export function useChangeEmail(setTab, setEmail) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
   const { enqueueSnackbar } = useSnackbar();
@@ -92,6 +89,10 @@ export function useChangeEmail() {
           horizontal: 'center',
         },
       });
+
+      if (setTab) setTab(0);
+      if (setEmail) setEmail(email);
+
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -110,7 +111,7 @@ export function useChangeEmail() {
         setLoading(false);
 
         const data = { email };
-        handleError(error, 'change your email address', data);
+        handleError({ openDialog, closeDialog }, error, 'change your email address', data);
       }
     }
   }
@@ -120,24 +121,27 @@ export function useChangeEmail() {
 
 export function useResendEmailChangeConfirmationCode() {
   const [loading, setLoading] = useState(false);
+  const [openDialog, closeDialog] = Dialog.useDialog();
+  const { enqueueSnackbar } = useSnackbar();
 
   async function resendEmailChangeConfirmationCode() {
     try {
       setLoading(true);
       const currentUser = await Auth.currentAuthenticatedUser();
       await Auth.verifyUserAttribute(currentUser, 'email');
-      Snackbar.show('Confirmation code send to email');
+
+      enqueueSnackbar('Confirmation code send to email', {
+        variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'center',
+        },
+      });
       setLoading(false);
     } catch (error) {
       setLoading(false);
 
-      Sentry.withScope(function (scope) {
-        scope.setTag('func', 'useResendEmailChangeConfirmationCode:hook');
-        scope.setLevel(Sentry.Severity.Error);
-        Sentry.captureException(error);
-      });
-
-      handleError(error, 'resending confirmation code', {});
+      handleError({ openDialog, closeDialog }, error, 'resending confirmation code', {});
     }
   }
 
@@ -146,41 +150,55 @@ export function useResendEmailChangeConfirmationCode() {
 
 export function useConfirmEmailChange() {
   const [loading, setLoading] = useState(false);
+  const [openDialog, closeDialog] = Dialog.useDialog();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const router = useRouter();
 
   async function confirmEmailChange(code) {
     setLoading(true);
     try {
       await Auth.verifyCurrentUserAttributeSubmit('email', code);
-      setLoading(false);
 
-      Snackbar.show('Email successfully verified');
-      // navigation.navigate('User', { code });
+      enqueueSnackbar('Email verified successfully', {
+        variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'center',
+        },
+      });
+
+      router.push('/');
+
+      setLoading(false);
     } catch (error) {
       setLoading(false);
 
       if (error.code === 'CodeMismatchException') {
-        return Modal.show({
-          title: 'Invalid code',
-          description:
-            'Invalid confirmation code, Please double check your confirmation code and try again or resend the confirmation code.',
-          closeTitle: 'try again',
+        return openDialog({
+          children: (
+            <Modal
+              title='Invalid code'
+              description='Invalid confirmation code, Please double check your confirmation code and try again or resend the confirmation code.'
+              closeTitle='try again'
+              handleClose={closeDialog}
+            />
+          ),
         });
       } else if (error.code === 'ExpiredCodeException') {
-        return Modal.show({
-          title: 'Code expired',
-          description: 'Sorry! Your confirmation code has expired, Please resend code to get a new confirmation code.',
-          closeTitle: 'ok',
+        return openDialog({
+          children: (
+            <Modal
+              title='Code expired'
+              description='Oops! Your confirmation code has expired, Please resend code to get a new confirmation code.'
+              closeTitle='ok'
+              handleClose={closeDialog}
+            />
+          ),
         });
       } else {
-        Sentry.withScope(function (scope) {
-          scope.setTag('func', 'useConfirmEmailChange:hook');
-          scope.setLevel(Sentry.Severity.Critical);
-          scope.setContext('data', { code });
-          Sentry.captureException(error);
-        });
-
         const data = { code };
-        handleError(error, 'verifying confirmation code', data);
+        handleError({ openDialog, closeDialog }, error, 'verifying confirmation code', data);
       }
     }
   }
