@@ -60,9 +60,22 @@ const useStyles = makeStyles((theme) => ({
 export async function getServerSideProps({ req, res }) {
   const { Auth } = withSSRContext({ req });
   try {
-    await Auth.currentAuthenticatedUser();
-    res.writeHead(302, { Location: '/' });
-    res.end();
+    const user = await Auth.currentAuthenticatedUser();
+    if (!user.attributes.email_verified) {
+      return {
+        redirect: {
+          destination: '/me/verify-email',
+          permanent: false,
+        },
+      };
+    } else {
+      return {
+        redirect: {
+          destination: '/me',
+          permanent: false,
+        },
+      };
+    }
   } catch (error) {}
 
   return { props: {} };
