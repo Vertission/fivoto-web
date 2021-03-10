@@ -1,26 +1,33 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useForm, Controller } from 'react-hook-form';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button, Typography } from '@material-ui/core';
 
-import { rules } from '../../../../utils';
+import { rules, snackbar } from '../../../../utils';
 
 import { useQueryMe } from '../../../../apollo/query';
 import { useChangeEmail } from '../../../../service/amplify/auth';
 
 export default function MeProfilePasswordChange() {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+
   const router = useRouter();
 
   const [user] = useQueryMe();
+  const [changeEmail, { loading }] = useChangeEmail(
+    () => {
+      enqueueSnackbar('Email address updated successfully', snackbar.SUCCESS_BOTTOM_CENTER);
+      router.push('/me/verify-email');
+    },
+    () => {
+      enqueueSnackbar('Oops! something went wrong while updating your email address', snackbar.ERROR_BOTTOM_CENTER);
+    }
+  );
 
-  const useChangeEmailCB = () => {
-    router.push('/me/verify-email');
-  };
-
-  const [changeEmail, { loading }] = useChangeEmail(useChangeEmailCB);
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });

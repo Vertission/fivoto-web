@@ -85,6 +85,7 @@ export const ME = gql`
       id
       name
       email
+      email_verified
       profile
       createdAt
       updatedAt

@@ -15,18 +15,18 @@ const errorLink = new onError(({ graphQLErrors, networkError }) => {
   if (process.env.NODE_ENV === 'development') {
     if (graphQLErrors) {
       graphQLErrors.map(({ message, locations, path, code }) => {
-        console.error(
+        console.log(
           `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}, code: ${code}`
         );
 
         if (message === 'NotAuthorizedException') {
-          console.error('User not authorized');
+          console.log('User not authorized');
         }
       });
     }
 
     if (networkError) {
-      console.error(networkError);
+      console.log(networkError);
     }
   }
 

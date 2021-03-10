@@ -7,6 +7,9 @@ import { useSnackbar } from 'notistack';
 
 import { Dialog, Modal } from '../../../components/ui';
 
+import { useQueryMe } from '../../../apollo/query';
+import schema from '../../../apollo/schema';
+
 export function useSignOut() {
   async function signOut() {
     try {
@@ -71,28 +74,29 @@ export function useChangePassword() {
   return [changePassword, { loading }];
 }
 
-export function useChangeEmail(cb) {
+export function useChangeEmail(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
+
+  const [user, { client }] = useQueryMe();
 
   async function changeEmail(email) {
+    email = email.toLowerCase();
+    email = email.trim();
+
     setLoading(true);
     try {
       const currentUser = await Auth.currentAuthenticatedUser();
+
+      if (currentUser.attributes.email === email) return setLoading(false);
+
       await Auth.updateUserAttributes(currentUser, { email });
 
-      enqueueSnackbar('Email changed successfully', {
-        variant: 'success',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'center',
-        },
-      });
-
-      if (cb) cb();
+      const { me } = client.readQuery({ query: schema.query.ME });
+      client.writeQuery({ query: schema.query.ME, data: { me: { ...me, email, email_verified: false } } });
 
       setLoading(false);
+      if (onCompleted) onCompleted(email);
     } catch (error) {
       setLoading(false);
       if (error.code === 'AliasExistsException') {
@@ -108,6 +112,7 @@ export function useChangeEmail(cb) {
         });
       } else {
         setLoading(false);
+        if (onError) onError(error);
 
         const data = { email };
         handleError({ openDialog, closeDialog }, error, 'change your email address', data);
@@ -155,6 +160,9 @@ export function useConfirmEmailChange() {
   const router = useRouter();
 
   async function confirmEmailChange(code) {
+    email = email.toLowerCase();
+    code = code.trim();
+
     setLoading(true);
     try {
       await Auth.verifyCurrentUserAttributeSubmit('email', code);
@@ -211,6 +219,10 @@ export function useResetPassword(setTab) {
   const { enqueueSnackbar } = useSnackbar();
 
   async function resetPassword(email, code, newPassword) {
+    email = email.toLowerCase();
+    email = email.trim();
+    code = code.trim();
+
     try {
       setLoading(true);
       await Auth.forgotPasswordSubmit(email, code, newPassword);
@@ -251,6 +263,9 @@ export function useForgotPassword(setTab) {
   const [sendConfirmationCode] = useSendConfirmationCode();
 
   async function forgotPassword(email) {
+    email = email.toLowerCase();
+    email = email.trim();
+
     setLoading(true);
     try {
       await Auth.forgotPassword(email);
@@ -314,6 +329,9 @@ export function useSendConfirmationCode() {
   const { enqueueSnackbar } = useSnackbar();
 
   async function sendConfirmationCode(email) {
+    email = email.toLowerCase();
+    email = email.trim();
+
     setLoading(true);
     try {
       await Auth.resendSignUp(email);
@@ -341,6 +359,10 @@ export function useConfirmSign(setTab) {
   const { enqueueSnackbar } = useSnackbar();
 
   async function confirmSign(username, code) {
+    username = username.toLowerCase();
+    username = username.trim();
+    code = code.trim();
+
     setLoading(true);
     try {
       const isConfirm = await Auth.confirmSignUp(username, code);
@@ -395,6 +417,9 @@ export function useSignIn(setTab) {
   // NEXT: show contact us if email address not found
 
   async function signIn(email, password) {
+    email = email.toLowerCase();
+    email = email.trim();
+
     setLoading(true);
     try {
       const { username, attributes } = await Auth.signIn(email, password);
@@ -464,6 +489,10 @@ export function useSignUp(setTab) {
   const [openDialog, closeDialog] = Dialog.useDialog();
 
   async function signUp(email, password, name) {
+    email = email.toLowerCase();
+    email = email.trim();
+    name = name.trim();
+
     setLoading(true);
     try {
       await Auth.signUp({
