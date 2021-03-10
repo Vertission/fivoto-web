@@ -1,4 +1,6 @@
 import React from 'react';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
@@ -6,21 +8,29 @@ import { TextField, Button } from '@material-ui/core';
 
 import { useResendEmailChangeConfirmationCode, useConfirmEmailChange } from '../../../../service/amplify/auth';
 
-import { rules } from '../../../../utils';
+import { rules, snackbar } from '../../../../utils';
 
 export default function MeVerifyEmailEmailConfirmation() {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const router = useRouter();
 
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });
 
-  const [confirmEmailChange, { loading }] = useConfirmEmailChange();
+  const [confirmEmailChange, { loading }] = useConfirmEmailChange(() => {
+    enqueueSnackbar('Email verified successfully', snackbar.SUCCESS_BOTTOM_CENTER);
+    router.push('/');
+  });
 
   const [
     resendEmailChangeConfirmationCode,
     { loading: resendEmailChangeConfirmationCodeLoaidng },
-  ] = useResendEmailChangeConfirmationCode();
+  ] = useResendEmailChangeConfirmationCode((email) => {
+    enqueueSnackbar(`Confirmation code send to ${email}`, snackbar.SUCCESS_BOTTOM_CENTER);
+  });
 
   const onSubmit = ({ code }) => {
     confirmEmailChange(code);

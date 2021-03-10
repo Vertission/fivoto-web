@@ -78,7 +78,7 @@ export function useChangeEmail(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
 
-  const [user, { client }] = useQueryMe();
+  const [, { client }] = useQueryMe();
 
   async function changeEmail(email) {
     email = email.toLowerCase();
@@ -123,10 +123,9 @@ export function useChangeEmail(onCompleted, onError) {
   return [changeEmail, { loading }];
 }
 
-export function useResendEmailChangeConfirmationCode() {
+export function useResendEmailChangeConfirmationCode(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   async function resendEmailChangeConfirmationCode() {
     try {
@@ -134,16 +133,11 @@ export function useResendEmailChangeConfirmationCode() {
       const currentUser = await Auth.currentAuthenticatedUser();
       await Auth.verifyUserAttribute(currentUser, 'email');
 
-      enqueueSnackbar('Confirmation code send to email', {
-        variant: 'success',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'center',
-        },
-      });
       setLoading(false);
+      if (onCompleted) onCompleted(currentUser.attributes.email);
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
       handleError({ openDialog, closeDialog }, error, 'resending confirmation code', {});
     }
@@ -152,34 +146,27 @@ export function useResendEmailChangeConfirmationCode() {
   return [resendEmailChangeConfirmationCode, { loading }];
 }
 
-export function useConfirmEmailChange() {
+export function useConfirmEmailChange(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
-  const router = useRouter();
+  const [, { client }] = useQueryMe();
 
   async function confirmEmailChange(code) {
-    email = email.toLowerCase();
     code = code.trim();
 
     setLoading(true);
     try {
       await Auth.verifyCurrentUserAttributeSubmit('email', code);
 
-      enqueueSnackbar('Email verified successfully', {
-        variant: 'success',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'center',
-        },
-      });
-
-      router.push('/');
+      const { me } = client.readQuery({ query: schema.query.ME });
+      client.writeQuery({ query: schema.query.ME, data: { me: { ...me, email_verified: true } } });
 
       setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError(); // TODO: do for all like this
 
       if (error.code === 'CodeMismatchException') {
         return openDialog({

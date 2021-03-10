@@ -19,8 +19,9 @@ export default function MeProfilePasswordChange() {
 
   const [user] = useQueryMe();
   const [changeEmail, { loading }] = useChangeEmail(
-    () => {
+    (email) => {
       enqueueSnackbar('Email address updated successfully', snackbar.SUCCESS_BOTTOM_CENTER);
+      enqueueSnackbar(`Email Confirmation code send to ${email}`, snackbar.WARN_TOP_CENTER);
       router.push('/me/verify-email');
     },
     () => {

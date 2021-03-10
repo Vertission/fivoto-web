@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
@@ -6,21 +7,22 @@ import { TextField, Button } from '@material-ui/core';
 
 import { useChangeEmail } from '../../../../service/amplify/auth';
 
-import { rules } from '../../../../utils';
+import { rules, snackbar } from '../../../../utils';
 
 export default function MeVerifyEmailEmailChange({ setTab, email, setEmail }) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });
 
-  const useChangeEmailCB = () => {
+  const [changeEmail, { loading }] = useChangeEmail((email) => {
+    enqueueSnackbar('Email address updated successfully', snackbar.SUCCESS_BOTTOM_CENTER);
+    enqueueSnackbar(`Email Confirmation code send to ${email}`, snackbar.WARN_TOP_CENTER);
     setTab(0);
     setEmail(email);
-  };
-
-  const [changeEmail, { loading }] = useChangeEmail(useChangeEmailCB);
+  });
 
   const onSubmit = ({ email }) => {
     changeEmail(email);

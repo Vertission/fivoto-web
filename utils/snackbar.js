@@ -20,4 +20,25 @@ export default {
       horizontal: 'center',
     },
   },
+  SUCCESS_TOP_CENTER: {
+    variant: 'success',
+    anchorOrigin: {
+      vertical: 'top',
+      horizontal: 'center',
+    },
+  },
+  WARN_TOP_CENTER: {
+    variant: 'warning',
+    anchorOrigin: {
+      vertical: 'top',
+      horizontal: 'center',
+    },
+  },
+  ERROR_TOP_CENTER: {
+    variant: 'error',
+    anchorOrigin: {
+      vertical: 'top',
+      horizontal: 'center',
+    },
+  },
 };
