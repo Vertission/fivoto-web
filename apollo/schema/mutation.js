@@ -11,3 +11,9 @@ export const UPDATE_AD = gql`
     updateAd(data: $data)
   }
 `;
+
+export const UPDATE_USER = gql`
+  mutation($name: String, $profile: String) {
+    updateUser(name: $name, profile: $profile)
+  }
+`;

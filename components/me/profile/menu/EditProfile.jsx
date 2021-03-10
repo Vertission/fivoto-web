@@ -1,22 +1,34 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Avatar, Button, IconButton, CircularProgress } from '@material-ui/core';
 
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 
-import { rules } from '../../../../utils';
+import { rules, snackbar } from '../../../../utils';
 
 import { useQueryMe } from '../../../../apollo/query';
 import { useUpdateUser } from '../../../../apollo/mutation';
 
 export default function MeProfileEditProfile() {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const [user, { loading: userLoading }] = useQueryMe();
-  const [updateUser, { loading: updateUserLoading }] = useUpdateUser();
-  const [profile, setProfile] = useState(user.profile);
+  const [profile, setProfile] = useState(null);
+
+  const [updateUser, { loading: updateUserLoading }] = useUpdateUser(
+    () => {
+      enqueueSnackbar('Profile updated successfully', snackbar.SUCCESS_BOTTOM_CENTER);
+    },
+    () => {
+      enqueueSnackbar('Oops! Something went wrong while updating profile', snackbar.ERROR_BOTTOM_CENTER);
+    }
+  );
+  const [user, { loading: userLoading }] = useQueryMe(({ me }) => {
+    setProfile(me.profile);
+  });
 
   const { control, handleSubmit, errors, register } = useForm({
     mode: 'onBlur',

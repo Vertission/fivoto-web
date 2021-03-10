@@ -1,27 +1,14 @@
 import { useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
-import { useSnackbar } from 'notistack';
 
 import profile from '../../service/amplify/storage/profile';
 
-const UPDATE_USER = gql`
-  mutation updateUser($data: updateUserInput!) {
-    updateUser(data: $data) {
-      id
-      name
-      email
-      profile
-      createdAt
-      updatedAt
-    }
-  }
-`;
+import schema from '../schema';
 
-export default function useUpdateUser(user) {
-  const [mutate] = useMutation(UPDATE_USER);
+export default function useUpdateUser(onCompleted, onError) {
+  const [mutate, { client }] = useMutation(schema.mutation.UPDATE_USER);
 
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   async function updateUser(data, user_id) {
     setLoading(true);
@@ -39,16 +26,20 @@ export default function useUpdateUser(user) {
         },
       });
 
-      enqueueSnackbar('Profile updated successfully', {
-        variant: 'success',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'center',
-        },
-      });
+      const { me } = client.cache.readQuery({ query: schema.query.ME });
+
+      if (data.profile) {
+        data.profile = [process.env.NEXT_PUBLIC_AWS_S3_PREFIX, data.profile].join('');
+      }
+
+      client.cache.writeQuery({ query: schema.query.ME, data: { me: { ...me, ...data } } });
       setLoading(false);
+      if (onCompleted) onCompleted({ ...me, ...data });
     } catch (error) {
+      console.log(error);
+
       setLoading(false);
+      if (onError) onError(error);
     }
   }
 

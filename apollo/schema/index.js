@@ -1,5 +1,5 @@
-import { AD, CATEGORY, SEARCH, LOCATION, FIELD, QUERY_ME } from './query';
-import { CREATE_AD, UPDATE_AD } from './mutation';
+import { AD, CATEGORY, SEARCH, LOCATION, FIELD, ME, CONFIG } from './query';
+import { CREATE_AD, UPDATE_AD, UPDATE_USER } from './mutation';
 
 export default {
   query: {
@@ -8,7 +8,8 @@ export default {
     SEARCH,
     LOCATION,
     FIELD,
-    QUERY_ME,
+    ME,
+    CONFIG,
   },
-  mutation: { CREATE_AD, UPDATE_AD },
+  mutation: { CREATE_AD, UPDATE_AD, UPDATE_USER },
 };

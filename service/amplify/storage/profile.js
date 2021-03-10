@@ -5,5 +5,7 @@ export default async function profile(photo, user_id) {
     contentType: 'image/jpeg',
   });
 
-  if (res.key) return res.key;
+  console.log(res);
+
+  if (res.key) return [res.key, '?updated=', Date.now()].join('');
 }

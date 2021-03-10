@@ -30,6 +30,12 @@ export const AD = gql`
   }
 `;
 
+export const CONFIG = gql`
+  query {
+    config
+  }
+`;
+
 export const CATEGORY = gql`
   query {
     category
@@ -73,7 +79,7 @@ export const SEARCH = gql`
   }
 `;
 
-export const QUERY_ME = gql`
+export const ME = gql`
   query me {
     me {
       id

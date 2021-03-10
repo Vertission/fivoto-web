@@ -1,22 +1,12 @@
 import { useQuery, gql } from '@apollo/client';
 
-const QUERY_ME = gql`
-  query me {
-    me {
-      id
-      name
-      email
-      profile
-      createdAt
-      updatedAt
-    }
-  }
-`;
+import schema from '../schema';
 
-export function useQueryMe(schema = QUERY_ME) {
-  const { data, loading, refetch, client, error } = useQuery(schema, {
+export function useQueryMe(onCompleted, onError) {
+  const { data, loading, refetch, client, error } = useQuery(schema.query.ME, {
     notifyOnNetworkStatusChange: true,
-    onError(error) {},
+    onCompleted,
+    onError,
   });
 
   return [data?.me, { loading, refetch, client, error, data }];
