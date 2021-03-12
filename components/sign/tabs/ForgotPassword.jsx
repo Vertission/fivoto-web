@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
@@ -6,18 +7,22 @@ import { TextField, InputAdornment, Button, Typography, LinearProgress } from '@
 
 import EmailIcon from '@material-ui/icons/Email';
 
-import { rules } from '../../../utils/index';
+import { rules, snackbar } from '../../../utils/index';
 
 import { useForgotPassword } from '../../../service/amplify/auth';
 
 const SignTabsLogin = ({ setTab, email, setEmail }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { control, handleSubmit, errors } = useForm({
+  const { control, handleSubmit, errors, getValues } = useForm({
     mode: 'onBlur',
   });
 
-  const [forgotPassword, { loading }] = useForgotPassword(setTab);
+  const [forgotPassword, { loading }] = useForgotPassword(() => {
+    enqueueSnackbar(`Verification code send to ${getValues('email')}`, snackbar.SUCCESS_BOTTOM_LEFT);
+    setTab(0);
+  });
 
   const onSubmit = ({ email }) => {
     forgotPassword(email);

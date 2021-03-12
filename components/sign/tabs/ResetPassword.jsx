@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
@@ -6,7 +7,7 @@ import { TextField, InputAdornment, Button, Typography, LinearProgress } from '@
 
 import EmailIcon from '@material-ui/icons/Email';
 
-import { rules } from '../../../utils/index';
+import { rules, snackbar } from '../../../utils/index';
 
 import { PasswordField } from '../../ui';
 
@@ -14,12 +15,16 @@ import { useResetPassword } from '../../../service/amplify/auth';
 
 const SignTabsLogin = ({ setTab, email }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });
 
-  const [resetPassword, { loading }] = useResetPassword(setTab);
+  const [resetPassword, { loading }] = useResetPassword(() => {
+    enqueueSnackbar('Password reset successfully', snackbar.SUCCESS_BOTTOM_LEFT);
+    setTab(2);
+  });
 
   const onSubmit = ({ code, password }) => {
     resetPassword(email, code, password);

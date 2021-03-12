@@ -3,53 +3,49 @@ import { useRouter } from 'next/router';
 import { Auth } from 'aws-amplify';
 import { useSnackbar } from 'notistack';
 
-// import SignOut from '../../../utils/signOut';
-
 import { Dialog, Modal } from '../../../components/ui';
 
 import { useQueryMe } from '../../../apollo/query';
 import schema from '../../../apollo/schema';
 
-export function useSignOut() {
+export function useSignOut(onCompleted, onError) {
+  const [, { client }] = useQueryMe();
+
   async function signOut() {
     try {
       await Auth.signOut();
-      SignOut();
-      Sentry.configureScope((scope) => scope.setUser(null));
-      await analytics().setUserId(null); // ANALYTIC
+      client.clearStore();
+      window.localStorage.clear();
+      window.location.reload();
+
+      if (onCompleted) onCompleted();
     } catch (error) {
-      Sentry.withScope(function (scope) {
-        scope.setTag('func', 'useSignOut:hook');
-        scope.setLevel(Sentry.Severity.Error);
-        Sentry.captureException(error);
-      });
+      client.clearStore();
+      window.localStorage.clear();
+
+      if (onError) onError();
     }
   }
 
   return [signOut];
 }
 
-export function useChangePassword() {
+export function useChangePassword(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   async function changePassword(oldPassword, newPassword) {
     setLoading(true);
     try {
       const currentUser = await Auth.currentAuthenticatedUser();
       await Auth.changePassword(currentUser, oldPassword, newPassword);
-      setLoading(false);
 
-      enqueueSnackbar('Password changed successfully', {
-        variant: 'success',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'center',
-        },
-      });
+      setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
+
       if (error.code === 'NotAuthorizedException') {
         return openDialog({
           children: (
@@ -99,6 +95,8 @@ export function useChangeEmail(onCompleted, onError) {
       if (onCompleted) onCompleted(email);
     } catch (error) {
       setLoading(false);
+      if (onError) onError(error);
+
       if (error.code === 'AliasExistsException') {
         return openDialog({
           children: (
@@ -111,9 +109,6 @@ export function useChangeEmail(onCompleted, onError) {
           ),
         });
       } else {
-        setLoading(false);
-        if (onError) onError(error);
-
         const data = { email };
         handleError({ openDialog, closeDialog }, error, 'change your email address', data);
       }
@@ -166,7 +161,7 @@ export function useConfirmEmailChange(onCompleted, onError) {
       if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
-      if (onError) onError(); // TODO: do for all like this
+      if (onError) onError();
 
       if (error.code === 'CodeMismatchException') {
         return openDialog({
@@ -200,10 +195,9 @@ export function useConfirmEmailChange(onCompleted, onError) {
   return [confirmEmailChange, { loading }];
 }
 
-export function useResetPassword(setTab) {
+export function useResetPassword(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   async function resetPassword(email, code, newPassword) {
     email = email.toLowerCase();
@@ -213,14 +207,13 @@ export function useResetPassword(setTab) {
     try {
       setLoading(true);
       await Auth.forgotPasswordSubmit(email, code, newPassword);
-      setLoading(false);
 
-      enqueueSnackbar('Password reset successfully', {
-        variant: 'success',
-      });
-      setTab(2);
+      setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
+
       if (error.code === 'CodeMismatchException') {
         return openDialog({
           children: (
@@ -242,10 +235,9 @@ export function useResetPassword(setTab) {
   return [resetPassword, { loading }];
 }
 
-export function useForgotPassword(setTab) {
+export function useForgotPassword(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   const [sendConfirmationCode] = useSendConfirmationCode();
 
@@ -256,14 +248,12 @@ export function useForgotPassword(setTab) {
     setLoading(true);
     try {
       await Auth.forgotPassword(email);
-      setLoading(false);
 
-      setTab(0);
-      enqueueSnackbar(`Verification code send to ${email}`, {
-        variant: 'success',
-      });
+      setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
       if (error.code === 'UserNotFoundException') {
         return openDialog({
@@ -307,13 +297,9 @@ export function useForgotPassword(setTab) {
   return [forgotPassword, { loading }];
 }
 
-/**
- * Resend confirmation code
- */
-export function useSendConfirmationCode() {
+export function useSendConfirmationCode(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   async function sendConfirmationCode(email) {
     email = email.toLowerCase();
@@ -322,12 +308,12 @@ export function useSendConfirmationCode() {
     setLoading(true);
     try {
       await Auth.resendSignUp(email);
-      enqueueSnackbar('Confirmation code send to your email', {
-        variant: 'success',
-      });
+
       setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
       const data = { email };
       handleError({ openDialog, closeDialog }, error, 'sending confirmation code', data);
@@ -337,13 +323,9 @@ export function useSendConfirmationCode() {
   return [sendConfirmationCode, { loading }];
 }
 
-/**
- * Registration email confirmation hook
- */
-export function useConfirmSign(setTab) {
+export function useConfirmSign(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   async function confirmSign(username, code) {
     username = username.toLowerCase();
@@ -353,14 +335,15 @@ export function useConfirmSign(setTab) {
     setLoading(true);
     try {
       const isConfirm = await Auth.confirmSignUp(username, code);
+
       if (isConfirm === 'SUCCESS') {
-        enqueueSnackbar('Email successfully confirmed', { variant: 'success' });
-        setTab(2);
+        if (onCompleted) onCompleted();
       }
 
       setLoading(false);
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
       if (error.code === 'CodeMismatchException') {
         return openDialog({
@@ -394,14 +377,11 @@ export function useConfirmSign(setTab) {
   return [confirmSign, { loading }];
 }
 
-export function useSignIn(setTab) {
+export function useSignIn(onCompleted, onError) {
   const [sendConfirmationCode] = useSendConfirmationCode();
-  const router = useRouter();
-  const { enqueueSnackbar } = useSnackbar();
+
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-
-  // NEXT: show contact us if email address not found
 
   async function signIn(email, password) {
     email = email.toLowerCase();
@@ -411,17 +391,11 @@ export function useSignIn(setTab) {
     try {
       const { username, attributes } = await Auth.signIn(email, password);
 
-      // Sentry.setUser({ id: username, email: attributes.email });
-      // await analytics().logLogin({ method: 'email' }); // ANALYTIC
-      // await analytics().setUserId(username); // ANALYTIC
-
-      localStorage.setItem('@sign', true);
-
       setLoading(false);
-      enqueueSnackbar('Login successfully', { variant: 'success' });
-      router.push('/');
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
       if (error.code === 'UserNotFoundException') {
         return openDialog({
@@ -470,9 +444,8 @@ export function useSignIn(setTab) {
 /**
  * Sign up hook
  */
-export function useSignUp(setTab) {
+export function useSignUp(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const [openDialog, closeDialog] = Dialog.useDialog();
 
   async function signUp(email, password, name) {
@@ -488,12 +461,12 @@ export function useSignUp(setTab) {
         attributes: { name },
       });
 
-      // await analytics().logSignUp({ method: 'email' }); // ANALYTIC
-      setTab(4);
       setLoading(false);
-      enqueueSnackbar('Account registered successfully', { variant: 'success' });
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
+
       if (error.code === 'UsernameExistsException') {
         return openDialog({
           children: (

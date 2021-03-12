@@ -1,4 +1,6 @@
 import React from 'react';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
@@ -7,18 +9,23 @@ import { TextField, InputAdornment, Button, LinearProgress, Typography } from '@
 import EmailIcon from '@material-ui/icons/Email';
 
 import { PasswordField } from '../../ui';
-import { rules } from '../../../utils/index';
+import { rules, snackbar } from '../../../utils/index';
 
 import { useSignIn } from '../../../service/amplify/auth';
 
 const SignTabsLogin = ({ setTab, email, setEmail }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });
 
-  const [signIn, { loading }] = useSignIn(setTab);
+  const [signIn, { loading }] = useSignIn(() => {
+    enqueueSnackbar('Sign In successfully', snackbar.SUCCESS_BOTTOM_LEFT);
+    router.push('/');
+  });
 
   const onSubmit = ({ email, password }) => {
     signIn(email, password);

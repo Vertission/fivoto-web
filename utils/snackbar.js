@@ -41,4 +41,25 @@ export default {
       horizontal: 'center',
     },
   },
+  SUCCESS_BOTTOM_LEFT: {
+    variant: 'success',
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left',
+    },
+  },
+  WARN_BOTTOM_LEFT: {
+    variant: 'warning',
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left',
+    },
+  },
+  ERROR_BOTTOM_LEFT: {
+    variant: 'error',
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left',
+    },
+  },
 };

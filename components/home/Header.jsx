@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Auth } from 'aws-amplify';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -25,10 +26,12 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { Link } from '../common';
 import { Logo, PostButton, Avatar } from '../ui';
+import { snackbar } from '../../utils';
 
 import { useQueryMe } from '../../apollo/query';
+import { useSignOut } from '../../service/amplify/auth';
 
-export default function HomeHeader({ authenticated }) {
+export default function HomeHeader() {
   const classes = useStyles();
 
   const [sign, setSign] = useState(null);
@@ -79,15 +82,28 @@ export default function HomeHeader({ authenticated }) {
 }
 
 function Authenticated() {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [user, { loading }] = useQueryMe();
+  const [signOut] = useSignOut(
+    () => {
+      enqueueSnackbar('Signed out successfully', snackbar.SUCCESS_BOTTOM_CENTER);
+    },
+    () => {
+      enqueueSnackbar(
+        'Something went wrong while signing out, Please clear your browser cache',
+        snackbar.WARN_BOTTOM_CENTER
+      );
+    }
+  );
 
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
-  const handleClickMenu = (event) => {
+  const _handleClickMenu = (event) => {
     setMenuAnchorEl(event.currentTarget);
   };
 
-  const handleCloseMenu = () => {
+  const _handleCloseMenu = () => {
     setMenuAnchorEl(null);
   };
 
@@ -116,10 +132,10 @@ function Authenticated() {
       </IconButton>
     </Tooltip> */}
         <div>
-          <IconButton size='small' onClick={handleClickMenu}>
+          <IconButton size='small' onClick={_handleClickMenu}>
             <Avatar url={user.profile} name={user.name} />
           </IconButton>
-          <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={handleCloseMenu}>
+          <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={_handleCloseMenu}>
             <MenuItem component={Link} href='/me/profile#edit-profile'>
               <ListItemIcon>
                 <AccountCircleIcon color='primary' fontSize='small' />
@@ -132,7 +148,7 @@ function Authenticated() {
               </ListItemIcon>
               <ListItemText primary='My Ads' />
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={signOut}>
               <ListItemIcon>
                 <ExitToAppIcon color='error' fontSize='small' />
               </ListItemIcon>

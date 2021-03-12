@@ -1,24 +1,33 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button, Typography } from '@material-ui/core';
 
 import { PasswordField, Dialog, Modal } from '../../../ui';
 
-import { rules } from '../../../../utils';
+import { rules, snackbar } from '../../../../utils';
 
 import { useChangePassword } from '../../../../service/amplify/auth';
 
 export default function MeProfilePasswordChange() {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const [openDialog, closeDialog] = Dialog.useDialog();
 
   const { control, handleSubmit, errors, reset } = useForm({
     mode: 'onBlur',
   });
 
-  const [changePassword, { loading }] = useChangePassword();
+  const [changePassword, { loading }] = useChangePassword(
+    () => {
+      enqueueSnackbar('Password changed successfully', snackbar.SUCCESS_BOTTOM_CENTER);
+    },
+    () => {
+      enqueueSnackbar('Oops! Something went wrong while changing your password', snackbar.ERROR_BOTTOM_CENTER);
+    }
+  );
 
   const onSubmit = ({ password, new_password }) => {
     changePassword(password, new_password);

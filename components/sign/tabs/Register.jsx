@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
@@ -9,18 +10,22 @@ import EmailIcon from '@material-ui/icons/Email';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { PasswordField } from '../../ui';
-import { rules } from '../../../utils';
+import { rules, snackbar } from '../../../utils';
 
 import { useSignUp } from '../../../service/amplify/auth';
 
 const SignTabsRegister = ({ setTab, setEmail }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });
 
-  const [signUp, { loading }] = useSignUp(setTab);
+  const [signUp, { loading }] = useSignUp(() => {
+    setTab(4);
+    enqueueSnackbar('Signed up successfully', snackbar.SUCCESS_BOTTOM_LEFT);
+  });
 
   const onSubmit = ({ name, email, password }) => {
     signUp(email, password, name);
