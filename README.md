@@ -7,3 +7,9 @@
 - sign
 - post
 - chat
+
+### DATA collections
+
+- total ads posted
+- rejecting percentage
+- viewing ads

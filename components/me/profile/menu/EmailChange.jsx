@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button, Typography } from '@material-ui/core';
+import { TextField, Button, Typography, CircularProgress } from '@material-ui/core';
 
 import { rules, snackbar } from '../../../../utils';
 
@@ -17,8 +17,8 @@ export default function MeProfilePasswordChange() {
 
   const router = useRouter();
 
-  const [user] = useQueryMe();
-  const [changeEmail, { loading }] = useChangeEmail(
+  const [user, { loading: userLoading }] = useQueryMe();
+  const [changeEmail, { loading: changeEmailLoading }] = useChangeEmail(
     (email) => {
       enqueueSnackbar('Email address updated successfully', snackbar.SUCCESS_BOTTOM_CENTER);
       enqueueSnackbar(`Email Confirmation code send to ${email}`, snackbar.WARN_TOP_CENTER);
@@ -37,48 +37,55 @@ export default function MeProfilePasswordChange() {
     changeEmail(email);
   };
 
-  return (
-    <div className={classes.root}>
-      <form className={classes.form}>
-        {/* EMAIL ADDRESS  */}
-        <Controller
-          name='email'
-          control={control}
-          rules={rules.email}
-          defaultValue={user.email}
-          render={({ onChange, value }) => (
-            <TextField
-              label='Email Address'
-              variant='outlined'
-              className={classes.textField}
-              name='email'
-              fullWidth
-              type='email'
-              error={errors?.email}
-              helperText={errors?.email?.message}
-              onChange={onChange}
-              value={value}
-            />
-          )}
-        />
+  if (userLoading)
+    return (
+      <div className={classes.root_circular}>
+        <CircularProgress />
+      </div>
+    );
+  else
+    return (
+      <div className={classes.root}>
+        <form className={classes.form}>
+          {/* EMAIL ADDRESS  */}
+          <Controller
+            name='email'
+            control={control}
+            rules={rules.email}
+            defaultValue={user.email}
+            render={({ onChange, value }) => (
+              <TextField
+                label='Email Address'
+                variant='outlined'
+                className={classes.textField}
+                name='email'
+                fullWidth
+                type='email'
+                error={errors?.email}
+                helperText={errors?.email?.message}
+                onChange={onChange}
+                value={value}
+              />
+            )}
+          />
 
-        <Typography className={classes.message}>
-          Please enter your new email address and submit to receive email confirmation code.
-        </Typography>
+          <Typography className={classes.message}>
+            Please enter your new email address and submit to receive email confirmation code.
+          </Typography>
 
-        <Button
-          variant='contained'
-          color='primary'
-          size='large'
-          className={classes.submit}
-          disabled={loading}
-          onClick={handleSubmit(onSubmit)}
-        >
-          CHANGE EMAIL
-        </Button>
-      </form>
-    </div>
-  );
+          <Button
+            variant='contained'
+            color='primary'
+            size='large'
+            className={classes.submit}
+            disabled={changeEmailLoading}
+            onClick={handleSubmit(onSubmit)}
+          >
+            CHANGE EMAIL
+          </Button>
+        </form>
+      </div>
+    );
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -86,6 +93,12 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     display: 'flex',
     justifyContent: 'center',
+  },
+  root_circular: {
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   form: {
     width: 500,

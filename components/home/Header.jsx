@@ -15,8 +15,10 @@ import {
   CircularProgress,
   Avatar as MuiAvatar,
 } from '@material-ui/core';
+
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AppsIcon from '@material-ui/icons/Apps';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 // import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 // import BookmarkIcon from '@material-ui/icons/Bookmark';
@@ -136,17 +138,23 @@ function Authenticated() {
             <Avatar url={user.profile} name={user.name} />
           </IconButton>
           <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={_handleCloseMenu}>
-            <MenuItem component={Link} href='/me/profile#edit-profile'>
+            <MenuItem component={Link} href='/me'>
               <ListItemIcon>
-                <AccountCircleIcon color='primary' fontSize='small' />
+                <DashboardIcon color='primary' fontSize='small' />
               </ListItemIcon>
-              <ListItemText primary='Profile' />
+              <ListItemText primary='Dashboard' />
             </MenuItem>
             <MenuItem component={Link} href='/me/ads'>
               <ListItemIcon>
                 <AppsIcon color='primary' fontSize='small' />
               </ListItemIcon>
               <ListItemText primary='My Ads' />
+            </MenuItem>
+            <MenuItem component={Link} href='/me/profile#edit-profile'>
+              <ListItemIcon>
+                <AccountCircleIcon color='primary' fontSize='small' />
+              </ListItemIcon>
+              <ListItemText primary='Profile' />
             </MenuItem>
             <MenuItem onClick={signOut}>
               <ListItemIcon>

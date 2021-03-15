@@ -1,3 +1,3 @@
-export { default } from './Me';
-export { default as Menu } from './Menu';
-export { default as Header } from './Header';
+export { default as Drawer } from './Drawer';
+
+export { Dashboard as DashboardSection } from './sections';
