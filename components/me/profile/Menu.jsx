@@ -15,7 +15,7 @@ export default function MeProfileMenu({ menu, setMenu }) {
   return (
     <List component='nav' className={classes.root} disablePadding>
       {/* Profile  */}
-      <ListItem className={classes.listItem} component={Link} href='/me/profile#edit-profile'>
+      <ListItem className={classes.listItem} component={Link} href='/me#edit-profile'>
         <ListItemIcon>
           <Tooltip title='Profile' placement='right'>
             <IconButton onClick={() => setMenu('#edit-profile')}>
@@ -26,7 +26,7 @@ export default function MeProfileMenu({ menu, setMenu }) {
         <ListItemText />
       </ListItem>
       {/* Password  */}
-      <ListItem className={classes.listItem} component={Link} href='/me/profile#password-change'>
+      <ListItem className={classes.listItem} component={Link} href='/me#password-change'>
         <ListItemIcon>
           <Tooltip title='Password' placement='right'>
             <IconButton onClick={() => setMenu('#password-change')}>
@@ -37,7 +37,7 @@ export default function MeProfileMenu({ menu, setMenu }) {
         <ListItemText />
       </ListItem>
       {/* Email */}
-      <ListItem className={classes.listItem} component={Link} href='/me/profile#email-change'>
+      <ListItem className={classes.listItem} component={Link} href='/me#email-change'>
         <ListItemIcon>
           <Tooltip title='Email' placement='right'>
             <IconButton onClick={() => setMenu('#email-change')}>
@@ -50,7 +50,7 @@ export default function MeProfileMenu({ menu, setMenu }) {
       {/* SETTINGS */}
       <ListItem className={classes.listItem}>
         <ListItemIcon>
-          <Tooltip title='Settings' placement='right' component={Link} href='/me/profile#settings'>
+          <Tooltip title='Settings' placement='right' component={Link} href='/me#settings'>
             <IconButton onClick={() => setMenu('#settings')}>
               <SettingsIcon color={menu === '#settings' ? 'primary' : 'disabled'} fontSize='large' />
             </IconButton>
