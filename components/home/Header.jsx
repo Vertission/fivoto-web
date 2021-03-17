@@ -138,11 +138,11 @@ function Authenticated() {
             <Avatar url={user.profile} name={user.name} />
           </IconButton>
           <Menu anchorEl={menuAnchorEl} keepMounted open={Boolean(menuAnchorEl)} onClose={_handleCloseMenu}>
-            <MenuItem component={Link} href='/me/ads'>
+            <MenuItem component={Link} href='/me/advert'>
               <ListItemIcon>
                 <AppsIcon color='primary' fontSize='small' />
               </ListItemIcon>
-              <ListItemText primary='My Ads' />
+              <ListItemText primary='Advert' />
             </MenuItem>
             <MenuItem component={Link} href='/me#edit-profile'>
               <ListItemIcon>

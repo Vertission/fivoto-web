@@ -1,6 +1,8 @@
 ### NEXT TODO
 
 - fix error logs
+- add alt for ad images
+- Fix error handling in oauth
 
 ### FEATURES TO ADD
 

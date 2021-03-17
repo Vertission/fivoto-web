@@ -1,8 +1,15 @@
 import React from 'react';
 import { withSSRContext } from 'aws-amplify';
 
-export default function MeProfilePage() {
-  return <React.Fragment></React.Fragment>;
+import { Header, AdsPublished } from '../../components/me/advert';
+
+export default function MeAvert() {
+  return (
+    <React.Fragment>
+      <Header />
+      <AdsPublished />
+    </React.Fragment>
+  );
 }
 
 export async function getServerSideProps({ req, res }) {
