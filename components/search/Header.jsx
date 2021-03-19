@@ -17,6 +17,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import LabelIcon from '@material-ui/icons/Label';
+import HomeIcon from '@material-ui/icons/Home';
+
+import { Link } from '../common';
 
 import { dispatch, Context } from './modules/context';
 
@@ -79,11 +82,7 @@ export default function SearchHeader({ state }) {
           </Button>
 
           <div className={classes.search}>
-            <IconButton
-              type='submit'
-              className={classes.searchIcon}
-              onClick={() => _onHandleSearchQuery(search)}
-            >
+            <IconButton type='submit' className={classes.searchIcon} onClick={() => _onHandleSearchQuery(search)}>
               <SearchIcon color='inherit' />
             </IconButton>
             <InputBase
@@ -107,6 +106,10 @@ export default function SearchHeader({ state }) {
               <CloseIcon color='inherit' />
             </IconButton>
           </div>
+
+          <IconButton component={Link} href={`/`} className={classes.buttonHome}>
+            <HomeIcon fontSize='large' />
+          </IconButton>
         </Toolbar>
       </AppBar>
 
@@ -197,5 +200,8 @@ const useStyles = makeStyles((theme) => ({
   },
   button_label: {
     color: theme.palette.secondary.main,
+  },
+  buttonHome: {
+    marginLeft: 'auto',
   },
 }));

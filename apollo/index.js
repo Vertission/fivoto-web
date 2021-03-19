@@ -60,8 +60,9 @@ const authLink = setContext(async (_, { headers }) => {
       },
     };
   } catch (error) {
+    console.log(error);
     if (error === 'No current user') return null;
-    Sentry.captureException(error);
+    // Sentry.captureException(error);
   }
 });
 

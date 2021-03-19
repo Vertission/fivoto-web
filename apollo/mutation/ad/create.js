@@ -38,7 +38,6 @@ export default function useCreateMutation(setLoading) {
       } = await mutateCreateAd({
         variables: {
           data: {
-            type: 'SELL',
             category: data.category,
             location: data.location,
             title: data.title.trim(),
