@@ -13,7 +13,7 @@ export const UPDATE_AD = gql`
 `;
 
 export const UPDATE_USER = gql`
-  mutation($name: String, $profile: String) {
-    updateUser(name: $name, profile: $profile)
+  mutation($data: updateUserInput!) {
+    updateUser(data: $data)
   }
 `;

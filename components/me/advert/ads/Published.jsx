@@ -1,20 +1,45 @@
+import { gql, useQuery } from '@apollo/client';
+import { format } from 'timeago.js';
+
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Container, Card, CardActions, CardMedia, Typography, Button } from '@material-ui/core';
+import { Container, Card, CardActions, CardMedia, Typography, Button, CircularProgress } from '@material-ui/core';
 
 import { Dialog, Modal } from '../../../ui';
+
+const ME_PUBLISHED_ADS = gql`
+  query {
+    me {
+      publishedAds {
+        id
+        title
+        price
+        photos
+        createdAt
+        expireAt
+      }
+    }
+  }
+`;
 
 export default function MeAdvertAdsPublished() {
   const classes = useStyles();
 
-  return (
-    <Container className={classes.root}>
-      <Ad />
-      <Ad />
-      <Ad />
-      <Ad />
-      <Ad />
-    </Container>
-  );
+  const { data, loading } = useQuery(ME_PUBLISHED_ADS);
+
+  if (loading)
+    return (
+      <div className={classes.loading}>
+        <CircularProgress />
+      </div>
+    );
+  else
+    return (
+      <Container className={classes.root}>
+        {data.me.publishedAds.map((ad) => (
+          <Ad {...ad} />
+        ))}
+      </Container>
+    );
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -22,9 +47,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
+  loading: {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }));
 
-function Ad() {
+function Ad({ id, title, price, photos, createdAt, expireAt }) {
   const classes = useStylesAd();
   const theme = useTheme();
 
@@ -52,29 +83,27 @@ function Ad() {
   return (
     <Card className={classes.card}>
       <CardMedia component='div' className={classes.cardMedia}>
-        <img src='https://material-ui.com/static/images/cards/contemplative-reptile.jpg' className={classes.img} />
+        <img src={photos[0]} className={classes.img} />
       </CardMedia>
-      <Typography variant='body2' className={classes.title}>
-        Baseus Superlative Multifunctional Hub WITH iWatch Wireless Charger
-      </Typography>
-
-      <CardActions className={classes.cardActions}>
-        <Button size='small' color='primary'>
-          View
-        </Button>
-        <Button size='small' style={{ color: theme.palette.warning.main }}>
-          Edit
-        </Button>
-        <Button size='small' style={{ color: theme.palette.error.main }} onClick={_handleOpenDeleteDialog}>
-          Delete
-        </Button>
-      </CardActions>
-      <div className={classes.date}>
-        <Typography variant='caption' className={classes.time}>
-          20-12-2020
+      <div className={classes.cardContent}>
+        <Typography variant='subtitle1'>{title}</Typography>
+        <Typography color='primary' variant='subtitle2' className={classes.price}>
+          {price}
         </Typography>
-        <Typography variant='caption' className={classes.time}>
-          EXP: 12 days
+
+        <CardActions className={classes.cardActions}>
+          <Button size='small' color='primary'>
+            View
+          </Button>
+          <Button size='small' style={{ color: theme.palette.warning.main }}>
+            Edit
+          </Button>
+          <Button size='small' style={{ color: theme.palette.error.main }} onClick={_handleOpenDeleteDialog}>
+            Delete
+          </Button>
+        </CardActions>
+        <Typography variant='caption' className={classes.expire}>
+          EXP: {format(expireAt)}
         </Typography>
       </div>
     </Card>
@@ -85,6 +114,7 @@ const useStylesAd = makeStyles((theme) => ({
   card: {
     width: `calc(25% - ${theme.spacing(5)})`,
     height: '250px',
+    padding: theme.spacing(2),
     margin: theme.spacing(2.5),
     [theme.breakpoints.down('md')]: {
       width: `calc(33.33% - ${theme.spacing(4)})`,
@@ -106,25 +136,27 @@ const useStylesAd = makeStyles((theme) => ({
     justifyContent: 'center',
     padding: theme.spacing(0.5),
   },
+  cardContent: {
+    height: '50%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
   img: {
     maxWidth: '100%',
     height: '100%',
   },
-  title: {
-    padding: theme.spacing(2),
+  price: {
+    marginBottom: 'auto',
+    fontWeight: 'bold',
+    fontFamily: 'monospace',
+    letterSpacing: 0.5,
   },
   cardActions: {
     display: 'flex',
     justifyContent: 'space-around',
-    marginTop: 'auto',
   },
-  date: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    paddingRight: theme.spacing(2),
-    paddingLeft: theme.spacing(2),
-  },
-  time: {
+  expire: {
     color: theme.palette.secondary.dark,
+    textAlign: 'right',
   },
 }));
