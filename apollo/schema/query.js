@@ -54,9 +54,9 @@ export const FIELD = gql`
   }
 `;
 
-export const SEARCH = gql`
-  query search($first: Int, $cursor: ID, $filter: searchFilterInput) {
-    search_relay(first: $first, after: $cursor, filter: $filter) {
+export const ADS = gql`
+  query($first: Int, $after: String, $filter: searchFilterInput) {
+    ads(first: $first, after: $after, filter: $filter) {
       edges {
         cursor
         node {
@@ -64,11 +64,11 @@ export const SEARCH = gql`
           title
           price
           photos
-          createdAt
           location {
-            district
             city
+            district
           }
+          createdAt
         }
       }
       pageInfo {

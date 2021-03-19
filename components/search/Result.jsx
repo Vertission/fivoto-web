@@ -8,22 +8,19 @@ import { useQuery } from '@apollo/client';
 import { CircularProgress, Button, Typography } from '@material-ui/core';
 
 import schema from '../../apollo/schema';
-import { Ads } from '../common';
+import Ads from './modules/Ads'; // TODO: make this to a nice folder.
 
-import {
-  Context as SearchContext,
-  dispatch as SearchDispatch,
-} from './modules/context';
+import { Context as SearchContext, dispatch as SearchDispatch } from './modules/context';
 
 export default function SearchResult() {
   const classes = useStyles();
 
-  const { query, location, category, first } = useContext(SearchContext);
+  const { location, category, first } = useContext(SearchContext);
 
   const router = useRouter();
   const [fetchMoreLoading, setFetchMoreLoading] = useState(false);
 
-  const { data, loading, fetchMore } = useQuery(schema.query.SEARCH, {
+  const { data, loading, fetchMore } = useQuery(schema.query.ADS, {
     variables: {
       first,
       filter: {
@@ -41,30 +38,29 @@ export default function SearchResult() {
   });
 
   const _onLoadMore = () => {
-    if (data.search_relay.pageInfo.hasNextPage) {
-      setFetchMoreLoading(true);
-      fetchMore({
-        variables: {
-          cursor: data.search_relay.pageInfo.endCursor,
-        },
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          const newEdges = fetchMoreResult.search_relay.edges;
-          const pageInfo = fetchMoreResult.search_relay.pageInfo;
-
-          return newEdges.length
-            ? {
-                search_relay: {
-                  __typename: previousResult.search_relay.__typename,
-                  edges: [...previousResult.search_relay.edges, ...newEdges],
-                  pageInfo,
-                },
-              }
-            : previousResult;
-        },
-      }).then(({ loading }) => {
-        setFetchMoreLoading(loading);
-      });
-    }
+    // if (data.search_relay.pageInfo.hasNextPage) {
+    //   setFetchMoreLoading(true);
+    //   fetchMore({
+    //     variables: {
+    //       cursor: data.search_relay.pageInfo.endCursor,
+    //     },
+    //     updateQuery: (previousResult, { fetchMoreResult }) => {
+    //       const newEdges = fetchMoreResult.search_relay.edges;
+    //       const pageInfo = fetchMoreResult.search_relay.pageInfo;
+    //       return newEdges.length
+    //         ? {
+    //             search_relay: {
+    //               __typename: previousResult.search_relay.__typename,
+    //               edges: [...previousResult.search_relay.edges, ...newEdges],
+    //               pageInfo,
+    //             },
+    //           }
+    //         : previousResult;
+    //     },
+    //   }).then(({ loading }) => {
+    //     setFetchMoreLoading(loading);
+    //   });
+    // }
   };
 
   if (loading)
@@ -74,7 +70,7 @@ export default function SearchResult() {
       </div>
     );
 
-  const nodes = data.search_relay.edges.map((edge) => edge.node);
+  const nodes = data.ads.edges.map((edge) => edge.node);
 
   if (!Boolean(nodes.length))
     return (
@@ -110,9 +106,7 @@ export default function SearchResult() {
             size='large'
             onClick={_onLoadMore}
             style={{
-              display: data.search_relay.pageInfo.hasNextPage
-                ? 'inherit'
-                : 'none',
+              display: data.ads.pageInfo.hasNextPage ? 'inherit' : 'none',
             }}
           >
             load more
