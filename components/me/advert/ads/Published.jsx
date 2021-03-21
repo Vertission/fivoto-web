@@ -5,6 +5,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Container, Card, CardActions, CardMedia, Typography, Button, CircularProgress } from '@material-ui/core';
 
 import { Dialog, Modal } from '../../../ui';
+import { Link } from '../../../common';
 
 const ME_PUBLISHED_ADS = gql`
   query {
@@ -61,6 +62,8 @@ function Ad({ id, title, price, photos, createdAt, expireAt }) {
 
   const [openDialog, closeDialog] = Dialog.useDialog();
 
+  const _handleOpenClickedAd = () => {};
+
   const _handleOpenDeleteDialog = () => {
     openDialog({
       children: (
@@ -92,7 +95,14 @@ function Ad({ id, title, price, photos, createdAt, expireAt }) {
         </Typography>
 
         <CardActions className={classes.cardActions}>
-          <Button size='small' color='primary'>
+          <Button
+            size='small'
+            color='primary'
+            style={{ color: theme.palette.primary.main, textDecoration: 'none' }}
+            component={Link}
+            href={`/ad/${id}`}
+            target='_blank'
+          >
             View
           </Button>
           <Button size='small' style={{ color: theme.palette.warning.main }}>

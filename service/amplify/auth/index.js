@@ -1,12 +1,30 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 import { Auth } from 'aws-amplify';
-import { useSnackbar } from 'notistack';
 
 import { Dialog, Modal } from '../../../components/ui';
 
 import { useQueryMe } from '../../../apollo/query';
 import schema from '../../../apollo/schema';
+
+export function useIsSign() {
+  const [sign, setSign] = useState(null);
+
+  useEffect(() => {
+    async function authenticate() {
+      Auth.currentAuthenticatedUser()
+        .then(() => {
+          setSign(true);
+        })
+        .catch(() => {
+          setSign(false);
+        });
+    }
+
+    authenticate();
+  }, []);
+
+  return [sign];
+}
 
 export function useSignOut(onCompleted, onError) {
   const [, { client }] = useQueryMe();

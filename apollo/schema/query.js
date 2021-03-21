@@ -4,7 +4,7 @@ export const AD = gql`
   query ad($id: ID!) {
     ad(id: $id) {
       id
-      type
+      status
       category {
         field
         item
@@ -21,10 +21,35 @@ export const AD = gql`
       fields
       createdAt
       updatedAt
-      expireAt
       user {
         id
         name
+      }
+    }
+  }
+`;
+
+export const ADS = gql`
+  query($first: Int, $after: String, $filter: searchFilterInput) {
+    ads(first: $first, after: $after, filter: $filter) {
+      edges {
+        cursor
+        node {
+          id
+          status
+          title
+          price
+          photos
+          location {
+            city
+            district
+          }
+          createdAt
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
       }
     }
   }
@@ -51,31 +76,6 @@ export const LOCATION = gql`
 export const FIELD = gql`
   query {
     fields
-  }
-`;
-
-export const ADS = gql`
-  query($first: Int, $after: String, $filter: searchFilterInput) {
-    ads(first: $first, after: $after, filter: $filter) {
-      edges {
-        cursor
-        node {
-          id
-          title
-          price
-          photos
-          location {
-            city
-            district
-          }
-          createdAt
-        }
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-    }
   }
 `;
 

@@ -5,14 +5,21 @@ import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 
 import { Link } from '../../common';
+import Logo from '../Logo';
 
-export default function UIHeader({ title }) {
+export default function UIHeader({ title, logo }) {
   const classes = useStyles();
 
   return (
     <div className={classes.grow}>
       <AppBar position='static'>
         <Toolbar>
+          {logo ? (
+            <Link href='/'>
+              <Logo className={classes.logo} />
+            </Link>
+          ) : null}
+
           <Typography variant='h6' className={classes.title}>
             {title}
           </Typography>
@@ -33,5 +40,13 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
     textTransform: 'capitalize',
+  },
+  logo: {
+    cursor: 'pointer',
+    marginRight: 'auto',
+    width: 40,
+    [theme.breakpoints.down('sm')]: {
+      width: 30,
+    },
   },
 }));
