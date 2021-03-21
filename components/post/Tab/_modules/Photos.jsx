@@ -27,8 +27,9 @@ export default function Photos({ maxFiles }) {
       'SET_PHOTOS',
       photos.filter((_, index) => index !== i)
     );
-    if (file._id) {
-      dispatch('SET_REMOVE_PHOTOS', [...removePhotos, file._id]);
+
+    if (file.source === 'CLOUD') {
+      dispatch('SET_REMOVE_PHOTOS', [...removePhotos, file]);
     }
   };
 
@@ -92,13 +93,7 @@ export default function Photos({ maxFiles }) {
       <div className={classes.imgPreview}>
         <SortableContainer onSortEnd={onSortEnd} useDragHandle shouldUseDragHandle={true} axis='xy'>
           {photos.map((file, index) => (
-            <SortableItem
-              key={`item-${index}`}
-              index={index}
-              i={index}
-              file={file}
-              source={file.filename ? `/media/${file.filename}` : file.preview}
-            />
+            <SortableItem key={`item-${index}`} index={index} i={index} file={file} source={file.preview} />
           ))}
         </SortableContainer>
       </div>

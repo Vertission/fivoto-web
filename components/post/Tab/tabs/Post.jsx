@@ -4,7 +4,7 @@ import { Container, Button, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import _ from 'lodash';
 
-import { useCreateMutation } from '../../../../apollo/mutation/ad';
+import { useCreateMutation, useUpdateMutation } from '../../../../apollo/mutation/ad';
 
 import { Context } from '../../Context';
 
@@ -12,37 +12,42 @@ export default function TabsLocation({ setActiveStep, loading, setLoading }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [create, { status }] = useCreateMutation(setLoading);
+  const [create, { status: createStatus }] = useCreateMutation(setLoading);
+  const [update, { status: updateStatus }] = useUpdateMutation(setLoading);
 
-  const data = useContext(Context);
+  const context = useContext(Context);
 
   const _onHandlePublish = () => {
-    if (_.isEmpty(data.title)) {
-      enqueueSnackbar('Please enter a title for your ad', snackbarErrorConfig);
+    if (_.isEmpty(context.title)) {
+      enqueueSnackbar('Please enter a title for your ad', snackbarErrorConfig); // TODO: get from utils
       return setActiveStep(2);
     }
 
-    if (_.isEmpty(data.price)) {
+    if (_.isEmpty(context.price)) {
       enqueueSnackbar('Please enter a price for your ad', snackbarErrorConfig);
       return setActiveStep(2);
     }
 
-    if (_.isEmpty(data.description)) {
+    if (_.isEmpty(context.description)) {
       enqueueSnackbar('Please describe for your ad', snackbarErrorConfig);
       return setActiveStep(2);
     }
 
-    if (_.isEmpty(data.photos)) {
+    if (_.isEmpty(context.photos)) {
       enqueueSnackbar('Please add photos for your ad', snackbarErrorConfig);
       return setActiveStep(2);
     }
 
-    if (_.isEmpty(data.phone)) {
+    if (_.isEmpty(context.phone)) {
       enqueueSnackbar('Please enter your phone numbers for your ad', snackbarErrorConfig);
       return setActiveStep(2);
     }
 
-    create(data);
+    if (context.id) {
+      update(context);
+    } else {
+      create(context);
+    }
   };
 
   return (
@@ -57,11 +62,11 @@ export default function TabsLocation({ setActiveStep, loading, setLoading }) {
           color='primary'
           size='large'
         >
-          Publish Ad
+          {context.id ? 'Update Ad' : 'Publish Ad'}
         </Button>
       </Container>
 
-      <Typography className={classes.status}>{status}</Typography>
+      <Typography className={classes.status}>{context.id ? updateStatus : createStatus}</Typography>
     </React.Fragment>
   );
 }

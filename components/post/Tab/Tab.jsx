@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { Category, Location, Field, Publish } from './tabs';
+import { Category, Location, Field, Post } from './tabs';
 
 function TabPanel(props) {
   const classes = useStyles();
@@ -43,7 +43,7 @@ export default function PostTab({ value, setActiveStep, loading, setLoading }) {
           <Field setActiveStep={setActiveStep} />
         </TabPanel>
         <TabPanel value={value} index={3}>
-          <Publish setActiveStep={setActiveStep} loading={loading} setLoading={setLoading} />
+          <Post setActiveStep={setActiveStep} loading={loading} setLoading={setLoading} />
         </TabPanel>
       </SwipeableViews>
     </div>

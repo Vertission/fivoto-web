@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const AD = gql`
-  query ad($id: ID!) {
+  query($id: ID!) {
     ad(id: $id) {
       id
       status

@@ -77,7 +77,7 @@ export default async function uploadPhotos(photos, adId, setStatus) {
       setStatus(`uploading ad photo ${index + 1} / ${photos.length}`);
 
       if (photo.source === 'CLOUD') {
-        keys.push(photoUri);
+        keys.push(photo.preview);
       } else {
         const compressedPhoto = await imageManipulator(photo.file);
         if (compressedPhoto) {

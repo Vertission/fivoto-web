@@ -74,11 +74,7 @@ function createApolloClient() {
     link: ApolloLink.from([errorLink, authLink, httpLink]),
     cache: new InMemoryCache({
       typePolicies: {
-        Query: {
-          fields: {
-            allPosts: concatPagination(),
-          },
-        },
+        Query: {},
       },
     }),
   });

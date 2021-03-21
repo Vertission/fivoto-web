@@ -9,10 +9,10 @@ import Next from '@material-ui/icons/ArrowForwardIos';
 import { Context } from './Context';
 
 export default function PostAd({ loading, activeStep, setActiveStep }) {
-  const { category, location } = useContext(Context);
+  const { category, location, id } = useContext(Context);
   const classes = useStyles();
 
-  const steps = [category.item || 'Category', location.city || 'Location', 'Create', 'Publish'];
+  const steps = [category.item || 'Category', location.city || 'Location', id ? 'Update' : 'Create', 'Post'];
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -54,7 +54,9 @@ export default function PostAd({ loading, activeStep, setActiveStep }) {
           >
             {steps.map((label) => (
               <Step key={label}>
-                <StepLabel StepIconComponent={StepIcon}>{label}</StepLabel>
+                <StepLabel StepIconComponent={StepIcon} style={{ textTransform: 'capitalize' }}>
+                  {label}
+                </StepLabel>
               </Step>
             ))}
           </Stepper>

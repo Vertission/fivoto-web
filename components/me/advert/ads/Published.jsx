@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { gql, useQuery } from '@apollo/client';
 import { format } from 'timeago.js';
 
@@ -7,20 +9,9 @@ import { Container, Card, CardActions, CardMedia, Typography, Button, CircularPr
 import { Dialog, Modal } from '../../../ui';
 import { Link } from '../../../common';
 
-const ME_PUBLISHED_ADS = gql`
-  query {
-    me {
-      publishedAds {
-        id
-        title
-        price
-        photos
-        createdAt
-        expireAt
-      }
-    }
-  }
-`;
+import { useQueryMe } from '../../../../apollo/query';
+
+import { dispatch } from '../../../post/Context';
 
 export default function MeAdvertAdsPublished() {
   const classes = useStyles();
@@ -56,13 +47,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Ad({ id, title, price, photos, createdAt, expireAt }) {
+function Ad({ id, title, price, photos, expireAt }) {
   const classes = useStylesAd();
   const theme = useTheme();
 
   const [openDialog, closeDialog] = Dialog.useDialog();
+  const router = useRouter();
 
-  const _handleOpenClickedAd = () => {};
+  const [editLoading, setEditLoading] = useState(false);
+  const [, { client }] = useQueryMe();
+
+  const _handleEditAd = () => {
+    setEditLoading(true);
+    client
+      .query({ query: AD_EDIT, variables: { id } })
+      .then(({ data }) => {
+        console.log({ data });
+        dispatch('RESET_CONTEXT');
+        const photos = data.ad.photos.map((photo) => {
+          return { preview: photo, source: 'CLOUD' };
+        });
+
+        // TODO: move this refactoring logics into set_context the photos and price replace
+        dispatch('SET_CONTEXT', {
+          ...data.ad,
+          price: data.ad.price.replace('LKR ', '').replace(/,/g, ''),
+          photos,
+          removePhotos: [],
+        });
+
+        setEditLoading(false);
+        router.push(`/post`);
+      })
+      .catch((error) => {
+        setEditLoading(false);
+      });
+  };
 
   const _handleOpenDeleteDialog = () => {
     openDialog({
@@ -105,7 +125,12 @@ function Ad({ id, title, price, photos, createdAt, expireAt }) {
           >
             View
           </Button>
-          <Button size='small' style={{ color: theme.palette.warning.main }}>
+          <Button
+            size='small'
+            disable={editLoading}
+            style={{ color: theme.palette.warning.main }}
+            onClick={_handleEditAd}
+          >
             Edit
           </Button>
           <Button size='small' style={{ color: theme.palette.error.main }} onClick={_handleOpenDeleteDialog}>
@@ -140,14 +165,14 @@ const useStylesAd = makeStyles((theme) => ({
   },
   cardMedia: {
     width: 'auto',
-    height: '50%',
+    height: '40%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing(0.5),
   },
   cardContent: {
-    height: '50%',
+    height: '60%',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -170,3 +195,40 @@ const useStylesAd = makeStyles((theme) => ({
     textAlign: 'right',
   },
 }));
+
+const ME_PUBLISHED_ADS = gql`
+  query {
+    me {
+      publishedAds {
+        id
+        title
+        price
+        photos
+        expireAt
+      }
+    }
+  }
+`;
+
+const AD_EDIT = gql`
+  query($id: ID!) {
+    ad(id: $id) {
+      id
+      status
+      category {
+        field
+        item
+      }
+      location {
+        district
+        city
+      }
+      title
+      price
+      description
+      photos
+      fields
+      phone
+    }
+  }
+`;

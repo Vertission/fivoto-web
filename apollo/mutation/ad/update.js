@@ -9,16 +9,10 @@ import schema from '../../schema';
 
 import { dispatch } from '../../../components/post/Context';
 
-export default function useCreateMutation(setLoading) {
+export default function useUpdateMutation(setLoading) {
   const router = useRouter();
 
   const [status, setStatus] = useState(null);
-
-  const [mutateCreateAd, createAdMutationResponse] = useMutation(schema.mutation.CREATE_AD, {
-    onError(error) {
-      console.log(error);
-    },
-  });
 
   const [mutateUpdateAd, updateAdMutationResponse] = useMutation(schema.mutation.UPDATE_AD, {
     onError(error) {
@@ -29,14 +23,17 @@ export default function useCreateMutation(setLoading) {
   async function create(data) {
     setLoading(true);
     try {
-      const publishingDate = new Date().toISOString();
+      const updatingDate = new Date().toISOString();
 
-      setStatus('start publishing ad');
-      const {
-        data: { createAd },
-      } = await mutateCreateAd({
+      setStatus('start updating ad');
+
+      const uploadedPhotosKeys = await uploadAdPhotos(data.photos, data.id, setStatus);
+
+      setStatus('updating ad');
+      await mutateUpdateAd({
         variables: {
           data: {
+            id: data.id,
             category: {
               field: data.category.field,
               item: data.category.item,
@@ -53,33 +50,21 @@ export default function useCreateMutation(setLoading) {
               if (typeof value === 'string') return value.trim();
               else return value;
             }),
-            createdAt: publishingDate,
-          },
-        },
-      });
-
-      const uploadedPhotosKeys = await uploadAdPhotos(data.photos, createAd, setStatus);
-
-      setStatus('publishing ad');
-      await mutateUpdateAd({
-        variables: {
-          data: {
-            id: createAd,
             photos: uploadedPhotosKeys,
-            updatedAt: publishingDate,
+            updatedAt: updatingDate,
           },
         },
       });
 
       setLoading(false);
-      setStatus('ad published successfully');
+      setStatus('ad updated successfully');
 
-      dispatch('RESET_CONTEXT');
+      // dispatch('RESET_CONTEXT');
 
-      if (createAdMutationResponse.error || updateAdMutationResponse.error) {
+      if (updateAdMutationResponse.error) {
       } else console.log('post published successfully');
 
-      return router.push('/');
+      // return router.push('/');
     } catch (error) {
       setLoading(false);
       console.log(error);
