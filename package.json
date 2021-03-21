@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -18,6 +18,7 @@
     "aws-amplify": "^3.3.13",
     "deepmerge": "^4.2.2",
     "graphql": "^15.4.0",
+    "identicolor": "1.0.2",
     "lodash": "^4.17.20",
     "next": "10.0.4",
     "next-images": "^1.6.2",
@@ -34,6 +35,7 @@
     "react-sortable-hoc": "^1.11.0",
     "react-swipeable-views": "^0.13.9",
     "timeago.js": "^4.0.2",
+    "url-parse": "^1.5.1",
     "use-material-ui-dialog": "^1.1.3"
   }
 }

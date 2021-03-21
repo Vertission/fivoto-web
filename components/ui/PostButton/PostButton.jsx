@@ -11,7 +11,7 @@ export default function PostButton() {
   );
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     color: 'white',
     padding: '0 30px',
@@ -20,6 +20,7 @@ const useStyles = makeStyles(() => ({
     '&:hover': {
       boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
     },
+    marginRight: theme.spacing(3),
   },
   button_label: {
     fontWeight: 900,

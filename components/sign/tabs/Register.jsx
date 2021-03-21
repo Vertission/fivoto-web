@@ -1,32 +1,31 @@
 import React from 'react';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  TextField,
-  InputAdornment,
-  Typography,
-  Button,
-  LinearProgress,
-} from '@material-ui/core';
+import { TextField, InputAdornment, Typography, Button, LinearProgress } from '@material-ui/core';
 // import LoadingButton from '@material-ui/lab/LoadingButton';
 
 import EmailIcon from '@material-ui/icons/Email';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { PasswordField } from '../../ui';
-import { rules } from '../../../utils/index';
+import { rules, snackbar } from '../../../utils';
 
 import { useSignUp } from '../../../service/amplify/auth';
 
 const SignTabsRegister = ({ setTab, setEmail }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });
 
-  const [signUp, { loading }] = useSignUp(setTab);
+  const [signUp, { loading }] = useSignUp(() => {
+    setTab(4);
+    enqueueSnackbar('Signed up successfully', snackbar.SUCCESS_BOTTOM_LEFT);
+  });
 
   const onSubmit = ({ name, email, password }) => {
     signUp(email, password, name);
@@ -35,9 +34,7 @@ const SignTabsRegister = ({ setTab, setEmail }) => {
 
   return (
     <React.Fragment>
-      {loading && (
-        <LinearProgress classes={{ root: classes.linearProgressRoot }} />
-      )}
+      {loading && <LinearProgress classes={{ root: classes.linearProgressRoot }} />}
       <div className={classes.root}>
         <form className={classes.container}>
           <Typography variant='h6'>Register An Account</Typography>
@@ -55,7 +52,7 @@ const SignTabsRegister = ({ setTab, setEmail }) => {
                   fullWidth
                   label='Name'
                   type='name'
-                  error={errors?.name?.message}
+                  error={errors?.name}
                   helperText={errors?.name?.message}
                   onChange={onChange}
                   value={value}
@@ -84,7 +81,7 @@ const SignTabsRegister = ({ setTab, setEmail }) => {
                   fullWidth
                   label='Email Address'
                   type='email'
-                  error={errors?.email?.message}
+                  error={errors?.email}
                   helperText={errors?.email?.message}
                   onChange={onChange}
                   value={value}
@@ -107,7 +104,8 @@ const SignTabsRegister = ({ setTab, setEmail }) => {
               rules={rules.newPassword}
               render={({ onChange, value }) => (
                 <PasswordField
-                  error={errors?.password?.message}
+                  size='small'
+                  error={errors?.password}
                   helperText={errors?.password?.message}
                   onChange={onChange}
                   value={value}
@@ -118,21 +116,11 @@ const SignTabsRegister = ({ setTab, setEmail }) => {
 
           <Typography variant='caption' className={classes.agree}>
             By signing you agree to{' '}
-            <Typography
-              color='primary'
-              variant='body2'
-              display='inline'
-              className={classes.text_button}
-            >
+            <Typography color='primary' variant='body2' display='inline' className={classes.text_button}>
               Terms & Conditions
             </Typography>{' '}
             &{' '}
-            <Typography
-              color='primary'
-              variant='body2'
-              display='inline'
-              className={classes.text_button}
-            >
+            <Typography color='primary' variant='body2' display='inline' className={classes.text_button}>
               Privacy Policy
             </Typography>
           </Typography>

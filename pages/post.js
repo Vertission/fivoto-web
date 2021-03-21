@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withSSRContext } from 'aws-amplify';
 
 import { Header, Tab, Context } from '../components/post';
 
@@ -14,4 +15,28 @@ export default function HomePage() {
       </React.Fragment>
     </Context.Provider>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  const { Auth } = withSSRContext({ req });
+  try {
+    const user = await Auth.currentAuthenticatedUser();
+    if (!user.attributes.email_verified) {
+      return {
+        redirect: {
+          destination: '/me/verify-email',
+          permanent: false,
+        },
+      };
+    }
+  } catch (error) {
+    return {
+      redirect: {
+        destination: '/sign',
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
 }

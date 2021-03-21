@@ -12,6 +12,10 @@ export default {
       value: 3,
       message: 'your name is too short',
     },
+    maxLength: {
+      value: 16,
+      message: 'your name is too long',
+    },
   },
   verificationCode: {
     required: 'verification code required',
@@ -36,5 +40,12 @@ export default {
   },
   oldPassword: {
     required: 'please enter your old password',
+  },
+  currentPassword: {
+    required: 'please enter your current password',
+    minLength: {
+      value: 6,
+      message: 'invalid password',
+    },
   },
 };

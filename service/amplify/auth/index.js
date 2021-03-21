@@ -1,70 +1,86 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Auth } from 'aws-amplify';
-import { useSnackbar } from 'notistack';
-import { useRouter } from 'next/router';
-
-// import { useUpdateUser } from '../../apollo/mutation/user';
-
-// import SignOut from '../../../utils/signOut';
 
 import { Dialog, Modal } from '../../../components/ui';
 
-export function useSignOut() {
-  const navigation = useNavigation();
+import { useQueryMe } from '../../../apollo/query';
+import schema from '../../../apollo/schema';
+
+export function useIsSign() {
+  const [sign, setSign] = useState(null);
+
+  useEffect(() => {
+    async function authenticate() {
+      Auth.currentAuthenticatedUser()
+        .then(() => {
+          setSign(true);
+        })
+        .catch(() => {
+          setSign(false);
+        });
+    }
+
+    authenticate();
+  }, []);
+
+  return [sign];
+}
+
+export function useSignOut(onCompleted, onError) {
+  const [, { client }] = useQueryMe();
 
   async function signOut() {
     try {
       await Auth.signOut();
-      SignOut();
-      Sentry.configureScope((scope) => scope.setUser(null));
-      await analytics().setUserId(null); // ANALYTIC
-      navigation.setParams();
+      client.clearStore();
+      window.localStorage.clear();
+      window.location.reload();
+
+      if (onCompleted) onCompleted();
     } catch (error) {
-      Sentry.withScope(function (scope) {
-        scope.setTag('func', 'useSignOut:hook');
-        scope.setLevel(Sentry.Severity.Error);
-        Sentry.captureException(error);
-      });
+      client.clearStore();
+      window.localStorage.clear();
+
+      if (onError) onError();
     }
   }
 
   return [signOut];
 }
 
-export function useChangePassword() {
-  const navigation = useNavigation();
+export function useChangePassword(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
+  const [openDialog, closeDialog] = Dialog.useDialog();
 
   async function changePassword(oldPassword, newPassword) {
     setLoading(true);
     try {
       const currentUser = await Auth.currentAuthenticatedUser();
       await Auth.changePassword(currentUser, oldPassword, newPassword);
-      setLoading(false);
 
-      Snackbar.show('Password changed successfully');
-      navigation.navigate('User');
+      setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
+
       if (error.code === 'NotAuthorizedException') {
-        return Modal.show({
-          title: 'Incorrect Password',
-          description: 'Your current password is incorrect, Please try again.',
-          closeTitle: 'try again',
+        return openDialog({
+          children: (
+            <Modal
+              title='Incorrect Password'
+              description='Your current password is incorrect, Please try again.'
+              closeTitle='try again'
+              handleClose={closeDialog}
+            />
+          ),
         });
       } else {
-        Sentry.withScope(function (scope) {
-          scope.setTag('func', 'useChangePassword:hook');
-          scope.setLevel(Sentry.Severity.Error);
-          scope.setContext('data', { oldPassword, newPassword });
-          Sentry.captureException(error);
-        });
-
         const data = {
           oldLength: oldPassword?.length,
           newLength: newPassword?.length,
         };
-        handleError(error, 'changing your password', data, navigation);
+        handleError({ openDialog, closeDialog }, error, 'changing your password', data);
       }
     }
   }
@@ -72,43 +88,47 @@ export function useChangePassword() {
   return [changePassword, { loading }];
 }
 
-export function useChangeEmail() {
-  const navigation = useNavigation();
-  const [updateUser] = useUpdateUser();
-
+export function useChangeEmail(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
+  const [openDialog, closeDialog] = Dialog.useDialog();
+
+  const [, { client }] = useQueryMe();
 
   async function changeEmail(email) {
+    email = email.toLowerCase();
+    email = email.trim();
+
     setLoading(true);
     try {
       const currentUser = await Auth.currentAuthenticatedUser();
+
+      if (currentUser.attributes.email === email) return setLoading(false);
+
       await Auth.updateUserAttributes(currentUser, { email });
 
-      updateUser({
-        email,
-      });
+      const { me } = client.readQuery({ query: schema.query.ME });
+      client.writeQuery({ query: schema.query.ME, data: { me: { ...me, email, email_verified: false } } });
+
       setLoading(false);
-      navigation.navigate('EmailConfirmation', { email });
+      if (onCompleted) onCompleted(email);
     } catch (error) {
       setLoading(false);
+      if (onError) onError(error);
+
       if (error.code === 'AliasExistsException') {
-        return Modal.show({
-          title: 'Email already exist',
-          description: `An account with email address ${email} already exists.`,
-          closeTitle: 'ok',
+        return openDialog({
+          children: (
+            <Modal
+              title='Email already exist'
+              description={`An account with email address ${email} already exists.`}
+              closeTitle='ok'
+              handleClose={closeDialog}
+            />
+          ),
         });
       } else {
-        setLoading(false);
-
-        Sentry.withScope(function (scope) {
-          scope.setTag('func', 'useChangeEmail:hook');
-          scope.setLevel(Sentry.Severity.Error);
-          scope.setContext('data', { email });
-          Sentry.captureException(error);
-        });
-
         const data = { email };
-        handleError(error, 'change your email address', data, navigation);
+        handleError({ openDialog, closeDialog }, error, 'change your email address', data);
       }
     }
   }
@@ -116,72 +136,76 @@ export function useChangeEmail() {
   return [changeEmail, { loading }];
 }
 
-export function useResendEmailChangeConfirmationCode() {
-  const navigation = useNavigation();
+export function useResendEmailChangeConfirmationCode(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
+  const [openDialog, closeDialog] = Dialog.useDialog();
 
   async function resendEmailChangeConfirmationCode() {
     try {
       setLoading(true);
       const currentUser = await Auth.currentAuthenticatedUser();
       await Auth.verifyUserAttribute(currentUser, 'email');
-      Snackbar.show('Confirmation code send to email');
+
       setLoading(false);
+      if (onCompleted) onCompleted(currentUser.attributes.email);
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
-      Sentry.withScope(function (scope) {
-        scope.setTag('func', 'useResendEmailChangeConfirmationCode:hook');
-        scope.setLevel(Sentry.Severity.Error);
-        Sentry.captureException(error);
-      });
-
-      handleError(error, 'resending confirmation code', {}, navigation);
+      handleError({ openDialog, closeDialog }, error, 'resending confirmation code', {});
     }
   }
 
   return [resendEmailChangeConfirmationCode, { loading }];
 }
 
-export function useConfirmEmailChange() {
-  const navigation = useNavigation();
+export function useConfirmEmailChange(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
+  const [openDialog, closeDialog] = Dialog.useDialog();
+
+  const [, { client }] = useQueryMe();
 
   async function confirmEmailChange(code) {
+    code = code.trim();
+
     setLoading(true);
     try {
       await Auth.verifyCurrentUserAttributeSubmit('email', code);
-      setLoading(false);
 
-      Snackbar.show('Email successfully verified');
-      navigation.navigate('User', { code });
+      const { me } = client.readQuery({ query: schema.query.ME });
+      client.writeQuery({ query: schema.query.ME, data: { me: { ...me, email_verified: true } } });
+
+      setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
       if (error.code === 'CodeMismatchException') {
-        return Modal.show({
-          title: 'Invalid code',
-          description:
-            'Invalid confirmation code, Please double check your confirmation code and try again or resend the confirmation code.',
-          closeTitle: 'try again',
+        return openDialog({
+          children: (
+            <Modal
+              title='Invalid code'
+              description='Invalid confirmation code, Please double check your confirmation code and try again or resend the confirmation code.'
+              closeTitle='try again'
+              handleClose={closeDialog}
+            />
+          ),
         });
       } else if (error.code === 'ExpiredCodeException') {
-        return Modal.show({
-          title: 'Code expired',
-          description:
-            'Sorry! Your confirmation code has expired, Please resend code to get a new confirmation code.',
-          closeTitle: 'ok',
+        return openDialog({
+          children: (
+            <Modal
+              title='Code expired'
+              description='Oops! Your confirmation code has expired, Please resend code to get a new confirmation code.'
+              closeTitle='ok'
+              handleClose={closeDialog}
+            />
+          ),
         });
       } else {
-        Sentry.withScope(function (scope) {
-          scope.setTag('func', 'useConfirmEmailChange:hook');
-          scope.setLevel(Sentry.Severity.Critical);
-          scope.setContext('data', { code });
-          Sentry.captureException(error);
-        });
-
         const data = { code };
-        handleError(error, 'verifying confirmation code', data, navigation);
+        handleError({ openDialog, closeDialog }, error, 'verifying confirmation code', data);
       }
     }
   }
@@ -189,27 +213,25 @@ export function useConfirmEmailChange() {
   return [confirmEmailChange, { loading }];
 }
 
-export function useResetPassword(setTab) {
+export function useResetPassword(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   async function resetPassword(email, code, newPassword) {
+    email = email.toLowerCase();
+    email = email.trim();
+    code = code.trim();
+
     try {
       setLoading(true);
       await Auth.forgotPasswordSubmit(email, code, newPassword);
-      setLoading(false);
 
-      setTab(2);
-      enqueueSnackbar('Password reset successful', {
-        variant: 'success',
-      });
+      setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
-      console.log(
-        '🚀 ~ file: index.js ~ line 210 ~ resetPassword ~ error',
-        error
-      );
+      if (onError) onError();
+
       if (error.code === 'CodeMismatchException') {
         return openDialog({
           children: (
@@ -222,24 +244,8 @@ export function useResetPassword(setTab) {
           ),
         });
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useResetPassword:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: null,
-        //     email,
-        //   });
-        //   scope.setContext('data', { email, code, newPassword });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { email, code, length: newPassword?.length };
-        handleError(
-          { openDialog, closeDialog },
-          error,
-          'resetting your password',
-          data
-        );
+        handleError({ openDialog, closeDialog }, error, 'resetting your password', data);
       }
     }
   }
@@ -247,25 +253,25 @@ export function useResetPassword(setTab) {
   return [resetPassword, { loading }];
 }
 
-export function useForgotPassword(setTab) {
+export function useForgotPassword(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   const [sendConfirmationCode] = useSendConfirmationCode();
 
   async function forgotPassword(email) {
+    email = email.toLowerCase();
+    email = email.trim();
+
     setLoading(true);
     try {
       await Auth.forgotPassword(email);
-      setLoading(false);
 
-      setTab(0);
-      enqueueSnackbar('Verification code send to email', {
-        variant: 'success',
-      });
+      setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
       if (error.code === 'UserNotFoundException') {
         return openDialog({
@@ -300,24 +306,8 @@ export function useForgotPassword(setTab) {
           ),
         });
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useForgotPassword:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: null,
-        //     email,
-        //   });
-        //   scope.setContext('data', { email });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { email };
-        handleError(
-          { openDialog, closeDialog },
-          error,
-          'sending reset password verification code',
-          data
-        );
+        handleError({ openDialog, closeDialog }, error, 'sending reset password verification code', data);
       }
     }
   }
@@ -325,71 +315,53 @@ export function useForgotPassword(setTab) {
   return [forgotPassword, { loading }];
 }
 
-/**
- * Resend confirmation code
- */
-export function useSendConfirmationCode() {
+export function useSendConfirmationCode(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   async function sendConfirmationCode(email) {
+    email = email.toLowerCase();
+    email = email.trim();
+
     setLoading(true);
     try {
       await Auth.resendSignUp(email);
-      enqueueSnackbar('Confirmation code send to your email', {
-        variant: 'success',
-      });
+
       setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
-
-      // Sentry.withScope(function (scope) {
-      //   scope.setTag('func', 'useSendConfirmationCode:hook');
-      //   scope.setLevel(Sentry.Severity.Critical);
-      //   scope.setUser({
-      //     id: null,
-      //     email,
-      //   });
-      //   scope.setContext('data', { email });
-      //   Sentry.captureException(error);
-      // });
+      if (onError) onError();
 
       const data = { email };
-      handleError(
-        { openDialog, closeDialog },
-        error,
-        'sending confirmation code',
-        data
-      );
+      handleError({ openDialog, closeDialog }, error, 'sending confirmation code', data);
     }
   }
 
   return [sendConfirmationCode, { loading }];
 }
 
-/**
- * Registration email confirmation hook
- */
-export function useConfirmSign(setTab) {
+export function useConfirmSign(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
-  const { enqueueSnackbar } = useSnackbar();
 
   async function confirmSign(username, code) {
+    username = username.toLowerCase();
+    username = username.trim();
+    code = code.trim();
+
     setLoading(true);
     try {
       const isConfirm = await Auth.confirmSignUp(username, code);
+
       if (isConfirm === 'SUCCESS') {
-        setTab(2);
-        enqueueSnackbar('Email successfully confirmed', {
-          variant: 'success',
-        });
+        if (onCompleted) onCompleted();
       }
 
       setLoading(false);
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
       if (error.code === 'CodeMismatchException') {
         return openDialog({
@@ -414,23 +386,8 @@ export function useConfirmSign(setTab) {
           ),
         });
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useConfirmSign:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: username,
-        //   });
-        //   scope.setContext('data', { username, code });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { username, code };
-        handleError(
-          { openDialog, closeDialog },
-          error,
-          'verifying confirmation code',
-          data
-        );
+        handleError({ openDialog, closeDialog }, error, 'verifying confirmation code', data);
       }
     }
   }
@@ -438,30 +395,25 @@ export function useConfirmSign(setTab) {
   return [confirmSign, { loading }];
 }
 
-export function useSignIn(setTab) {
+export function useSignIn(onCompleted, onError) {
   const [sendConfirmationCode] = useSendConfirmationCode();
-  const router = useRouter();
+
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
 
-  // NEXT: show contact us if email address not found
-
   async function signIn(email, password) {
+    email = email.toLowerCase();
+    email = email.trim();
+
     setLoading(true);
     try {
       const { username, attributes } = await Auth.signIn(email, password);
-      // SyncStorage.set('@sign', true);
-      // SyncStorage.set('@user', username);
-
-      // Sentry.setUser({ id: username, email: attributes.email });
-      // await analytics().logLogin({ method: 'email' }); // ANALYTIC
-      // await analytics().setUserId(username); // ANALYTIC
 
       setLoading(false);
-      router.push('/');
-      navigation.navigate('Register');
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
 
       if (error.code === 'UserNotFoundException') {
         return openDialog({
@@ -498,33 +450,27 @@ export function useSignIn(setTab) {
         await sendConfirmationCode(email);
         setTab(4);
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useSignIn:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: null,
-        //     email,
-        //   });
-        //   scope.setContext('data', { email, password });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { email, length: password?.length };
         handleError({ openDialog, closeDialog }, error, 'logging you in', data);
       }
     }
   }
+
   return [signIn, { loading }];
 }
 
 /**
  * Sign up hook
  */
-export function useSignUp(setTab) {
+export function useSignUp(onCompleted, onError) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
 
   async function signUp(email, password, name) {
+    email = email.toLowerCase();
+    email = email.trim();
+    name = name.trim();
+
     setLoading(true);
     try {
       await Auth.signUp({
@@ -533,11 +479,12 @@ export function useSignUp(setTab) {
         attributes: { name },
       });
 
-      // await analytics().logSignUp({ method: 'email' }); // ANALYTIC
-      setTab(4);
       setLoading(false);
+      if (onCompleted) onCompleted();
     } catch (error) {
       setLoading(false);
+      if (onError) onError();
+
       if (error.code === 'UsernameExistsException') {
         return openDialog({
           children: (
@@ -550,24 +497,8 @@ export function useSignUp(setTab) {
           ),
         });
       } else {
-        // Sentry.withScope(function (scope) {
-        //   scope.setTag('func', 'useSignUp:hook');
-        //   scope.setLevel(Sentry.Severity.Critical);
-        //   scope.setUser({
-        //     id: null,
-        //     email,
-        //   });
-        //   scope.setContext('data', { email, password });
-        //   Sentry.captureException(error);
-        // });
-
         const data = { email, length: password?.length };
-        handleError(
-          { openDialog, closeDialog },
-          error,
-          'registering an account',
-          data
-        );
+        handleError({ openDialog, closeDialog }, error, 'registering an account', data);
       }
     }
   }
@@ -579,15 +510,9 @@ export function useSignUp(setTab) {
  * @param {any} error error object
  * @param {string} action error about
  * @param {object} data user data
- * @param {function} navigation navigation function
  */
-function handleError(
-  { openDialog, closeDialog },
-  error,
-  action,
-  data,
-  navigation
-) {
+function handleError({ openDialog, closeDialog }, error, action, data) {
+  console.log('🚀 ~ file: index.js ~ line 490 ~ handleError ~ error', error);
   switch (error.code) {
     case 'TooManyRequestsException':
       return openDialog({
@@ -621,14 +546,7 @@ function handleError(
             actions={[
               {
                 title: 'Report issue',
-                onPress: () =>
-                  navigation.navigate('Home', {
-                    screen: 'ReportIssue',
-                    params: {
-                      error: JSON.stringify(error),
-                      data: JSON.stringify(data),
-                    },
-                  }),
+                onPronClickess: () => {},
               },
             ]}
             handleClose={closeDialog}
@@ -649,14 +567,9 @@ function handleError(
             actions={[
               {
                 title: 'Report issue',
-                onPress: () =>
-                  navigation.navigate('Home', {
-                    screen: 'ReportIssue',
-                    params: {
-                      error: JSON.stringify(error),
-                      data: JSON.stringify(data),
-                    },
-                  }),
+                onClick: () => {
+                  console.log(error);
+                },
               },
             ]}
             handleClose={closeDialog}

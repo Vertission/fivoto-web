@@ -23,7 +23,7 @@ export default function AdAdView({ id }) {
     },
   });
 
-  if (!data?.ad?.type)
+  if (!data?.ad?.status)
     return (
       <React.Fragment>
         <Header />
@@ -33,19 +33,7 @@ export default function AdAdView({ id }) {
       </React.Fragment>
     );
 
-  let {
-    title,
-    description,
-    price,
-    photos,
-    location,
-    createdAt,
-    updatedAt,
-    expireAt,
-    fields,
-    user,
-    phone,
-  } = data.ad;
+  let { title, description, price, photos, location, createdAt, updatedAt, expireAt, fields, user, phone } = data.ad;
 
   photos = _.uniq(photos);
 
@@ -91,18 +79,10 @@ export default function AdAdView({ id }) {
               negotiable={fields?.negotiable}
             />
             <Fields fields={fields} />
-            {matchDownXS ? (
-              <Description description={description} />
-            ) : (
-              <User user={user} phone={phone} />
-            )}
+            {matchDownXS ? <Description description={description} /> : <User user={user} phone={phone} />}
           </Grid>
         </Grid>
-        {matchDownXS ? (
-          <User user={user} phone={phone} />
-        ) : (
-          <Description description={description} />
-        )}
+        {matchDownXS ? <User user={user} phone={phone} /> : <Description description={description} />}
       </Container>
       <Footer />
     </React.Fragment>

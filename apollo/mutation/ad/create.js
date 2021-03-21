@@ -27,7 +27,6 @@ export default function useCreateMutation(setLoading) {
   });
 
   async function create(data) {
-    console.log(data);
     setLoading(true);
     try {
       const publishingDate = new Date().toISOString();
@@ -38,9 +37,14 @@ export default function useCreateMutation(setLoading) {
       } = await mutateCreateAd({
         variables: {
           data: {
-            type: 'SELL',
-            category: data.category,
-            location: data.location,
+            category: {
+              field: data.category.field,
+              item: data.category.item,
+            },
+            location: {
+              district: data.location.district,
+              city: data.location.city,
+            },
             title: data.title.trim(),
             price: _.toNumber(data.price),
             description: data.description.trim(),
@@ -68,7 +72,7 @@ export default function useCreateMutation(setLoading) {
       });
 
       setLoading(false);
-      setStatus(null);
+      setStatus('ad published successfully');
 
       dispatch('RESET_CONTEXT');
 

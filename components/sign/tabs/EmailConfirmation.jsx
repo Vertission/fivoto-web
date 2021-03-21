@@ -1,33 +1,30 @@
 import React from 'react';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  TextField,
-  Button,
-  Typography,
-  LinearProgress,
-} from '@material-ui/core';
+import { TextField, Button, Typography, LinearProgress } from '@material-ui/core';
 
-import {
-  useConfirmSign,
-  useSendConfirmationCode,
-} from '../../../service/amplify/auth';
-import { rules } from '../../../utils/index';
+import { useConfirmSign, useSendConfirmationCode } from '../../../service/amplify/auth';
+
+import { rules, snackbar } from '../../../utils/index';
 
 const SignTabsLogin = ({ setTab, email }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });
 
-  const [confirmSign, { loading }] = useConfirmSign(setTab);
+  const [confirmSign, { loading }] = useConfirmSign(() => {
+    enqueueSnackbar('Email successfully confirmed', snackbar.SUCCESS_BOTTOM_LEFT);
+    setTab(2);
+  });
 
-  const [
-    sendConfirmationCode,
-    { loading: sendConfirmationCodeLoading },
-  ] = useSendConfirmationCode(email);
+  const [sendConfirmationCode, { loading: sendConfirmationCodeLoading }] = useSendConfirmationCode(() => {
+    enqueueSnackbar('Confirmation code send to your email', snackbar.SUCCESS_BOTTOM_LEFT);
+  });
 
   const onSubmit = ({ code }) => {
     confirmSign(email, code);
@@ -35,16 +32,12 @@ const SignTabsLogin = ({ setTab, email }) => {
 
   return (
     <React.Fragment>
-      {loading ||
-        (sendConfirmationCodeLoading && (
-          <LinearProgress classes={{ root: classes.linearProgressRoot }} />
-        ))}
+      {loading || (sendConfirmationCodeLoading && <LinearProgress classes={{ root: classes.linearProgressRoot }} />)}
       <div className={classes.root}>
         <form className={classes.container}>
           <Typography variant='h6'>Email Confirmation</Typography>
           <Typography variant='body2' className={classes.description}>
-            Please enter the confirmation code we send to your email address{' '}
-            {email}
+            Please enter the confirmation code we send to your email address {email}
           </Typography>
           <div className={classes.textField_email}>
             <Controller
@@ -61,7 +54,7 @@ const SignTabsLogin = ({ setTab, email }) => {
                   label='Verification Code'
                   type='code'
                   type='number'
-                  error={errors?.code?.message}
+                  error={errors.code}
                   helperText={errors?.code?.message}
                   onChange={onChange}
                   value={value}

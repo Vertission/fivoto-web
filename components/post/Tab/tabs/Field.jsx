@@ -63,6 +63,7 @@ export default function TabsField() {
                 maxLength: 50,
               }}
               className={classes.inputField}
+              value={context.title}
               onChange={(e) => dispatch('SET_TITLE', e.target.value)}
             />
           );
@@ -85,14 +86,21 @@ export default function TabsField() {
                   endAdornment: <InputAdornment position='end'>{fieldProps.currency}</InputAdornment>,
                 }}
                 className={classes.inputField}
+                value={context.price}
                 onChange={(e) => dispatch('SET_PRICE', e.target.value)}
               />
               {fieldProps.negotiable && (
                 <FormControlLabel
                   control={
-                    <Checkbox name='negotiable' color='primary' classes={{ root: classes.checkbox_radio_root }} />
+                    <Checkbox
+                      name='negotiable'
+                      color='primary'
+                      classes={{ root: classes.checkbox_radio_root }}
+                      checked={context.fields.negotiable}
+                    />
                   }
                   label='Negotiable'
+                  value={true}
                   onChange={(_, value) => dispatch('SET_FIELDS', { field: 'negotiable', value })}
                 />
               )}
@@ -114,6 +122,7 @@ export default function TabsField() {
                 maxLength: 4500,
               }}
               className={classes.inputField}
+              value={context.description}
               onChange={(e) => dispatch('SET_DESCRIPTION', e.target.value)}
             />
           );
@@ -127,6 +136,7 @@ export default function TabsField() {
                 /**
                  * map sub field select
                  */
+
                 return fields.push(
                   <FormControl
                     variant='outlined'
@@ -137,6 +147,7 @@ export default function TabsField() {
                     <InputLabel className={classes.inputLabel}>{field.name}</InputLabel>
                     <Select
                       label={field.name}
+                      value={context.fields[field.name]}
                       onChange={(e) =>
                         dispatch('SET_FIELDS', {
                           field: field.name,
@@ -180,6 +191,7 @@ export default function TabsField() {
                     }}
                     InputProps={InputProps}
                     className={classes.inputField}
+                    value={context.fields[field.name]}
                     onChange={(e) =>
                       dispatch('SET_FIELDS', {
                         field: field.name,
@@ -189,7 +201,7 @@ export default function TabsField() {
                   />
                 );
               /**
-               * map sub field inputSelect
+               * map sub field inputSelect TEST:
                */
               case 'inputSelect':
                 return fields.push(
@@ -205,6 +217,7 @@ export default function TabsField() {
                       }}
                       fullWidth
                       className={classes.inputField}
+                      value={context.fields[field.name]}
                       onChange={(e) =>
                         dispatch('SET_FIELDS', {
                           field: field.name,
@@ -222,6 +235,7 @@ export default function TabsField() {
                     >
                       <Select
                         defaultValue={field.items[0]}
+                        value={context.fields[field.name]}
                         onChange={(e) =>
                           dispatch('SET_FIELDS', {
                             field: field.name,
@@ -240,7 +254,7 @@ export default function TabsField() {
                   </div>
                 );
               /**
-               * map sub field inputSelect
+               * map sub field inputSelect FIXME:
                */
               case 'radio':
                 //  default value

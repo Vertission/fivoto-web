@@ -86,15 +86,12 @@ export async function getServerSideProps({ query }) {
   }
 
   await apolloClient.query({
-    query: schema.query.SEARCH,
+    query: schema.query.ADS,
     variables: {
       first: 20,
       filter: {
         query: query?.query,
-        location: {
-          district: null,
-          city: null,
-        },
+        location: selectedLocation,
         category: selectedCategory,
       },
     },

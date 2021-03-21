@@ -5,9 +5,14 @@ import { AppBar, Toolbar, Button } from '@material-ui/core';
 
 import { Link } from '../common';
 import { Logo, PostButton } from '../ui';
+import { User } from '../common';
 
-export default function HomeHeader({}) {
+import { useIsSign } from '../../service/amplify/auth';
+
+export default function HomeHeader() {
   const classes = useStyles();
+
+  const [sign] = useIsSign();
 
   return (
     <div className={classes.grow}>
@@ -15,21 +20,25 @@ export default function HomeHeader({}) {
         <Toolbar>
           <Logo className={classes.logo} />
 
-          <Link href='/sign'>
-            <Button
-              size='large'
-              variant='contained'
-              color='primary'
-              className={classes.sign_button}
-              classes={{ label: classes.button_label }}
-            >
-              sign
-            </Button>
-          </Link>
-
           <Link href='/post'>
             <PostButton />
           </Link>
+
+          {sign ? (
+            <User />
+          ) : (
+            <Link href='/sign'>
+              <Button
+                size='large'
+                variant='contained'
+                color='primary'
+                className={classes.sign_button}
+                classes={{ label: classes.button_label }}
+              >
+                sign
+              </Button>
+            </Link>
+          )}
         </Toolbar>
       </AppBar>
     </div>
@@ -40,19 +49,18 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
+  logo: {
+    cursor: 'pointer',
+    marginRight: 'auto',
+    width: 40,
+    [theme.breakpoints.down('sm')]: {
+      width: 30,
+    },
+  },
   sign_button: {
     fontWeight: 'bold',
     boxShadow: 'none',
     letterSpacing: 1.5,
-    marginRight: theme.spacing(3),
-  },
-  logo: {
-    cursor: 'pointer',
-    marginRight: 'auto',
-    width: 35,
-    [theme.breakpoints.down('sm')]: {
-      width: 30,
-    },
   },
   button_label: {
     color: theme.palette.secondary.main,

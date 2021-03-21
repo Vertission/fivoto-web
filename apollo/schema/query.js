@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client';
 
 export const AD = gql`
-  query ad($id: ID!) {
+  query($id: ID!) {
     ad(id: $id) {
       id
-      type
+      status
       category {
         field
         item
@@ -21,12 +21,43 @@ export const AD = gql`
       fields
       createdAt
       updatedAt
-      expireAt
       user {
         id
         name
       }
     }
+  }
+`;
+
+export const ADS = gql`
+  query($first: Int, $after: String, $filter: searchFilterInput) {
+    ads(first: $first, after: $after, filter: $filter) {
+      edges {
+        cursor
+        node {
+          id
+          status
+          title
+          price
+          photos
+          location {
+            city
+            district
+          }
+          createdAt
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+`;
+
+export const CONFIG = gql`
+  query {
+    config
   }
 `;
 
@@ -48,27 +79,16 @@ export const FIELD = gql`
   }
 `;
 
-export const SEARCH = gql`
-  query search($first: Int, $cursor: ID, $filter: searchFilterInput) {
-    search_relay(first: $first, after: $cursor, filter: $filter) {
-      edges {
-        cursor
-        node {
-          id
-          title
-          price
-          photos
-          createdAt
-          location {
-            district
-            city
-          }
-        }
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
+export const ME = gql`
+  query me {
+    me {
+      id
+      name
+      email
+      email_verified
+      profile
+      createdAt
+      updatedAt
     }
   }
 `;

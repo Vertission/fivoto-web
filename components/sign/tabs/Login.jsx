@@ -1,29 +1,31 @@
 import React from 'react';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  TextField,
-  InputAdornment,
-  Button,
-  LinearProgress,
-  Typography,
-} from '@material-ui/core';
+import { TextField, InputAdornment, Button, LinearProgress, Typography } from '@material-ui/core';
 
 import EmailIcon from '@material-ui/icons/Email';
 
 import { PasswordField } from '../../ui';
+import { rules, snackbar } from '../../../utils/index';
 
 import { useSignIn } from '../../../service/amplify/auth';
 
 const SignTabsLogin = ({ setTab, email, setEmail }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const { control, handleSubmit, errors } = useForm({
     mode: 'onBlur',
   });
 
-  const [signIn, { loading }] = useSignIn(setTab);
+  const [signIn, { loading }] = useSignIn(() => {
+    enqueueSnackbar('Sign In successfully', snackbar.SUCCESS_BOTTOM_LEFT);
+    router.push('/');
+  });
 
   const onSubmit = ({ email, password }) => {
     signIn(email, password);
@@ -32,9 +34,7 @@ const SignTabsLogin = ({ setTab, email, setEmail }) => {
 
   return (
     <React.Fragment>
-      {loading && (
-        <LinearProgress classes={{ root: classes.linearProgressRoot }} />
-      )}
+      {loading && <LinearProgress classes={{ root: classes.linearProgressRoot }} />}
       <div className={classes.root}>
         <form className={classes.container}>
           <Typography variant='h6'>Welcome Back!</Typography>
@@ -43,6 +43,7 @@ const SignTabsLogin = ({ setTab, email, setEmail }) => {
               name='email'
               control={control}
               defaultValue={email}
+              rules={rules.email}
               render={({ onChange, value }) => (
                 <TextField
                   size='small'
@@ -51,6 +52,8 @@ const SignTabsLogin = ({ setTab, email, setEmail }) => {
                   fullWidth
                   label='Email Address'
                   type='email'
+                  error={errors.email}
+                  helperText={errors.email?.message}
                   onChange={onChange}
                   value={value}
                   InputProps={{
@@ -69,18 +72,20 @@ const SignTabsLogin = ({ setTab, email, setEmail }) => {
               name='password'
               control={control}
               defaultValue=''
+              rules={rules.oldPassword}
               render={({ onChange, value }) => (
-                <PasswordField onChange={onChange} value={value} />
+                <PasswordField
+                  size='small'
+                  error={errors.password}
+                  helperText={errors.password?.message}
+                  onChange={onChange}
+                  value={value}
+                />
               )}
             />
           </div>
 
-          <Typography
-            variant='body2'
-            color='primary'
-            className={classes.forgotPassword}
-            onClick={() => setTab(1)}
-          >
+          <Typography variant='body2' color='primary' className={classes.forgotPassword} onClick={() => setTab(1)}>
             Forgot Password?
           </Typography>
 
@@ -133,6 +138,10 @@ const useStyles = makeStyles((theme) => ({
   },
   textField_password: {
     margin: theme.spacing(2, 0),
+  },
+  textField_helperText: {
+    position: 'absolute',
+    top: '90%',
   },
   forgotPassword: {
     cursor: 'pointer',
