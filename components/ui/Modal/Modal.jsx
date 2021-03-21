@@ -13,8 +13,8 @@ export default function Modal({ title, description, handleClose, closeTitle = 'c
         <DialogContentText id='alert-dialog-description'>{description}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        {actions.map(({ title, onClick }) => (
-          <Button onClick={onClick} variant='contained' color='primary'>
+        {actions.map(({ title, onClick, style = {} }) => (
+          <Button onClick={onClick} variant='contained' color='primary' style={style}>
             {title}
           </Button>
         ))}

@@ -546,7 +546,7 @@ function handleError({ openDialog, closeDialog }, error, action, data) {
             actions={[
               {
                 title: 'Report issue',
-                onPress: () => {},
+                onPronClickess: () => {},
               },
             ]}
             handleClose={closeDialog}
@@ -567,7 +567,7 @@ function handleError({ openDialog, closeDialog }, error, action, data) {
             actions={[
               {
                 title: 'Report issue',
-                onPress: () => {
+                onClick: () => {
                   console.log(error);
                 },
               },

@@ -10,6 +10,7 @@ import { Dialog, Modal } from '../../../ui';
 import { Link } from '../../../common';
 
 import { useQueryMe } from '../../../../apollo/query';
+import { useDeleteMutation } from '../../../../apollo/mutation/ad';
 
 import { dispatch } from '../../../post/Context';
 
@@ -51,6 +52,8 @@ function Ad({ id, title, price, photos, expireAt }) {
   const classes = useStylesAd();
   const theme = useTheme();
 
+  const [deleteAd, { loading: deleteAdLoading }] = useDeleteMutation();
+
   const [openDialog, closeDialog] = Dialog.useDialog();
   const router = useRouter();
 
@@ -88,14 +91,18 @@ function Ad({ id, title, price, photos, expireAt }) {
     openDialog({
       children: (
         <Modal
-          title='Email already exist'
-          description={`An account with email address  already exists.`}
+          title='Delete ad?'
+          description='Are you sure you want to permanently delete this ad?'
           closeTitle='cancel'
           handleClose={closeDialog}
           actions={[
             {
-              title: 'Delete',
-              onPress: () => {},
+              title: 'Yes, delete ad',
+              style: { background: theme.palette.error.main },
+              onClick: () => {
+                deleteAd(id);
+                closeDialog();
+              },
             },
           ]}
         />
@@ -127,13 +134,18 @@ function Ad({ id, title, price, photos, expireAt }) {
           </Button>
           <Button
             size='small'
-            disable={editLoading}
-            style={{ color: theme.palette.warning.main }}
+            disabled={editLoading}
+            style={{ color: editLoading ? theme.palette.grey[500] : theme.palette.warning.main }}
             onClick={_handleEditAd}
           >
             Edit
           </Button>
-          <Button size='small' style={{ color: theme.palette.error.main }} onClick={_handleOpenDeleteDialog}>
+          <Button
+            size='small'
+            style={{ color: deleteAdLoading ? theme.palette.grey[500] : theme.palette.error.main }}
+            disabled={deleteAdLoading}
+            onClick={_handleOpenDeleteDialog}
+          >
             Delete
           </Button>
         </CardActions>
