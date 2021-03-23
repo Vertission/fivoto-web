@@ -25,29 +25,17 @@ export default function Footer() {
       </Typography>
       <div className={classes.bottomLinks}>
         <MaterialLink href='https://www.fivoto.com/terms'>
-          <Typography
-            color='secondary'
-            variant='caption'
-            className={classes.linkText}
-          >
+          <Typography color='secondary' variant='caption' className={classes.linkText}>
             Terms & Conditions
           </Typography>
         </MaterialLink>
         <MaterialLink href='https://www.fivoto.com/privacy'>
-          <Typography
-            color='secondary'
-            variant='caption'
-            className={classes.linkText}
-          >
+          <Typography color='secondary' variant='caption' className={classes.linkText}>
             Privacy Policy
           </Typography>
         </MaterialLink>
         <Link href='/sitemap'>
-          <Typography
-            color='secondary'
-            variant='caption'
-            className={classes.linkText}
-          >
+          <Typography color='secondary' variant='caption' className={classes.linkText}>
             Sitemap
           </Typography>
         </Link>
@@ -60,28 +48,13 @@ export default function Footer() {
       <Typography color='secondary' align='center'>
         ABOUT
       </Typography>
-      <Typography
-        color='secondary'
-        variant='caption'
-        align='center'
-        className={classes.aboutTypography}
-      >
+      <Typography color='secondary' variant='caption' align='center' className={classes.aboutTypography}>
         About Us
       </Typography>
-      <Typography
-        color='secondary'
-        variant='caption'
-        align='center'
-        className={classes.aboutTypography}
-      >
+      <Typography color='secondary' variant='caption' align='center' className={classes.aboutTypography}>
         Contact Us
       </Typography>
-      <Typography
-        color='secondary'
-        variant='caption'
-        align='center'
-        className={classes.aboutTypography}
-      >
+      <Typography color='secondary' variant='caption' align='center' className={classes.aboutTypography}>
         Feedback
       </Typography>
     </div>
@@ -98,17 +71,10 @@ export default function Footer() {
         {
           store: 'Google Play',
           icon: <AndroidIcon fontSize='large' style={{ color: '#fff' }} />,
-          link:
-            'https://play.google.com/store/apps/details?id=com.vertission.fivoto',
+          link: 'https://play.google.com/store/apps/details?id=com.vertission.fivoto',
         },
       ].map(({ store, icon, link }) => (
-        <Paper
-          key={store}
-          className={classes.storeRoot}
-          style={style}
-          onClick={() => _onClick(link)}
-          elevation={0}
-        >
+        <Paper key={store} className={classes.storeRoot} style={style} onClick={() => _onClick(link)} elevation={0}>
           <div className={classes.storeIconContainer}>{icon}</div>
           <div className={classes.storeText}>
             <Typography variant='overline' style={{ lineHeight: 'normal' }}>
@@ -138,35 +104,17 @@ export default function Footer() {
         <Typography color='secondary' align='center'>
           SOCIAL MEDIA
         </Typography>
-        <Typography
-          color='secondary'
-          variant='caption'
-          align='center'
-          className={classes.socialMediaAbout}
-        >
-          Follow us on social media to find out the latest updates on our
-          progress.
+        <Typography color='secondary' variant='caption' align='center' className={classes.socialMediaAbout}>
+          Follow us on social media to find out the latest updates on our progress.
         </Typography>
         <div className={classes.socialMediaContainer}>
-          <IconButton
-            color='secondary'
-            target={'_blank'}
-            href='https://www.instagram.com/fivoto'
-          >
+          <IconButton color='secondary' target={'_blank'} href='https://www.instagram.com/fivoto'>
             <InstagramIcon fontSize='large' />
           </IconButton>
-          <IconButton
-            color='secondary'
-            target={'_blank'}
-            href='https://www.facebook.com/fivoto'
-          >
+          <IconButton color='secondary' target={'_blank'} href='https://www.facebook.com/fivoto'>
             <FacebookIcon fontSize='large' />
           </IconButton>
-          <IconButton
-            color='secondary'
-            target={'_blank'}
-            href='https://twitter.com/fivoto'
-          >
+          <IconButton color='secondary' target={'_blank'} href='https://twitter.com/fivoto'>
             <TwitterIcon fontSize='large' />
           </IconButton>
         </div>
@@ -192,6 +140,9 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.primary.main,
     marginTop: theme.spacing(5),
     padding: theme.spacing(5, 3, 8, 3),
+    // position: 'absolute',
+    // bottom: 0,
+    // width: '100%',
   },
   logoImg: {
     width: '33px',

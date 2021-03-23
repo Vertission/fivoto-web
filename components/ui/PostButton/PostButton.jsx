@@ -2,12 +2,16 @@ import React from 'react';
 import { makeStyles, fade } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
+import { Link } from '../../common';
+
 export default function PostButton() {
   const classes = useStyles();
   return (
-    <Button size='large' className={classes.root} classes={{ label: classes.button_label }}>
-      post ad
-    </Button>
+    <Link href='/post'>
+      <Button size='large' className={classes.root} classes={{ label: classes.button_label }}>
+        post ad
+      </Button>
+    </Link>
   );
 }
 

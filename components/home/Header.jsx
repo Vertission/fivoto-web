@@ -20,9 +20,7 @@ export default function HomeHeader() {
         <Toolbar>
           <Logo className={classes.logo} />
 
-          <Link href='/post'>
-            <PostButton />
-          </Link>
+          <PostButton />
 
           {sign ? (
             <User />

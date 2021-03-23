@@ -7,8 +7,6 @@
 
 ### FEATURES TO ADD
 
-- sign
-- post
 - chat
 
 ### DATA collections

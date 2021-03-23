@@ -4,6 +4,7 @@ export const AD = gql`
   query($id: ID!) {
     ad(id: $id) {
       id
+      slug
       status
       category {
         field
@@ -36,6 +37,7 @@ export const ADS = gql`
         cursor
         node {
           id
+          slug
           status
           title
           price

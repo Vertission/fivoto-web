@@ -35,8 +35,6 @@ export default function AdAdView({ id }) {
 
   let { title, description, price, photos, location, createdAt, updatedAt, expireAt, fields, user, phone } = data.ad;
 
-  photos = _.uniq(photos);
-
   return (
     <React.Fragment>
       <NextSeo

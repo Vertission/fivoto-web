@@ -9,7 +9,7 @@ export default class MyDocument extends Document {
       <Html lang='en'>
         <style jsx global>{`
           #__next {
-            height: 100vh;
+            min-height: 100vh;
           }
         `}</style>
         <Head>

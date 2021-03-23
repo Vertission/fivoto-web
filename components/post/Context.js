@@ -2,6 +2,7 @@ import createContext from 'react-recontext';
 
 const initState = {
   id: null, // edit ad
+  slug: null,
   category: {
     field: null,
     item: null,

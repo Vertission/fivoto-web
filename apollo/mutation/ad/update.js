@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
+import { useSnackbar } from 'notistack';
+
 import _ from 'lodash';
 
 import uploadAdPhotos from '../../../service/amplify/storage/uploadAdPhotos';
@@ -9,8 +11,11 @@ import schema from '../../schema';
 
 import { dispatch } from '../../../components/post/Context';
 
+import { snackbar } from '../../../utils';
+
 export default function useUpdateMutation(setLoading) {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [status, setStatus] = useState(null);
 
@@ -30,7 +35,9 @@ export default function useUpdateMutation(setLoading) {
       const uploadedPhotosKeys = await uploadAdPhotos(data.photos, data.id, setStatus);
 
       setStatus('updating ad');
-      await mutateUpdateAd({
+      const {
+        data: { updateAd },
+      } = await mutateUpdateAd({
         variables: {
           data: {
             id: data.id,
@@ -57,14 +64,19 @@ export default function useUpdateMutation(setLoading) {
       });
 
       setLoading(false);
-      setStatus('ad updated successfully');
+      setStatus(null);
 
-      // dispatch('RESET_CONTEXT');
+      dispatch('RESET_CONTEXT');
+
+      console.log([updateAd]);
 
       if (updateAdMutationResponse.error) {
-      } else console.log('post published successfully');
-
-      // return router.push('/');
+        enqueueSnackbar('Error while updating Ad', snackbar.ERROR_TOP_CENTER);
+        return router.push(`/`);
+      } else {
+        enqueueSnackbar('Ad updated successfully', snackbar.SUCCESS_TOP_CENTER);
+        return router.push(`/ad/${updateAd}`);
+      }
     } catch (error) {
       setLoading(false);
       console.log(error);

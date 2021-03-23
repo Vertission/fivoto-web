@@ -6,7 +6,7 @@ import { format } from 'timeago.js';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Container, Card, CardActions, CardMedia, Typography, Button, CircularProgress } from '@material-ui/core';
 
-import { Dialog, Modal } from '../../../ui';
+import { Dialog, Modal, PostButton } from '../../../ui';
 import { Link } from '../../../common';
 
 import { useQueryMe } from '../../../../apollo/query';
@@ -25,13 +25,20 @@ export default function MeAdvertAdsPublished() {
         <CircularProgress />
       </div>
     );
-  else
+  else if (data.me.publishedAds.length)
     return (
       <Container className={classes.root}>
         {data.me.publishedAds.map((ad) => (
-          <Ad {...ad} />
+          <Ad key={ad.id} {...ad} />
         ))}
       </Container>
+    );
+  else
+    return (
+      <div className={classes.post}>
+        <Typography gutterBottom>No Ads published yet!</Typography>
+        <PostButton />
+      </div>
     );
 }
 
@@ -46,9 +53,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  post: { height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' },
 }));
 
-function Ad({ id, title, price, photos, expireAt }) {
+function Ad({ id, slug, title, price, photos, expireAt }) {
   const classes = useStylesAd();
   const theme = useTheme();
 
@@ -127,7 +135,7 @@ function Ad({ id, title, price, photos, expireAt }) {
             color='primary'
             style={{ color: theme.palette.primary.main, textDecoration: 'none' }}
             component={Link}
-            href={`/ad/${id}`}
+            href={`/ad/${slug}`}
             target='_blank'
           >
             View
@@ -213,6 +221,7 @@ const ME_PUBLISHED_ADS = gql`
     me {
       publishedAds {
         id
+        slug
         title
         price
         photos
