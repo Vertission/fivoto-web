@@ -67,15 +67,14 @@ export default function useUpdateMutation(setLoading) {
       setLoading(false);
       setStatus(null);
 
-      // dispatch('RESET_CONTEXT');
-      console.log({ updateAd });
+      dispatch('RESET_CONTEXT');
 
       if (updateAdMutationResponse.error) {
         enqueueSnackbar('Error while updating Ad', snackbar.ERROR_TOP_CENTER);
         return router.push(`/`);
       } else {
         enqueueSnackbar('Ad updated successfully', snackbar.SUCCESS_TOP_CENTER);
-        // return router.push(`/ad/${updateAd}`);
+        return router.push(`/ad/${updateAd}`);
       }
     } catch (error) {
       setLoading(false);
