@@ -243,6 +243,17 @@ export function useResetPassword(onCompleted, onError) {
             />
           ),
         });
+      } else if ((error.code = 'InvalidParameterException' && error.message.includes("'password' failed to satisfy"))) {
+        return openDialog({
+          children: (
+            <Modal
+              title='Password is not strong enough'
+              description='Password must have at least 8 characters and contain at least two of the following: uppercase letters, lowercase letter, numbers and symbols.'
+              closeTitle='i have a ninja password'
+              handleClose={closeDialog}
+            />
+          ),
+        });
       } else {
         const data = { email, code, length: newPassword?.length };
         handleError({ openDialog, closeDialog }, error, 'resetting your password', data);
@@ -253,7 +264,7 @@ export function useResetPassword(onCompleted, onError) {
   return [resetPassword, { loading }];
 }
 
-export function useForgotPassword(onCompleted, onError) {
+export function useForgotPassword(onCompleted, onError, { setTab }) {
   const [loading, setLoading] = useState(false);
   const [openDialog, closeDialog] = Dialog.useDialog();
 
@@ -395,7 +406,7 @@ export function useConfirmSign(onCompleted, onError) {
   return [confirmSign, { loading }];
 }
 
-export function useSignIn(onCompleted, onError) {
+export function useSignIn(onCompleted, onError, { setTab }) {
   const [sendConfirmationCode] = useSendConfirmationCode();
 
   const [loading, setLoading] = useState(false);

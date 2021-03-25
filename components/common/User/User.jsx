@@ -17,6 +17,8 @@ import { Link } from '../../common';
 import { useQueryMe } from '../../../apollo/query';
 import { useSignOut } from '../../../service/amplify/auth';
 
+import { snackbar } from '../../../utils';
+
 export default function User() {
   const { enqueueSnackbar } = useSnackbar();
 

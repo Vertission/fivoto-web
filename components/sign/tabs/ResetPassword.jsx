@@ -37,8 +37,8 @@ const SignTabsLogin = ({ setTab, email }) => {
         <form className={classes.container}>
           <Typography variant='h6'>Reset Password</Typography>
           <Typography variant='body2' className={classes.description}>
-            Password reset verification code send to mohammedusama@gamil.com, Please enter the verification code and a
-            new strong password.
+            Password reset verification code send to {email}, Please enter the verification code and a new strong
+            password.
           </Typography>
           <div className={classes.textField_email}>
             <Controller
@@ -77,6 +77,7 @@ const SignTabsLogin = ({ setTab, email }) => {
               rules={rules.newPassword}
               render={({ onChange, value }) => (
                 <PasswordField
+                  size='small'
                   error={errors?.password}
                   helperText={errors?.password?.message}
                   onChange={onChange}
