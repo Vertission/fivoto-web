@@ -136,7 +136,6 @@ export default function TabsField() {
                 /**
                  * map sub field select
                  */
-
                 return fields.push(
                   <FormControl
                     variant='outlined'
@@ -204,6 +203,8 @@ export default function TabsField() {
                * map sub field inputSelect TEST:
                */
               case 'inputSelect':
+                console.log(context.fields[field.name]);
+
                 return fields.push(
                   <div className={classes.inputSelect}>
                     <TextField
@@ -217,13 +218,13 @@ export default function TabsField() {
                       }}
                       fullWidth
                       className={classes.inputField}
-                      value={context.fields[field.name]}
+                      value={context.fields[field.name]?.value}
                       onChange={(e) =>
                         dispatch('SET_FIELDS', {
                           field: field.name,
                           value: {
-                            input: e.target.value,
-                            select: context.fields[field.name]?.select || field.items[0],
+                            value: e.target.value,
+                            key: context.fields[field.name]?.key || field.items[0],
                           },
                         })
                       }
@@ -234,14 +235,13 @@ export default function TabsField() {
                       className={classes.inputField}
                     >
                       <Select
-                        defaultValue={field.items[0]}
-                        value={context.fields[field.name]}
+                        value={context.fields[field.name]?.key}
                         onChange={(e) =>
                           dispatch('SET_FIELDS', {
                             field: field.name,
                             value: {
-                              select: e.target.value,
-                              input: context.fields[field.name]?.input,
+                              key: e.target.value,
+                              value: context.fields[field.name]?.value,
                             },
                           })
                         }
@@ -254,20 +254,21 @@ export default function TabsField() {
                   </div>
                 );
               /**
-               * map sub field inputSelect FIXME:
+               * map sub field inputSelect
                */
               case 'radio':
-                //  default value
-                if (!context.fields[field.name]) {
-                  dispatch('SET_FIELDS', {
-                    field: field.name,
-                    value: field.options[0],
-                  });
-                }
                 return fields.push(
                   <FormControl className={classes.inputField}>
                     <FormLabel className={classes.inputLabel}>{field.name}</FormLabel>
-                    <RadioGroup defaultValue={field.options[0]} onChange={console.log}>
+                    <RadioGroup
+                      value={context.fields[field.name]}
+                      onChange={(e) => {
+                        dispatch('SET_FIELDS', {
+                          field: field.name,
+                          value: e.target.value,
+                        });
+                      }}
+                    >
                       {field.options.map((option) => (
                         <FormControlLabel
                           value={option}

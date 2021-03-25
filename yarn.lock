@@ -1808,10 +1808,10 @@ acorn@^6.4.1:
   resolved "https://registry.npmjs.org/acorn/-/acorn-6.4.2.tgz"
   integrity sha512-XtGIhXwF8YM8bJhGxG5kXgjkEuNGLTkoYqVE+KMR+aspr4KGYmKYg7yUe3KghyQ9yheNwLnjmzh/7+gfDBmHCQ==
 
-adblock-detect-react@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/adblock-detect-react/-/adblock-detect-react-1.0.2.tgz"
-  integrity sha512-Uh3lrbXbw8gP2yNkoWOnBegVHOc4xX4B/1L9kSjwQr+8yDntCvSyQgoSxATukOFS40ZuNu36VSn8q6a6nq5Buw==
+adblock-detect-react@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/adblock-detect-react/-/adblock-detect-react-1.0.4.tgz#55394ed906305202ce3edc42bacca573bb29ad65"
+  integrity sha512-Xn/hG3gzn+6CUA6bIm1KDWRIOKXLMQk5p91XpWfHaJ5vzHj21XhaUEgdnqM5RXPPKXQbvL3aBwvnkWATnXLLFw==
 
 adjust-sourcemap-loader@3.0.0:
   version "3.0.0"

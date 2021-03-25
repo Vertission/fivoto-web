@@ -53,8 +53,6 @@ const authLink = setContext(async (_, { headers }) => {
       accessToken: { jwtToken },
     } = await Auth.currentSession();
 
-    console.log({ jwtToken });
-
     return {
       headers: {
         ...headers,

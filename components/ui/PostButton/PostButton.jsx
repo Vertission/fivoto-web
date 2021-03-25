@@ -4,10 +4,12 @@ import Button from '@material-ui/core/Button';
 
 import { Link } from '../../common';
 
+import { dispatch } from '../../post/Context';
+
 export default function PostButton() {
   const classes = useStyles();
   return (
-    <Link href='/post'>
+    <Link href='/post' onClick={() => dispatch('RESET_CONTEXT')}>
       <Button size='large' className={classes.root} classes={{ label: classes.button_label }}>
         post ad
       </Button>

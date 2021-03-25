@@ -61,14 +61,13 @@ export default function useUpdateMutation(setLoading) {
             updatedAt: updatingDate,
           },
         },
+        refetchQueries: [{ query: schema.query.AD, variables: { id: data.id } }],
       });
 
       setLoading(false);
       setStatus(null);
 
       dispatch('RESET_CONTEXT');
-
-      console.log([updateAd]);
 
       if (updateAdMutationResponse.error) {
         enqueueSnackbar('Error while updating Ad', snackbar.ERROR_TOP_CENTER);
