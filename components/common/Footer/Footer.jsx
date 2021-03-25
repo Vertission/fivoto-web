@@ -138,11 +138,8 @@ export default function Footer() {
 const useStyles = makeStyles((theme) => ({
   root: {
     background: theme.palette.primary.main,
-    marginTop: theme.spacing(5),
+    marginTop: 'auto',
     padding: theme.spacing(5, 3, 8, 3),
-    // position: 'absolute',
-    // bottom: 0,
-    // width: '100%',
   },
   logoImg: {
     width: '33px',

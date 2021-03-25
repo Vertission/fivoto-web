@@ -51,7 +51,7 @@ export default function SearchHeader({ state }) {
   };
 
   return (
-    <div className={classes.grow}>
+    <div>
       <AppBar position='static'>
         <Toolbar className={classes.toolbar}>
           {/* LOCATION SELECTOR */}
@@ -136,9 +136,6 @@ export default function SearchHeader({ state }) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
