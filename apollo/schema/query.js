@@ -31,8 +31,8 @@ export const AD = gql`
 `;
 
 export const ADS = gql`
-  query($first: Int, $after: String, $filter: searchFilterInput) {
-    ads(first: $first, after: $after, filter: $filter) {
+  query($first: Int, $cursor: String, $filter: searchFilterInput) {
+    ads(first: $first, after: $cursor, filter: $filter) {
       edges {
         cursor
         node {
@@ -45,6 +45,10 @@ export const ADS = gql`
           location {
             city
             district
+          }
+          category {
+            item
+            field
           }
           createdAt
         }

@@ -9,8 +9,8 @@ import { Link } from '../../common';
 export default function Ads({ data }) {
   const classes = useStyles();
 
-  const childElements = data.map(({ id, title, price, photos, location, createdAt }) => (
-    <Card elevation={1} key={id} className={classes.card} component={Link} href={`/ad/${id}`}>
+  const childElements = data.map(({ id, slug, title, price, photos, location, createdAt }) => (
+    <Card elevation={1} key={id} className={classes.card} component={Link} href={`/ad/${slug}`}>
       <CardActionArea className={classes.cardActionArea}>
         <CardMedia component='div' className={classes.cardMedia}>
           <img src={photos[0]} className={classes.img} />

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-import { concatPagination } from '@apollo/client/utilities';
+import { relayStylePagination } from '@apollo/client/utilities';
 import merge from 'deepmerge';
 import { setContext } from '@apollo/client/link/context';
 import { Auth } from 'aws-amplify';
@@ -72,7 +72,11 @@ function createApolloClient() {
     link: ApolloLink.from([errorLink, authLink, httpLink]),
     cache: new InMemoryCache({
       typePolicies: {
-        Query: {},
+        Query: {
+          fields: {
+            ads: relayStylePagination(['filter']),
+          },
+        },
       },
     }),
   });

@@ -37,32 +37,6 @@ export default function SearchResult() {
     },
   });
 
-  const _onLoadMore = () => {
-    // if (data.search_relay.pageInfo.hasNextPage) {
-    //   setFetchMoreLoading(true);
-    //   fetchMore({
-    //     variables: {
-    //       cursor: data.search_relay.pageInfo.endCursor,
-    //     },
-    //     updateQuery: (previousResult, { fetchMoreResult }) => {
-    //       const newEdges = fetchMoreResult.search_relay.edges;
-    //       const pageInfo = fetchMoreResult.search_relay.pageInfo;
-    //       return newEdges.length
-    //         ? {
-    //             search_relay: {
-    //               __typename: previousResult.search_relay.__typename,
-    //               edges: [...previousResult.search_relay.edges, ...newEdges],
-    //               pageInfo,
-    //             },
-    //           }
-    //         : previousResult;
-    //     },
-    //   }).then(({ loading }) => {
-    //     setFetchMoreLoading(loading);
-    //   });
-    // }
-  };
-
   if (loading)
     return (
       <div className={classes.wide}>
@@ -71,6 +45,7 @@ export default function SearchResult() {
     );
 
   const nodes = data.ads.edges.map((edge) => edge.node);
+  const pageInfo = data.ads.pageInfo;
 
   if (!Boolean(nodes.length))
     return (
@@ -104,7 +79,13 @@ export default function SearchResult() {
             color='primary'
             variant='contained'
             size='large'
-            onClick={_onLoadMore}
+            onClick={async () => {
+              if (pageInfo.hasNextPage) {
+                setFetchMoreLoading(true);
+                await fetchMore({ variables: { cursor: pageInfo.endCursor } });
+                setFetchMoreLoading(false);
+              }
+            }}
             style={{
               display: data.ads.pageInfo.hasNextPage ? 'inherit' : 'none',
             }}
