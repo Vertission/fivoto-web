@@ -126,6 +126,7 @@ const SignTabsRegister = ({ setTab, setEmail }) => {
           </Typography>
 
           <Button
+            type='submit'
             fullWidth
             size='large'
             variant='contained'

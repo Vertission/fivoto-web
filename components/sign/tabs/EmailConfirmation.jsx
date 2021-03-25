@@ -65,6 +65,7 @@ const SignTabsLogin = ({ setTab, email }) => {
 
           <div className={classes.button_group}>
             <Button
+            type='submit'
               variant='contained'
               color='primary'
               className={classes.button}

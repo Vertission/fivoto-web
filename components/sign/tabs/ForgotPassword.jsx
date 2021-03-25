@@ -19,10 +19,14 @@ const SignTabsLogin = ({ setTab, email, setEmail }) => {
     mode: 'onBlur',
   });
 
-  const [forgotPassword, { loading }] = useForgotPassword(() => {
-    enqueueSnackbar(`Verification code send to ${getValues('email')}`, snackbar.SUCCESS_BOTTOM_LEFT);
-    setTab(0);
-  });
+  const [forgotPassword, { loading }] = useForgotPassword(
+    () => {
+      enqueueSnackbar(`Verification code send to ${getValues('email')}`, snackbar.SUCCESS_BOTTOM_LEFT);
+      setTab(0);
+    },
+    () => {},
+    { setTab }
+  );
 
   const onSubmit = ({ email }) => {
     forgotPassword(email);
@@ -70,6 +74,7 @@ const SignTabsLogin = ({ setTab, email, setEmail }) => {
 
           <div className={classes.button_group}>
             <Button
+              type='submit'
               variant='contained'
               color='primary'
               disabled={loading}

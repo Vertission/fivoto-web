@@ -22,10 +22,14 @@ const SignTabsLogin = ({ setTab, email, setEmail }) => {
     mode: 'onBlur',
   });
 
-  const [signIn, { loading }] = useSignIn(() => {
-    enqueueSnackbar('Sign In successfully', snackbar.SUCCESS_BOTTOM_LEFT);
-    router.push('/');
-  });
+  const [signIn, { loading }] = useSignIn(
+    () => {
+      enqueueSnackbar('Sign In successfully', snackbar.SUCCESS_BOTTOM_LEFT);
+      router.push('/');
+    },
+    () => {},
+    { setTab }
+  );
 
   const onSubmit = ({ email, password }) => {
     signIn(email, password);
@@ -91,6 +95,7 @@ const SignTabsLogin = ({ setTab, email, setEmail }) => {
 
           <div className={classes.button_group}>
             <Button
+              type='submit'
               variant='contained'
               color='primary'
               className={classes.button}
