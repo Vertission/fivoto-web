@@ -25,7 +25,7 @@ export default function MeProfileHeader({ menu }) {
   };
 
   return (
-    <div className={classes.grow}>
+    <div>
       <AppBar position='static'>
         <Toolbar>
           <Typography variant='h6' className={classes.title}>
@@ -42,9 +42,6 @@ export default function MeProfileHeader({ menu }) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
   title: {
     flexGrow: 1,
     textTransform: 'capitalize',

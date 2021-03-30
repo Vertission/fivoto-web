@@ -11,7 +11,7 @@ export default function UIHeader({ title, logo }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.grow}>
+    <div>
       <AppBar position='static'>
         <Toolbar>
           {logo ? (
@@ -34,9 +34,6 @@ export default function UIHeader({ title, logo }) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
   title: {
     flexGrow: 1,
     textTransform: 'capitalize',

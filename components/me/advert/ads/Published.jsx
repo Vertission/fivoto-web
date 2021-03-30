@@ -48,12 +48,18 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
   },
   loading: {
-    height: '100%',
+    flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  post: { height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' },
+  post: {
+    flexGrow: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
 }));
 
 function Ad({ id, slug, title, price, photos, expireAt }) {
