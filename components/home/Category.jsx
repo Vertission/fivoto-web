@@ -22,23 +22,16 @@ export default function HomeCategory() {
       <Typography variant='h6'>Categories</Typography>
       <div className={classes.categoryContainer}>
         {data?.category.map(({ category, image }) => (
-          <div className={classes.category}>
+          <div className={classes.category} key={category}>
             <CardActionArea
               style={{ borderRadius: 100 }}
               className={classes.category}
               component={Link}
-              href={`/search/sri-lanka/${category
-                .split(' ')
-                .join('-')
-                .toLowerCase()}`}
+              href={`/search/sri-lanka/${category.split(' ').join('-').toLowerCase()}`}
             >
               <img className={classes.category_image} src={image} />
             </CardActionArea>
-            <Typography
-              variant='caption'
-              align='center'
-              className={classes.title}
-            >
+            <Typography variant='caption' align='center' className={classes.title}>
               {category}
             </Typography>
           </div>

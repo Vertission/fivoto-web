@@ -15,7 +15,7 @@ export default function HomeHeader() {
   const [sign] = useIsSign();
 
   return (
-    <div className={classes.grow}>
+    <div>
       <AppBar position='static'>
         <Toolbar>
           <Logo className={classes.logo} />
@@ -44,9 +44,6 @@ export default function HomeHeader() {
 }
 
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
   logo: {
     cursor: 'pointer',
     marginRight: 'auto',

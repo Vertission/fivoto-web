@@ -12,7 +12,7 @@ import Ads from './modules/Ads'; // TODO: make this to a nice folder.
 
 import { Context as SearchContext, dispatch as SearchDispatch } from './modules/context';
 
-export default function SearchResult() {
+export default function SearchResult({ setSearch }) {
   const classes = useStyles();
 
   const { location, category, first } = useContext(SearchContext);
@@ -58,6 +58,7 @@ export default function SearchResult() {
               pathname: '/search/sri-lanka/all-categories',
             });
 
+            setSearch('');
             SearchDispatch('SET_RESET');
           }}
           className={classes.show_latest_ads}

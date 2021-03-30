@@ -52,7 +52,7 @@ export default function HomeSearch() {
 
   const router = useRouter();
 
-  const [searchQuery, setSearchQuery] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState(null);
   const [location, setLocation] = useState(null);
 

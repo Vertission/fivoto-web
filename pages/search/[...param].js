@@ -26,9 +26,9 @@ export default class Ads extends Component {
       <React.Fragment>
         <Context.Provider>
           <AdBlockDetector />
-          <Header state={this.state} />
+          <Header search={this.state.query} setSearch={(value) => this.setState({ query: value })} />
           <Container>
-            <Result />
+            <Result setSearch={(value) => this.setState({ query: value })} />
           </Container>
           <Footer />
         </Context.Provider>
@@ -97,7 +97,7 @@ export async function getServerSideProps({ query }) {
     },
   });
 
-  return {
-    props: { query, category: selectedCategory, location: selectedLocation }, // will be passed to the page component as props
-  };
+  return addApolloState(apolloClient, {
+    props: { query, category: selectedCategory, location: selectedLocation },
+  });
 }
