@@ -11,61 +11,6 @@ export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
 let apolloClient;
 
-const errorLink = new onError(({ graphQLErrors, networkError }) => {
-  if (process.env.NODE_ENV === 'development') {
-    if (graphQLErrors) {
-      graphQLErrors.map(({ message, locations, path, code }) => {
-        console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}, code: ${code}`
-        );
-
-        if (message === 'NotAuthorizedException') {
-          console.log('User not authorized');
-        }
-      });
-    }
-
-    if (networkError) {
-      console.log(networkError);
-    }
-  }
-
-  if (graphQLErrors) {
-    graphQLErrors.map(({ message }) => {
-      if (message === 'NotAuthorizedException') {
-        // signOut();
-      }
-    });
-  }
-
-  if (networkError) {
-  }
-});
-
-const httpLink = new HttpLink({
-  uri: process.env.NODE_ENV === 'development' ? 'http://localhost:4000/' : 'https://lk.endpoint.fivoto.com',
-  credentials: 'same-origin',
-});
-
-const authLink = setContext(async (_, { headers }) => {
-  try {
-    const {
-      accessToken: { jwtToken },
-    } = await Auth.currentSession();
-
-    return {
-      headers: {
-        ...headers,
-        authorization: jwtToken,
-      },
-    };
-  } catch (error) {
-    console.log(error);
-    if (error === 'No current user') return null;
-    // Sentry.captureException(error);
-  }
-});
-
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
@@ -124,3 +69,58 @@ export function useApollo(pageProps) {
   const store = useMemo(() => initializeApollo(state), [state]);
   return store;
 }
+
+const errorLink = new onError(({ graphQLErrors, networkError }) => {
+  if (process.env.NODE_ENV === 'development') {
+    if (graphQLErrors) {
+      graphQLErrors.map(({ message, locations, path, code }) => {
+        console.log(
+          `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}, code: ${code}`
+        );
+
+        if (message === 'NotAuthorizedException') {
+          console.log('User not authorized');
+        }
+      });
+    }
+
+    if (networkError) {
+      console.log(networkError);
+    }
+  }
+
+  if (graphQLErrors) {
+    graphQLErrors.map(({ message }) => {
+      if (message === 'NotAuthorizedException') {
+        // signOut();
+      }
+    });
+  }
+
+  if (networkError) {
+  }
+});
+
+const httpLink = new HttpLink({
+  uri: process.env.NODE_ENV === 'development' ? 'http://localhost:4000/' : 'https://lk.endpoint.fivoto.com',
+  credentials: 'same-origin',
+});
+
+const authLink = setContext(async (_, { headers }) => {
+  try {
+    const {
+      accessToken: { jwtToken },
+    } = await Auth.currentSession();
+
+    return {
+      headers: {
+        ...headers,
+        authorization: jwtToken,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    if (error === 'No current user') return null;
+    // Sentry.captureException(error);
+  }
+});
