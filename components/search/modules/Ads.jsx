@@ -15,7 +15,7 @@ export default function Ads({ data }) {
         <CardMedia component='div' className={classes.cardMedia}>
           <img src={photos[0]} className={classes.img} />
         </CardMedia>
-        <CardContent className={classes.cardContent} naked>
+        <CardContent className={classes.cardContent}>
           <Typography variant='subtitle1' className={classes.title}>
             {title}
           </Typography>
