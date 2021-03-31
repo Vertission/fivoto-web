@@ -7,9 +7,12 @@ import { Footer } from '../components/common';
 import { initializeApollo, addApolloState } from '../apollo';
 import schema from '../apollo/schema';
 
+import { AdBlockDetector } from '../components/common';
+
 export default function HomePage() {
   return (
     <React.Fragment>
+      <AdBlockDetector />
       <Header />
       <Container>
         <Search />

@@ -1,4 +1,6 @@
 import React, { useContext } from 'react';
+import axios from 'axios';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, Button, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
@@ -7,6 +9,8 @@ import _ from 'lodash';
 import { useCreateMutation, useUpdateMutation } from '../../../../apollo/mutation/ad';
 
 import { Context } from '../../Context';
+
+import { snackbar } from '../../../../utils';
 
 export default function TabsLocation({ setActiveStep, loading, setLoading }) {
   const classes = useStyles();
@@ -17,36 +21,47 @@ export default function TabsLocation({ setActiveStep, loading, setLoading }) {
 
   const context = useContext(Context);
 
-  const _onHandlePublish = () => {
+  const _onHandlePublish = async () => {
     if (_.isEmpty(context.title)) {
-      enqueueSnackbar('Please enter a title for your ad', snackbarErrorConfig); // TODO: get from utils
+      enqueueSnackbar('Please enter a title for your ad', snackbar.ERROR_BOTTOM_CENTER);
       return setActiveStep(2);
     }
 
     if (_.isEmpty(context.price)) {
-      enqueueSnackbar('Please enter a price for your ad', snackbarErrorConfig);
+      enqueueSnackbar('Please enter a price for your ad', snackbar.ERROR_BOTTOM_CENTER);
       return setActiveStep(2);
     }
 
     if (_.isEmpty(context.description)) {
-      enqueueSnackbar('Please describe for your ad', snackbarErrorConfig);
+      enqueueSnackbar('Please describe for your ad', snackbar.ERROR_BOTTOM_CENTER);
       return setActiveStep(2);
     }
 
     if (_.isEmpty(context.photos)) {
-      enqueueSnackbar('Please add photos for your ad', snackbarErrorConfig);
+      enqueueSnackbar('Please add photos for your ad', snackbar.ERROR_BOTTOM_CENTER);
       return setActiveStep(2);
     }
 
     if (_.isEmpty(context.phone)) {
-      enqueueSnackbar('Please enter your phone numbers for your ad', snackbarErrorConfig);
+      enqueueSnackbar('Please enter your phone numbers for your ad', snackbar.ERROR_BOTTOM_CENTER);
       return setActiveStep(2);
     }
 
-    if (context.id) {
-      update(context);
-    } else {
-      create(context);
+    try {
+      const url = `https://sentry-test90426-dev.s3.ap-south-1.amazonaws.com/public/ads/download.png?=${new Date().getTime()}`;
+
+      await axios.get(url);
+      if (context.id) {
+        update(context);
+      } else {
+        create(context);
+      }
+    } catch (error) {
+      if (context.id) {
+        enqueueSnackbar(`Please disable your ad blocker to update ad.`, snackbar.ERROR_TOP_CENTER);
+      } else {
+        enqueueSnackbar(`Please disable your ad blocker to post ad.`, snackbar.ERROR_TOP_CENTER);
+      }
     }
   };
 
@@ -95,11 +110,3 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.caption.fontSize,
   },
 }));
-
-const snackbarErrorConfig = {
-  variant: 'error',
-  anchorOrigin: {
-    vertical: 'bottom',
-    horizontal: 'center',
-  },
-};

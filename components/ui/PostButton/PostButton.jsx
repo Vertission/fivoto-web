@@ -1,19 +1,35 @@
 import React from 'react';
+import { useRouter } from 'next/router';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
+
 import { makeStyles, fade } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-import { Link } from '../../common';
-
+import { snackbar } from '../../../utils';
 import { dispatch } from '../../post/Context';
 
 export default function PostButton() {
   const classes = useStyles();
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const _handleNavigation = async () => {
+    dispatch('RESET_CONTEXT');
+    try {
+      const url = `https://sentry-test90426-dev.s3.ap-south-1.amazonaws.com/public/ads/download.png?=${new Date().getTime()}`;
+
+      await axios.get(url);
+      router.push('/post');
+    } catch (error) {
+      enqueueSnackbar(`Please disable your ad blocker to post ads.`, snackbar.ERROR_TOP_CENTER);
+    }
+  };
+
   return (
-    <Link href='/post' onClick={() => dispatch('RESET_CONTEXT')}>
-      <Button size='large' className={classes.root} classes={{ label: classes.button_label }}>
-        post ad
-      </Button>
-    </Link>
+    <Button size='large' className={classes.root} classes={{ label: classes.button_label }} onClick={_handleNavigation}>
+      post ad
+    </Button>
   );
 }
 
