@@ -1,16 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Grid,
-  IconButton,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import PhoneIcon from "@material-ui/icons/Phone";
+import { makeStyles } from '@material-ui/core/styles';
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Grid, IconButton } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import PhoneIcon from '@material-ui/icons/Phone';
 
 export default function AdUser({ user, phone }) {
   const classes = useStyles();
@@ -19,26 +12,20 @@ export default function AdUser({ user, phone }) {
     <div className={classes.root}>
       <Accordion square TransitionProps={{ unmountOnExit: true }}>
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
+          expandIcon={<ExpandMoreIcon color='primary' />}
+          aria-controls='panel1a-content'
+          id='panel1a-header'
         >
-          <Typography variant="subtitle1">{user.name}</Typography>
+          <Typography variant='subtitle1'>{user.name}</Typography>
         </AccordionSummary>
         <AccordionDetails className={classes.accordion}>
           {phone.map((phone) => (
-            <Grid
-              key={phone}
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="center"
-            >
-              <Typography className={classes.phone} variant="h5">
+            <Grid key={phone} container direction='row' justify='space-between' alignItems='center'>
+              <Typography className={classes.phone} variant='h5'>
                 {phone}
               </Typography>
               <IconButton href={`tel:${phone}`}>
-                <PhoneIcon color="primary" />
+                <PhoneIcon color='primary' />
               </IconButton>
             </Grid>
           ))}
@@ -53,10 +40,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
   },
   phone: {
-    fontFamily: "monospace",
+    fontFamily: 'monospace',
   },
   accordion: {
-    display: "flex",
-    flexDirection: "column",
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));

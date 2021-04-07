@@ -17,12 +17,15 @@ import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import LabelIcon from '@material-ui/icons/Label';
+import HomeIcon from '@material-ui/icons/Home';
+
+import { Link } from '../common';
 
 import { dispatch, Context } from './modules/context';
 
 import { LocationSelector, CategorySelector } from './modules/header/index';
 
-export default function SearchHeader({ state }) {
+export default function SearchHeader({ search, setSearch }) {
   const classes = useStyles();
   const theme = useTheme();
   const isSMDown = useMediaQuery(theme.breakpoints.down('sm'));
@@ -34,7 +37,7 @@ export default function SearchHeader({ state }) {
 
   const router = useRouter();
 
-  const [search, setSearch] = useState(state.query);
+  // const [search, setSearch] = useState(state.query);
 
   const _onUpdateQuery = (query, value) => {
     router.push({
@@ -48,16 +51,16 @@ export default function SearchHeader({ state }) {
   };
 
   return (
-    <div className={classes.grow}>
+    <div>
       <AppBar position='static'>
         <Toolbar className={classes.toolbar}>
           {/* LOCATION SELECTOR */}
           <Button
-            color='inherit'
             variant='contained'
             color='primary'
             startIcon={<LocationOnIcon color='secondary' />}
             className={classes.button}
+            classes={{ label: classes.button_label }}
             onClick={() => setToggleLocation(true)}
           >
             <Typography noWrap variant='button'>
@@ -66,11 +69,11 @@ export default function SearchHeader({ state }) {
           </Button>
           {/* CATEGORY SELECTOR */}
           <Button
-            color='inherit'
             variant='contained'
             color='primary'
             startIcon={<LabelIcon color='secondary' />}
             className={classes.button}
+            classes={{ label: classes.button_label }}
             onClick={() => setToggleCategory(true)}
           >
             <Typography noWrap variant='button'>
@@ -79,11 +82,7 @@ export default function SearchHeader({ state }) {
           </Button>
 
           <div className={classes.search}>
-            <IconButton
-              type='submit'
-              className={classes.searchIcon}
-              onClick={() => _onHandleSearchQuery(search)}
-            >
+            <IconButton type='submit' className={classes.searchIcon} onClick={() => _onHandleSearchQuery(search)}>
               <SearchIcon color='inherit' />
             </IconButton>
             <InputBase
@@ -107,6 +106,10 @@ export default function SearchHeader({ state }) {
               <CloseIcon color='inherit' />
             </IconButton>
           </div>
+
+          <IconButton component={Link} href={`/`} className={classes.buttonHome}>
+            <HomeIcon fontSize='large' />
+          </IconButton>
         </Toolbar>
       </AppBar>
 
@@ -133,9 +136,6 @@ export default function SearchHeader({ state }) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -194,5 +194,11 @@ const useStyles = makeStyles((theme) => ({
       flexWrap: 'wrap',
       margin: theme.spacing(2, 0, 3, 0),
     },
+  },
+  button_label: {
+    color: theme.palette.secondary.main,
+  },
+  buttonHome: {
+    marginLeft: 'auto',
   },
 }));

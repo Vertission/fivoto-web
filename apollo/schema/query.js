@@ -1,10 +1,11 @@
 import { gql } from '@apollo/client';
 
 export const AD = gql`
-  query ad($id: ID!) {
+  query($id: ID!) {
     ad(id: $id) {
       id
-      type
+      slug
+      status
       category {
         field
         item
@@ -21,7 +22,6 @@ export const AD = gql`
       fields
       createdAt
       updatedAt
-      expireAt
       user {
         id
         name
@@ -30,39 +30,71 @@ export const AD = gql`
   }
 `;
 
-export const CATEGORY = gql`
-  query category {
-    category
-  }
-`;
-
-export const LOCATION = gql`
-  query location {
-    location
-  }
-`;
-
-export const SEARCH = gql`
-  query search($first: Int, $cursor: ID, $filter: searchFilterInput) {
-    search_relay(first: $first, after: $cursor, filter: $filter) {
+export const ADS = gql`
+  query($first: Int, $cursor: String, $filter: searchFilterInput) {
+    ads(first: $first, after: $cursor, filter: $filter) {
       edges {
         cursor
         node {
           id
+          slug
+          status
           title
           price
           photos
-          createdAt
           location {
-            district
             city
+            district
           }
+          category {
+            item
+            field
+          }
+          createdAt
         }
       }
       pageInfo {
         endCursor
         hasNextPage
       }
+    }
+  }
+`;
+
+export const CONFIG = gql`
+  query {
+    config
+  }
+`;
+
+export const CATEGORY = gql`
+  query {
+    category
+  }
+`;
+
+export const LOCATION = gql`
+  query {
+    location
+  }
+`;
+
+export const FIELD = gql`
+  query {
+    fields
+  }
+`;
+
+export const ME = gql`
+  query me {
+    me {
+      id
+      name
+      email
+      email_verified
+      profile
+      createdAt
+      updatedAt
     }
   }
 `;

@@ -1,21 +1,26 @@
-import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
   palette: {
     // type: "dark",
     primary: {
-      main: "#5bd592",
+      main: '#5bd592',
+      contrastText: '#fff',
     },
     secondary: {
-      main: "#f1f1f1",
+      main: '#ffffff',
+      dark: '#ADB5BD',
     },
   },
   typography: {
-    fontFamily: ["Poppins", "sans-serif"].join(","),
+    fontFamily: ['Poppins', 'sans-serif'].join(','),
   },
   spacing: (factor) => `${0.25 * factor}rem`,
-  overrides: {
-    MuiTypography: {},
+  overrides: {},
+  props: {
+    MuiSvgIcon: {
+      htmlColor: '#ffffff',
+    },
   },
 });
 

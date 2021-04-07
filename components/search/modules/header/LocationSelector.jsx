@@ -96,26 +96,16 @@ function SearchHeaderLocationSelector({ toggleDrawer, updateParam }) {
         all of sri lanka
       </Button>
       {data.location.map(({ district, cities }, i) => (
-        <Accordion
-          square
-          expanded={expanded === district}
-          onChange={handleChange(district)}
-        >
+        <Accordion key={district} square expanded={expanded === district} onChange={handleChange(district)}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.district}>{district}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Button
-              className={classes.city}
-              onClick={() => _onSelect(district, null)}
-            >
+            <Button className={classes.city} onClick={() => _onSelect(district, null)}>
               all of {district}
             </Button>
             {cities.map((city) => (
-              <Button
-                className={classes.city}
-                onClick={() => _onSelect(district, city)}
-              >
+              <Button key={city} className={classes.city} onClick={() => _onSelect(district, city)}>
                 {city}
               </Button>
             ))}

@@ -96,6 +96,7 @@ function SearchHeaderCategorySelector({ toggleDrawer }) {
       </Button>
       {data.category.map(({ category, items }) => (
         <Accordion
+          key={category}
           square
           expanded={expanded === category}
           onChange={handleChange(category)}
@@ -112,6 +113,7 @@ function SearchHeaderCategorySelector({ toggleDrawer }) {
             </Button>
             {items.map((item) => (
               <Button
+                key={item}
                 className={classes.item}
                 onClick={() => _onSelect(category, item)}
               >

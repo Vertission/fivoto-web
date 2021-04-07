@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import { AdView } from "../../components/ad";
+import React from 'react';
+import { AdView } from '../../components/ad';
 
-import { initializeApollo, addApolloState } from "../../apollo";
-import schema from "../../apollo/schema";
+import { initializeApollo, addApolloState } from '../../apollo';
+import schema from '../../apollo/schema';
 
-import { AdBlockDetector } from "../../components/common";
+import { AdBlockDetector } from '../../components/common';
 
 export default function AdPage({ id }) {
   return (
@@ -18,12 +18,14 @@ export default function AdPage({ id }) {
 export async function getServerSideProps({ params }) {
   const apolloClient = initializeApollo();
 
+  const id = params.slug.split('-').reverse()[0];
+
   await apolloClient.query({
     query: schema.query.AD,
-    variables: { id: params.id },
+    variables: { id },
   });
 
   return addApolloState(apolloClient, {
-    props: { id: params.id },
+    props: { id },
   });
 }

@@ -1,23 +1,41 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
 
-import { Header, Download, Category } from '../components/home';
+import { Header, Download, Category, Title, Search } from '../components/home';
 import { Footer } from '../components/common';
 
-export default function HomePage() {
-  const classes = useStyles();
+import { initializeApollo, addApolloState } from '../apollo';
+import schema from '../apollo/schema';
 
+import { AdBlockDetector } from '../components/common';
+
+export default function HomePage() {
   return (
     <React.Fragment>
+      <AdBlockDetector />
       <Header />
       <Container>
+        <Search />
         <Category />
-        <Download />
+        {/* <Download /> */}
       </Container>
       <Footer />
     </React.Fragment>
   );
 }
 
-const useStyles = makeStyles((theme) => ({}));
+export async function getServerSideProps() {
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: schema.query.CATEGORY,
+  });
+
+  await apolloClient.query({
+    query: schema.query.LOCATION,
+  });
+
+  return addApolloState(apolloClient, {
+    props: {},
+  });
+}

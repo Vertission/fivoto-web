@@ -1,48 +1,42 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import React from 'react';
 
-import { fade, makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, InputBase, IconButton } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+import { makeStyles } from '@material-ui/core/styles';
+import { AppBar, Toolbar, Button } from '@material-ui/core';
 
-import { Logo } from '../ui';
+import { Link } from '../common';
+import { Logo, PostButton } from '../ui';
+import { User } from '../common';
 
-export default function HomeHeader({}) {
+import { useIsSign } from '../../service/amplify/auth';
+
+export default function HomeHeader() {
   const classes = useStyles();
-  const router = useRouter();
 
-  const [search, setSearch] = useState('');
-
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      router.push(`/search/sri-lanka/?query=${search}`);
-    }
-  };
+  const [sign] = useIsSign();
 
   return (
-    <div className={classes.grow}>
+    <div>
       <AppBar position='static'>
         <Toolbar>
           <Logo className={classes.logo} />
-          <div className={classes.search}>
-            <IconButton
-              type='submit'
-              className={classes.searchIcon}
-              onClick={() => setInput(search)}
-            >
-              <SearchIcon color='inherit' />
-            </IconButton>
-            <InputBase
-              placeholder='Search…'
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              onChange={(e) => setSearch(e.target.value)}
-              value={search}
-              onKeyPress={handleKeyPress}
-            />
-          </div>
+
+          <PostButton />
+
+          {sign ? (
+            <User />
+          ) : (
+            <Link href='/sign'>
+              <Button
+                size='large'
+                variant='contained'
+                color='primary'
+                className={classes.sign_button}
+                classes={{ label: classes.button_label }}
+              >
+                sign
+              </Button>
+            </Link>
+          )}
         </Toolbar>
       </AppBar>
     </div>
@@ -50,59 +44,20 @@ export default function HomeHeader({}) {
 }
 
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(5),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-    [theme.breakpoints.down('sm')]: {
-      marginRight: theme.spacing(0.5),
-      marginLeft: theme.spacing(1),
-      display: 'flex',
-    },
-  },
-  searchIcon: {
-    height: '100%',
-    padding: 10,
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    marginLeft: 'auto',
-    [theme.breakpoints.up('md')]: {
-      width: 400,
-      '&:focus': {
-        width: 450,
-      },
-    },
-    [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(1, 1, 1, 0.1),
-    },
-  },
   logo: {
     cursor: 'pointer',
+    marginRight: 'auto',
     width: 40,
     [theme.breakpoints.down('sm')]: {
       width: 30,
     },
+  },
+  sign_button: {
+    fontWeight: 'bold',
+    boxShadow: 'none',
+    letterSpacing: 1.5,
+  },
+  button_label: {
+    color: theme.palette.secondary.main,
   },
 }));

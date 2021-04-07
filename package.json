@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,19 +10,32 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.6",
-    "@material-ui/core": "^4.11.2",
+    "@material-ui/core": "4.11.2",
     "@material-ui/icons": "^4.11.2",
-    "adblock-detect-react": "^1.0.2",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "array-move": "^3.0.1",
+    "aws-amplify": "^3.3.13",
+    "axios": "^0.21.1",
     "deepmerge": "^4.2.2",
     "graphql": "^15.4.0",
-    "next": "10.0.3",
+    "identicolor": "1.0.2",
+    "lodash": "^4.17.20",
+    "next": "10.0.4",
     "next-images": "^1.6.2",
     "next-seo": "^4.17.0",
+    "notistack": "^1.0.3",
     "prop-types": "^15.7.2",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-dropzone": "^11.3.0",
+    "react-hook-form": "^6.14.0",
+    "react-image-file-resizer": "^0.4.2",
     "react-material-ui-carousel": "^2.1.1",
     "react-recontext": "^4.0.5",
-    "timeago.js": "^4.0.2"
+    "react-sortable-hoc": "^1.11.0",
+    "react-swipeable-views": "^0.13.9",
+    "timeago.js": "^4.0.2",
+    "url-parse": "^1.5.1",
+    "use-material-ui-dialog": "^1.1.3"
   }
 }

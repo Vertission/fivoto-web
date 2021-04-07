@@ -2,56 +2,38 @@ import React from 'react';
 import { format } from 'timeago.js';
 
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  Card,
-  CardMedia,
-  CardContent,
-  CardActionArea,
-  Typography,
-} from '@material-ui/core';
+import { Card, CardMedia, CardContent, CardActionArea, Typography } from '@material-ui/core';
 
 import { Link } from '../../common';
 
 export default function Ads({ data }) {
   const classes = useStyles();
 
-  const childElements = data.map(
-    ({ id, title, price, photos, location, createdAt }) => (
-      <Card
-        elevation={1}
-        key={id}
-        className={classes.card}
-        component={Link}
-        href={`/ad/${id}`}
-      >
-        <CardActionArea className={classes.cardActionArea}>
-          <CardMedia component='div' className={classes.cardMedia}>
-            <img src={photos[0]} className={classes.img} />
-          </CardMedia>
-          <CardContent className={classes.cardContent} naked>
-            <Typography variant='subtitle1' className={classes.title}>
-              {title}
+  const childElements = data.map(({ id, slug, title, price, photos, location, createdAt }) => (
+    <Card elevation={1} key={id} className={classes.card} component={Link} href={`/ad/${slug}`}>
+      <CardActionArea className={classes.cardActionArea}>
+        <CardMedia component='div' className={classes.cardMedia}>
+          <img src={photos[0]} className={classes.img} />
+        </CardMedia>
+        <CardContent className={classes.cardContent}>
+          <Typography variant='subtitle1' className={classes.title}>
+            {title}
+          </Typography>
+          <Typography color='primary' variant='subtitle2' className={classes.cardPrice}>
+            {price}
+          </Typography>
+          <div className={classes.contentBottom}>
+            <Typography variant='caption' display='block' gutterBottom>
+              {location.district}, {location.city}
             </Typography>
-            <Typography
-              color='primary'
-              variant='subtitle2'
-              className={classes.cardPrice}
-            >
-              {price}
+            <Typography variant='caption' display='block' gutterBottom>
+              {format(createdAt)}
             </Typography>
-            <div className={classes.contentBottom}>
-              <Typography variant='caption' display='block' gutterBottom>
-                {location.district}, {location.city}
-              </Typography>
-              <Typography variant='caption' display='block' gutterBottom>
-                {format(createdAt)}
-              </Typography>
-            </div>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    )
-  );
+          </div>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  ));
 
   return <div className={classes.root}>{childElements}</div>;
 }
