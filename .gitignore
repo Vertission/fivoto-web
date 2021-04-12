@@ -52,4 +52,4 @@ amplify-gradle-config.json
 amplifytools.xcconfig
 .secret-*
 
-.env
+.env.*
