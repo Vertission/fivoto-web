@@ -80,7 +80,7 @@ export default function TabsField() {
                 fullWidth
                 required
                 inputProps={{
-                  maxLength: 50,
+                  maxLength: 21,
                 }}
                 InputProps={{
                   endAdornment: <InputAdornment position='end'>{fieldProps.currency}</InputAdornment>,

@@ -102,7 +102,7 @@ const errorLink = new onError(({ graphQLErrors, networkError }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: process.env.NODE_ENV === 'development' ? 'http://localhost:4000/' : 'https://lk.endpoint.fivoto.com',
+  uri: process.env.APOLLO_HOST,
   credentials: 'same-origin',
 });
 
