@@ -1,5 +1,4 @@
 import MuiAvatar from '@material-ui/core/Avatar';
-import identicolor from 'identicolor';
 
 export default function Avatar({ url, name, ...rest }) {
   return (
