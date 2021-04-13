@@ -6,6 +6,7 @@ import merge from 'deepmerge';
 import { setContext } from '@apollo/client/link/context';
 import { Auth } from 'aws-amplify';
 import isEqual from 'lodash/isEqual';
+import { ContactsOutlined } from '@material-ui/icons';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
@@ -98,11 +99,12 @@ const errorLink = new onError(({ graphQLErrors, networkError }) => {
   }
 
   if (networkError) {
+    console.log(networkError);
   }
 });
 
 const httpLink = new HttpLink({
-  uri: process.env.APOLLO_HOST,
+  uri: process.env.NEXT_PUBLIC_APOLLO_HOST,
   credentials: 'same-origin',
 });
 

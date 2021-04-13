@@ -53,3 +53,6 @@ amplifytools.xcconfig
 .secret-*
 
 .env.*
+
+prod 
+prod.zip
