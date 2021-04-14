@@ -17,7 +17,7 @@ export default function HomePage() {
       <Container>
         <Search />
         <Category />
-        {/* <Download /> */}
+        <Download />
       </Container>
       <Footer />
     </React.Fragment>
