@@ -54,5 +54,4 @@ amplifytools.xcconfig
 
 .env.*
 
-prod 
-prod.zip
+release.zip

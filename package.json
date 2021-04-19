@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start build",
-    "ngrok": "npx ngrok http 3000"
+    "ngrok": "npx ngrok http 3000",
+    "release": "yarn build && cp .env.production build && zip -r release.zip build package.json"
   },
   "dependencies": {
     "@apollo/client": "^3.3.13",
