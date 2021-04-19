@@ -14,6 +14,7 @@
   },
   "plugins": ["react"],
   "rules": {
-    "no-unused-vars": [1, { "varsIgnorePattern": "^_" }]
+    "no-unused-vars": [1, { "varsIgnorePattern": "^_" }],
+    "react/prop-types": 0
   }
 }

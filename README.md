@@ -9,3 +9,5 @@
 - total ads posted
 - rejecting percentage
 - viewing ads
+
+### FIX

@@ -21,7 +21,7 @@ import HomeIcon from '@material-ui/icons/Home';
 
 import { Link } from '../common';
 
-import { dispatch, Context } from './modules/context';
+import { Context } from './modules/context';
 
 import { LocationSelector, CategorySelector } from './modules/header/index';
 
@@ -200,5 +200,9 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonHome: {
     marginLeft: 'auto',
+    [theme.breakpoints.down('sm')]: {
+      order: -2,
+      marginLeft: 'initial',
+    },
   },
 }));
